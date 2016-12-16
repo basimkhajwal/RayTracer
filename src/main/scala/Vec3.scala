@@ -6,8 +6,7 @@ object Vec3 {
   val ONE = Vec3(1, 1, 1)
 
   trait Scalable { def *(that: Vec3): Vec3 }
-
-  implicit def doubleToScalable(x: Double): Scalable = (that: Vec3) => that * x
+  implicit def doubleToScalable(x: Double): Scalable = _ * x
 }
 
 case class Vec3(x: Double, y: Double, z: Double) {
@@ -18,6 +17,8 @@ case class Vec3(x: Double, y: Double, z: Double) {
 
   def +(that: Vec3): Vec3 = Vec3(x + that.x, y + that.y, z + that.z)
   def -(that: Vec3): Vec3 = Vec3(x - that.x, y - that.y, z - that.z)
+
+  lazy val unary_- = Vec3(-x, -y, -z)
 
   def /(sf: Double): Vec3 = this * (1 / sf)
   def *(sf: Double): Vec3 = Vec3(x * sf, y * sf, z * sf)
