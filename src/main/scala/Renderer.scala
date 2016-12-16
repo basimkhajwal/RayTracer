@@ -14,27 +14,29 @@ object Renderer {
     val hsz: Double = sz/2.0
     val img = new BufferedImage(sz, sz, BufferedImage.TYPE_INT_RGB)
 
-    val start = Vec3(0, 0, -3)
+    val start = Vec3(0, 0, -2)
 
     for (y <- 0 until sz; x <- 0 until sz) {
       val rayDir = Vec3((x-hsz)/hsz, (y-hsz)/hsz, 1).nor
       val lum = traceRay(Ray(start, rayDir), 0).clamp
 
-      img.setRGB(x, y, lum.toRGBInt)
+      img.setRGB(x, sz-y-1, lum.toRGBInt)
     }
 
     img
   }
 
-  val lights = PointLight(Vec3(-1, 1, -10), Spectrum(1, 0.7, 0.7)) :: Nil
+  val lights = PointLight(Vec3(0, 1, -1), Spectrum.WHITE) :: Nil
+
+  var first = false
 
   def traceRay(ray: Ray, depth: Int): Spectrum = {
-    if (depth >= 3) Spectrum.BLACK
+    if (depth >= 5) Spectrum.BLACK
     else
       intersect(ray) match {
         case Miss => Spectrum.BLACK
         case Hit(t, p, n) => {
-          lights.filter(l => {
+          val directLight = lights.filter(l => {
             val lightRay = Ray(p, (l.pos - p).nor)
             val lightT = l.pos.dist(p)
 
@@ -43,11 +45,18 @@ object Renderer {
               case Hit(newT, _, _) => newT > lightT
             }
           }).foldLeft(Spectrum.BLACK)((spect: Spectrum, l) => spect + l.colour * (l.pos - p).nor.dot(n))
+
+          directLight + 0.8 * traceRay(Ray(p, reflectRay(ray.dir, n)), depth + 1)
         }
       }
   }
 
-  val spheres = Sphere(1.5, Vec3.ZERO) :: Nil
+  def reflectRay(rayDir: Vec3, normal: Vec3): Vec3 = {
+    val cosTheta = (-rayDir).dot(normal)
+    rayDir + normal*(2*cosTheta)
+  }
+
+  val spheres = Sphere(0.5, Vec3.ZERO) :: Sphere(0.5, Vec3(1, 0, 0)) :: Nil
 
   def intersect(ray: Ray): Intersection = {
 
@@ -64,7 +73,7 @@ object Renderer {
   }
 
   def main(args: Array[String]): Unit = {
-    draw
+    save("2")
   }
 
   def bench: Unit = {
@@ -81,6 +90,8 @@ object Renderer {
     frame.pack
     frame.setVisible(true)
   }
+
+  def save(fname: String): Unit = saveImage("progress/"+fname+".png", renderSphere)
 
   class CustomRenderer(val img: BufferedImage) extends JPanel {
 
