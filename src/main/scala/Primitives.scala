@@ -16,7 +16,13 @@ case class Spectrum(val r: Double, val g: Double, val b: Double) {
   def *(sf: Double): Spectrum = Spectrum(r * sf, g * sf, b * sf)
   def clamp: Spectrum = Spectrum(Math.min(r, 1), Math.min(g, 1), Math.min(b, 1))
 }
-object Spectrum { val BLACK = Spectrum(0, 0, 0) }
+object Spectrum {
+  val BLACK = Spectrum(0, 0, 0)
+  val WHITE = Spectrum(1, 1, 1)
+
+  trait Scalable { def *(that: Spectrum): Spectrum }
+  implicit def doubleToScalable(d: Double): Scalable = _ * d
+}
 
 case class PointLight(val pos: Vec3, val colour: Spectrum)
 
