@@ -8,7 +8,7 @@ trait SceneObject {
   def intersect(ray: Ray): Intersection
 }
 
-case class Sphere(val r: Double, val centre: Vec3) extends SceneObject {
+case class Sphere(val r: Double, val centre: Vec3, val colour: Spectrum) extends SceneObject {
 
   override def intersect(ray: Ray): Intersection = {
 
@@ -35,6 +35,6 @@ case class Sphere(val r: Double, val centre: Vec3) extends SceneObject {
     val point = ray.start + ray.dir*t
     val normal = (point - centre).nor
 
-    Hit(t, point + normal * EPSILON, normal)
+    Hit(t, point + normal * EPSILON, normal, colour)
   }
 }
