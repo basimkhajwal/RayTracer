@@ -50,9 +50,9 @@ class Renderer(options: RenderOpts) {
 
     for (y <- 0 until options.imgHeight; x <- 0 until options.imgWidth) {
 
-      val rayDir = Vec3((x-hw)/hh, (y-hh)/hh , 1).nor
+      val ray = Ray(options.cameraPos, Vec3((x-hw)/hh, (y-hh)/hh , 1).nor)
       val lum = (1 to options.pixelSampleCount)
-        .map(_ => traceRay(Ray(options.cameraPos, rayDir), 0))
+        .map(_ => traceRay(ray, 0))
         .reduce(_ + _) * invSampleCount
 
       img.setRGB(x, options.imgHeight-y-1, lum.clamp.toRGBInt)
