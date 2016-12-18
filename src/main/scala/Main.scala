@@ -31,9 +31,11 @@ object Main {
 
   def render: BufferedImage = {
     new Renderer(new RenderOpts {
-      override val imgHeight: Int = 600
+      override val imgWidth: Int = 1080
+      override val imgHeight: Int = 800
       override val scene: Scene = new Scene(lights, spheres)
-      override val imgWidth: Int = 800
+      override val pixelSampleCount: Int = 3
+      override val maxRayDepth: Int = 5
     }).render
   }
 
