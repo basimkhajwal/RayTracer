@@ -7,6 +7,11 @@ import Constants._
 case class Ray(val start: Vec3, val dir: Vec3) {
   private val m = dir.mag2
   assert(m > 1-EPSILON && m<1+EPSILON)
+
+  def reflect(normal: Vec3): Vec3 = {
+    val cosTheta = (-dir).dot(normal)
+    dir + normal*(2*cosTheta)
+  }
 }
 
 case class Spectrum(val r: Double, val g: Double, val b: Double) {
