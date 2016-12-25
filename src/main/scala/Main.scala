@@ -10,7 +10,8 @@ import javax.swing.{JFrame, JPanel}
   */
 object Main {
 
-  val lights = PointLight(Vec3(0, 0.5, -0.5), Spectrum.WHITE*0.6) ::
+  val lights =
+    PointLight(Vec3(0, 0.5, -0.5), Spectrum.WHITE*0.6) ::
     PointLight(Vec3(-1, -0.5, 1), Spectrum.WHITE * 0.6) ::
     Nil
 
@@ -18,24 +19,24 @@ object Main {
   val room:Double = 5
   val spheres =
     Sphere(1, Vec3(3, 0, 4), Spectrum(0.8, 0.8, 0.8)) ::
-      Sphere(0.5, Vec3(1, 0, 2), Spectrum.WHITE) ::
-      Sphere(bigWidth, Vec3(-room-bigWidth, 0, 0), Spectrum(0.2, 0.3, 0.8)) :: // L
-      Sphere(bigWidth, Vec3(room+bigWidth, 0, 0), Spectrum(0.2, 0.8, 0.3)) :: // R
-      Sphere(bigWidth, Vec3(0, 0, room+bigWidth), Spectrum(0.7, 0.2, 0.3)) :: // F
-      Sphere(bigWidth, Vec3(0, 0, -room-bigWidth), Spectrum.WHITE) :: // B
-      Sphere(bigWidth, Vec3(0, room+bigWidth, 0), Spectrum(0.4, 0.4, 0.4)) :: // U
-      Sphere(bigWidth, Vec3(0, -room-bigWidth, 0), Spectrum.WHITE * 0.2) :: // D
-      Nil
+    //Sphere(0.5, Vec3(1, 0, 2), Spectrum.WHITE) ::
+    Sphere(bigWidth, Vec3(-room-bigWidth, 0, 0), Spectrum(0.2, 0.3, 0.8)) :: // L
+    Sphere(bigWidth, Vec3(room+bigWidth, 0, 0), Spectrum(0.2, 0.8, 0.3)) :: // R
+    Sphere(bigWidth, Vec3(0, 0, room+bigWidth), Spectrum(0.7, 0.2, 0.3)) :: // F
+    Sphere(bigWidth, Vec3(0, 0, -room-bigWidth), Spectrum.WHITE) :: // B
+    Sphere(bigWidth, Vec3(0, room+bigWidth, 0), Spectrum(0.4, 0.4, 0.4)) :: // U
+    Sphere(bigWidth, Vec3(0, -room-bigWidth, 0), Spectrum.WHITE * 0.2) :: // D
+    Nil
 
   def main(args: Array[String]) = draw
 
   def render: BufferedImage = {
     new Renderer(new RenderOpts {
-      override val imgWidth: Int = 1080
-      override val imgHeight: Int = 800
+      override val imgWidth: Int = 500
+      override val imgHeight: Int = 300
       override val scene: Scene = new Scene(lights, spheres)
-      override val pixelSampleCount: Int = 3
-      override val maxRayDepth: Int = 5
+      override val pixelSampleCount: Int = 5
+      override val maxRayDepth: Int = 3
     }).render
   }
 
@@ -65,11 +66,13 @@ object Main {
 
   class CustomRenderer(val img: BufferedImage) extends JPanel {
 
-    override def getPreferredSize: Dimension = new Dimension(img.getWidth, img.getHeight)
+    val sf: Int = 1
+
+    override def getPreferredSize: Dimension = new Dimension(img.getWidth*sf, img.getHeight*sf)
 
     override def paint(g: Graphics): Unit = {
       super.paint(g)
-      g.drawImage(img, 0, 0, img.getWidth, img.getHeight, null)
+      g.drawImage(img, 0, 0, img.getWidth*sf, img.getHeight*sf, null)
     }
   }
 }
