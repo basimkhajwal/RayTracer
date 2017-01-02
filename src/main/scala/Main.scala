@@ -5,6 +5,8 @@ import java.nio.file.{Files, Paths}
 import javax.imageio.ImageIO
 import javax.swing.{JFrame, JPanel}
 
+import Constants._
+
 /**
   * Created by Basim on 18/12/2016.
   */
@@ -32,10 +34,10 @@ object Main {
 
   def render: BufferedImage = {
     new Renderer(new RenderOpts {
-      override val imgWidth: Int = 500
+      override val imgWidth: Int = 400
       override val imgHeight: Int = 300
       override val scene: Scene = new Scene(lights, spheres)
-      override val pixelSampleCount: Int = 5
+      override val pixelSampleCount: Int = 20
       override val maxRayDepth: Int = 3
     }).render
   }
@@ -66,13 +68,11 @@ object Main {
 
   class CustomRenderer(val img: BufferedImage) extends JPanel {
 
-    val sf: Int = 1
-
-    override def getPreferredSize: Dimension = new Dimension(img.getWidth*sf, img.getHeight*sf)
+    override def getPreferredSize: Dimension = viewportSize
 
     override def paint(g: Graphics): Unit = {
       super.paint(g)
-      g.drawImage(img, 0, 0, img.getWidth*sf, img.getHeight*sf, null)
+      g.drawImage(img, 0, 0, viewportSize.width, viewportSize.height, null)
     }
   }
 }
