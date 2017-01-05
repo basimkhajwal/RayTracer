@@ -1,13 +1,10 @@
+package raytracer
+
+import Constants.EPSILON
+
 /**
-  * Created by Basim on 15/12/2016.
+  * Created by Basim on 05/01/2017.
   */
-
-import Constants._
-
-trait SceneObject {
-  def intersect(ray: Ray): Intersection
-}
-
 case class Sphere(val r: Double, val centre: Vec3, val colour: Spectrum) extends SceneObject {
 
   override def intersect(ray: Ray): Intersection = {

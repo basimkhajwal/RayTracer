@@ -1,19 +1,8 @@
+package raytracer
+
 /**
-  * Created by Basim on 15/12/2016.
+  * Created by Basim on 05/01/2017.
   */
-
-import Constants._
-
-case class Ray(val start: Vec3, val dir: Vec3) {
-  private val m = dir.mag2
-  assert(m > 1-EPSILON && m<1+EPSILON)
-
-  def reflect(normal: Vec3): Vec3 = {
-    val cosTheta = (-dir).dot(normal)
-    dir + normal*(2*cosTheta)
-  }
-}
-
 case class Spectrum(val r: Double, val g: Double, val b: Double) {
   def toRGBInt: Int = (b*255.0).toInt + ((g*255.0).toInt << 8) + ((r*255.0).toInt << 16)
 
@@ -23,6 +12,7 @@ case class Spectrum(val r: Double, val g: Double, val b: Double) {
 
   def clamp: Spectrum = Spectrum(Math.min(r, 1), Math.min(g, 1), Math.min(b, 1))
 }
+
 object Spectrum {
   val BLACK = Spectrum(0, 0, 0)
   val WHITE = Spectrum(1, 1, 1)
@@ -30,9 +20,3 @@ object Spectrum {
   trait Scalable { def *(that: Spectrum): Spectrum }
   implicit def doubleToScalable(d: Double): Scalable = _ * d
 }
-
-case class PointLight(val pos: Vec3, val colour: Spectrum)
-
-trait Intersection
-object Miss extends Intersection
-case class Hit(val t: Double, val point: Vec3, val normal: Vec3, val colour: Spectrum) extends Intersection

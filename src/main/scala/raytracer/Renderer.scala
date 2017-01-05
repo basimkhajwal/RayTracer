@@ -1,7 +1,11 @@
+package raytracer
+
 /**
   * Created by Basim on 15/12/2016.
   */
 import java.awt.image.BufferedImage
+
+import raytracer.integrators.{Integrator, Whitted}
 
 import scala.util.Random
 
@@ -16,33 +20,10 @@ trait RenderOpts {
   val imgHeight: Int
 
   val scene: Scene
+  val integrator: Integrator = new Whitted()
 }
 
 class Renderer(options: RenderOpts) {
-
-  val scene: Scene = options.scene
-
-  def traceRay(ray: Ray, depth: Int): Spectrum = {
-    scene intersect ray match {
-      case Miss => Spectrum.BLACK
-      case Hit(_, p, n, c) => {
-
-        val directLight =
-          scene.lights.filter(l => {
-            val lightT = l.pos.dist(p)
-            scene intersect Ray(p, (l.pos - p).nor) match {
-              case Miss => true
-              case Hit(newT, _, _, _) => newT > lightT
-            }
-          })
-          .map(l => l.colour * (l.pos - p).nor.dot(n))
-          .foldLeft(Spectrum.BLACK)(_ + _)
-
-        if (depth == options.maxRayDepth) c * directLight
-        else c * (directLight + 0.2 * traceRay(Ray(p, ray reflect n), depth + 1))
-      }
-    }
-  }
 
   lazy val render: BufferedImage = {
     val hw = options.imgWidth / 2.0
@@ -58,7 +39,7 @@ class Renderer(options: RenderOpts) {
       val rayDir = Vec3((x-hw)/hh, (y-hh)/hh , 1)
       val lum = (1 to options.pixelSampleCount)
         .map(_ =>
-          traceRay(Ray(options.cameraPos, randomVariation(rayDir).nor), 0))
+          options.integrator.traceRay(Ray(options.cameraPos, randomVariation(rayDir).nor))(options) )
         .reduce(_ + _) * invSampleCount
 
       img.setRGB(x, options.imgHeight-y-1, lum.clamp.toRGBInt)

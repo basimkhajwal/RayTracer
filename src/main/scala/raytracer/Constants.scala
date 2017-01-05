@@ -1,3 +1,5 @@
+package raytracer
+
 import java.awt.Dimension
 
 /**
