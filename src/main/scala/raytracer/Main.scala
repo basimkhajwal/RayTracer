@@ -1,11 +1,13 @@
-import java.awt.{Dimension, Graphics}
+package raytracer
+
 import java.awt.image.BufferedImage
+import java.awt.{Dimension, Graphics}
 import java.io.File
 import java.nio.file.{Files, Paths}
 import javax.imageio.ImageIO
 import javax.swing.{JFrame, JPanel}
 
-import Constants._
+import raytracer.Constants._
 
 /**
   * Created by Basim on 18/12/2016.
@@ -21,7 +23,7 @@ object Main {
   val room:Double = 5
   val spheres =
     Sphere(1, Vec3(3, 0, 4), Spectrum(0.8, 0.8, 0.8)) ::
-    //Sphere(0.5, Vec3(1, 0, 2), Spectrum.WHITE) ::
+    //raytracer.Sphere(0.5, raytracer.Vec3(1, 0, 2), Spectrum.WHITE) ::
     Sphere(bigWidth, Vec3(-room-bigWidth, 0, 0), Spectrum(0.2, 0.3, 0.8)) :: // L
     Sphere(bigWidth, Vec3(room+bigWidth, 0, 0), Spectrum(0.2, 0.8, 0.3)) :: // R
     Sphere(bigWidth, Vec3(0, 0, room+bigWidth), Spectrum(0.7, 0.2, 0.3)) :: // F
@@ -49,7 +51,7 @@ object Main {
   }
 
   def draw: Unit = {
-    val frame = new JFrame("Sphere Render Test")
+    val frame = new JFrame("raytracer.Sphere Render Test")
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
     frame.setResizable(false)
     frame.add(new CustomRenderer(render))
