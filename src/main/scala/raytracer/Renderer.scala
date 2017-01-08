@@ -6,6 +6,7 @@ package raytracer
 import java.awt.image.BufferedImage
 
 import raytracer.integrators.{Integrator, Whitted}
+import raytracer.math.Vec3
 
 import scala.util.Random
 

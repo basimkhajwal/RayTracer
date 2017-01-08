@@ -8,6 +8,7 @@ import javax.imageio.ImageIO
 import javax.swing.{JFrame, JPanel}
 
 import raytracer.Constants._
+import raytracer.math.Vec3
 
 /**
   * Created by Basim on 18/12/2016.
@@ -23,7 +24,7 @@ object Main {
   val room:Double = 5
   val spheres =
     Sphere(1, Vec3(3, 0, 4), Spectrum(0.8, 0.8, 0.8)) ::
-    //raytracer.Sphere(0.5, raytracer.Vec3(1, 0, 2), Spectrum.WHITE) ::
+    //Sphere(0.5, Vec3(1, 0, 2), Spectrum.WHITE) ::
     Sphere(bigWidth, Vec3(-room-bigWidth, 0, 0), Spectrum(0.2, 0.3, 0.8)) :: // L
     Sphere(bigWidth, Vec3(room+bigWidth, 0, 0), Spectrum(0.2, 0.8, 0.3)) :: // R
     Sphere(bigWidth, Vec3(0, 0, room+bigWidth), Spectrum(0.7, 0.2, 0.3)) :: // F
@@ -39,7 +40,7 @@ object Main {
       override val imgWidth: Int = 400
       override val imgHeight: Int = 300
       override val scene: Scene = new Scene(lights, spheres)
-      override val pixelSampleCount: Int = 20
+      override val pixelSampleCount: Int = 5
       override val maxRayDepth: Int = 3
     }).render
   }
@@ -51,7 +52,7 @@ object Main {
   }
 
   def draw: Unit = {
-    val frame = new JFrame("raytracer.Sphere Render Test")
+    val frame = new JFrame("Sphere Render Test")
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
     frame.setResizable(false)
     frame.add(new CustomRenderer(render))

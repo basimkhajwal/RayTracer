@@ -1,4 +1,4 @@
-package raytracer
+package raytracer.math
 
 /**
   * Created by Basim on 15/12/2016.

@@ -5,12 +5,12 @@ package raytracer
   */
 class Scene(val lights: List[PointLight], val objects: List[SceneObject]) {
 
-  def intersect(ray: Ray): Intersection = {
+  def intersect(ray: Ray): Option[Intersection] = {
     val intersections = objects
       .map(o => o.intersect(ray))
-      .filterNot(_ == Miss)
+      .filterNot(_.isEmpty)
 
-    if (intersections.isEmpty) Miss
-    else intersections.minBy { case Hit(t, _, _, _) => t }
+    if (intersections.isEmpty) None
+    else intersections.minBy { case Some(Intersection(t, _, _, _)) => t }
   }
 }

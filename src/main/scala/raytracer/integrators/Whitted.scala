@@ -11,15 +11,15 @@ class Whitted extends Integrator{
   def traceRay(ray: Ray, depth: Int)(implicit options: RenderOpts) : Spectrum = {
     val scene = options.scene
     scene intersect ray match {
-      case Miss => Spectrum.BLACK
-      case Hit(_, p, n, c) => {
+      case None => Spectrum.BLACK
+      case Some(Intersection(_, p, n, c)) => {
 
         val directLight =
           scene.lights.filter(l => {
             val lightT = l.pos.dist(p)
             scene intersect Ray(p, (l.pos - p).nor) match {
-              case Miss => true
-              case Hit(newT, _, _, _) => newT > lightT
+              case None => true
+              case Some(Intersection(newT, _, _, _)) => newT > lightT
             }
           })
             .map(l => l.colour * (l.pos - p).nor.dot(n))
