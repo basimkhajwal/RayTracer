@@ -6,9 +6,13 @@ In the modern world we are constantly surrounded by realistic computer generated
 
 Behind the scenes, these renderers have a high variety of techniques they employ in order to capture the environment as we see it. They model the interaction of light rays with a whole host of materials with increasing degrees of accuracy. In this project, I plan to investigate how these techniques are used achieve results by building my own ray tracer from scratch and evaluating how well it can render compared to existing implementations.
 
-## Project Overview
+## Project Overview (incomplete)
 
-TODO...
+- Describe about rasterization vs ray tracing
+- Which algorithm to use for what and why
+- Development of faster ray tracing methods in the future
+
+There are two main formats that renderers follow. The distinction is made between techniques relying on _rasterization_ vs _ray/path tracing_. The basic methodology for ray tracing is to fire a ray for each pixel of the resulting image and compute how much light arrives from that direction, the main disadvantage of this method is that it is incredibly slow compared to rasterization, millions of rays have to fired. Rasterization provides a faster approach by dealing directly with triangles and transformations. The rendering is done by mapping 3D co-ordinates to a 2D section of the screen allowing for efficient rendering 
 
 ## References
 
