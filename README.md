@@ -14,6 +14,8 @@ Behind the scenes, these renderers have a high variety of techniques they employ
 
 There are two main formats that renderers follow. The distinction is made between techniques relying on _rasterization_ vs _ray/path tracing_. The basic methodology for ray tracing is to fire a ray for each pixel of the resulting image and compute how much light arrives from that direction, the main disadvantage of this method is that it is incredibly slow compared to rasterization, millions of rays have to fired. Rasterization provides a faster approach by dealing directly with triangles and transformations. The rendering is done by mapping 3D co-ordinates to a 2D section of the screen allowing for efficient rendering 
 
+In order to build the application, I intend to use the programming language Scala. The advantage of this language being that it is very expressive, offers good library support and is cross platform therefore I can easily distribute it amongst different operating systems. However, the language comes at a performance cost compared to languages such as C/C++ which are the industry standard for rendering systems. The reason I did not choose to use these languages was because the development time would be much larger and the performance gain would only be measurable if considerable was spent in optimizing the lower level details of the program.
+
 ## References
 
 ##### 1 
