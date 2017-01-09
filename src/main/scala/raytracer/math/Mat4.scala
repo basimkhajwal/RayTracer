@@ -109,6 +109,14 @@ class Mat4(val data: Array[Double]) {
     data(r*4+c) = v
   }
 
+  def multiply(point: Vec3, w: Double): Vec3 = {
+    Vec3(
+      data(0)*point(0)+data(1)*point(1)+data(2)*point(2)+data(3)*w,
+      data(4)*point(0)+data(5)*point(1)+data(6)*point(2)+data(7)*w,
+      data(4)*point(0)+data(5)*point(1)+data(6)*point(2)+data(7)*w
+    )
+  }
+
   def *(that: Mat4): Mat4 = new Mat4 (
       (
         for (r <- 0 to 3; c <- 0 to 3) yield (0 to 3).map(i => this(r, i)*that(i, c)).sum
@@ -117,6 +125,4 @@ class Mat4(val data: Array[Double]) {
 
   def *(sf: Double): Mat4 = new Mat4(data map (_ * sf))
   def /(sf: Double): Mat4 = new Mat4(data map (_ / sf))
-
-  def *=(sf: Double): Unit = for (i <- 0 to 15) data(i) *= sf
 }

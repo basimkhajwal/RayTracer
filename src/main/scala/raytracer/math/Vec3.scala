@@ -20,6 +20,8 @@ case class Vec3(x: Double, y: Double, z: Double) {
   def +(that: Vec3): Vec3 = Vec3(x + that.x, y + that.y, z + that.z)
   def -(that: Vec3): Vec3 = Vec3(x - that.x, y - that.y, z - that.z)
 
+  def apply(index: Int): Double = if (index == 0) x else if (index == 1) y else z
+
   lazy val unary_- = Vec3(-x, -y, -z)
 
   def /(sf: Double): Vec3 = this * (1 / sf)
