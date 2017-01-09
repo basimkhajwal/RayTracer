@@ -113,7 +113,7 @@ class Mat4(val data: Array[Double]) {
     Vec3(
       data(0)*point(0)+data(1)*point(1)+data(2)*point(2)+data(3)*w,
       data(4)*point(0)+data(5)*point(1)+data(6)*point(2)+data(7)*w,
-      data(4)*point(0)+data(5)*point(1)+data(6)*point(2)+data(7)*w
+      data(8)*point(0)+data(9)*point(1)+data(10)*point(2)+data(11)*w
     )
   }
 

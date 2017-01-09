@@ -10,13 +10,11 @@ class Transform(val mat: Mat4, _matInv: => Mat4) {
   lazy val matInv = _matInv
 
   def apply(point: Vec3, isVector: Boolean = false): Vec3 = mat.multiply(point, if (isVector) 0 else 1)
-
-  def undo(point: Vec3, isVector: Boolean = false): Vec3 = matInv.multiply(point, if (isVector) 0 else )
 }
 
 object Transform {
 
-  def translate(delta: Vec3) = translate(delta.x, delta.y, delta.z)
+  def translate(delta: Vec3): Transform = translate(delta.x, delta.y, delta.z)
   def translate(dx: Double, dy: Double, dz: Double): Transform = {
     new Transform(
       new Mat4(Array(
@@ -34,7 +32,7 @@ object Transform {
     )
   }
 
-  def scale(sf: Vec3) = scale(sf.x, sf.y, sf.z)
+  def scale(sf: Vec3): Transform = scale(sf.x, sf.y, sf.z)
   def scale(sx: Double, sy: Double, sz: Double): Transform = {
     new Transform(
       new Mat4(Array(

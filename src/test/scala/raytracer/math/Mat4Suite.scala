@@ -23,11 +23,6 @@ class Mat4Suite extends FunSuite {
   }
 
   test ("Inverse correctly computed") {
-    val epsilon = 0.0001
-    def epsilonEquals(a: Double, b: Double): Unit = {
-      assert(a > b-epsilon)
-      assert(a < b+epsilon)
-    }
 
     val mat = new Mat4(List(4, 2, 2, 4, 2, 7, 6, 5, 3, 8, 9, 19, 88, 6, 12, 6).map(_.toDouble).toArray)
     val expected = Array(0.2007874, -0.0157480, -0.0393700, 0.003937, 1.9015748, 0.1351706, -0.41207349, -0.07545931, -2.6299212, 0.098425, 0.496062, 0.1003937, 0.4133858, -0.1010498, -0.00262467, -0.016404)
