@@ -6074,7 +6074,7 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#template-resolver;0.1!template-resolver.jar
 [debug] 	[NOT REQUIRED] org.scala-lang#jline;2.10.6!jline.jar
 [debug] 	[NOT REQUIRED] org.fusesource.jansi#jansi;1.4!jansi.jar
-[debug] :: resolution report :: resolve 2132ms :: artifacts dl 101ms
+[debug] :: resolution report :: resolve 2173ms :: artifacts dl 31ms
 [debug] 	report for default#raytracer-build;0.1-SNAPSHOT compile produced in /Users/Basim/Documents/git/RayTracer/project/target/resolution-cache/reports/default-raytracer-build-compile.xml
 [debug] 	report for default#raytracer-build;0.1-SNAPSHOT runtime produced in /Users/Basim/Documents/git/RayTracer/project/target/resolution-cache/reports/default-raytracer-build-runtime.xml
 [debug] 	report for default#raytracer-build;0.1-SNAPSHOT test produced in /Users/Basim/Documents/git/RayTracer/project/target/resolution-cache/reports/default-raytracer-build-test.xml
@@ -6088,5 +6088,5 @@
 [debug] 	report for default#raytracer-build;0.1-SNAPSHOT docs produced in /Users/Basim/Documents/git/RayTracer/project/target/resolution-cache/reports/default-raytracer-build-docs.xml
 [debug] 	report for default#raytracer-build;0.1-SNAPSHOT pom produced in /Users/Basim/Documents/git/RayTracer/project/target/resolution-cache/reports/default-raytracer-build-pom.xml
 [debug] 	report for default#raytracer-build;0.1-SNAPSHOT scala-tool produced in /Users/Basim/Documents/git/RayTracer/project/target/resolution-cache/reports/default-raytracer-build-scala-tool.xml
-[debug] 	resolve done (2132ms resolve - 101ms download)
+[debug] 	resolve done (2173ms resolve - 31ms download)
 [info] Done updating.

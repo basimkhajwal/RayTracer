@@ -7,17 +7,18 @@ class Mat4(val data: Array[Double]) {
   require(data.length == 16, "All 16 elements must be specified")
 
   def det: Double = {
-
-    @inline
-    def computeBottomDet(c1: Int, c2: Int): Double = data(8+c1)*data(12+c2)-data(8+c2)*data(12+c1)
-
-    // cache 2x2 determinants
-    val ls = (0 to 2).map(c1 => (0 to 3).map(c2 => computeBottomDet(c1, c2)).toArray).toArray
-
-    data(0) * (data(5)*ls(2)(3) - data(6)*ls(1)(3) + data(7)*ls(1)(2))
-    - data(1) * (data(4)*ls(2)(3) - data(6)*ls(0)(3) + data(7)*ls(0)(2))
-    + data(2) * (data(4)*ls(1)(3) - data(5)*ls(0)(3) + data(7)*ls(0)(1))
-    - data(3) * (data(4)*ls(1)(2) - data(5)*ls(0)(2) + data(6)*ls(0)(1))
+    data(12) * data(9)  * data(6)  * data(3)   -  data(8) * data(13) * data(6)  * data(3)   -
+    data(12) * data(5)  * data(10) * data(3)   +  data(4) * data(13) * data(10) * data(3)   +
+    data(8)  * data(5)  * data(14) * data(3)   -  data(4) * data(9)  * data(14) * data(3)   -
+    data(12) * data(9)  * data(2)  * data(7)   +  data(8) * data(13) * data(2)  * data(7)   +
+    data(12) * data(1)  * data(10) * data(7)   -  data(0) * data(13) * data(10) * data(7)   -
+    data(8)  * data(1)  * data(14) * data(7)   +  data(0) * data(9)  * data(14) * data(7)   +
+    data(12) * data(5)  * data(2)  * data(11)  -  data(4) * data(13) * data(2)  * data(11)  -
+    data(12) * data(1)  * data(6)  * data(11)  +  data(0) * data(13) * data(6)  * data(11)  +
+    data(4)  * data(1)  * data(14) * data(11)  -  data(0) * data(5)  * data(14) * data(11)  -
+    data(8)  * data(5)  * data(2)  * data(15)  +  data(4) * data(9)  * data(2)  * data(15)  +
+    data(8)  * data(1)  * data(6)  * data(15)  -  data(0) * data(9)  * data(6)  * data(15)  -
+    data(4)  * data(1)  * data(10) * data(15)  +  data(0) * data(5)  * data(10) * data(15)
   }
 
   def apply(r: Int, c: Int): Double = {

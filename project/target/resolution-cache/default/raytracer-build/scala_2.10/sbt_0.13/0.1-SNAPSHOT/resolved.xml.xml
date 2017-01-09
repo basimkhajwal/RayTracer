@@ -4,7 +4,7 @@
 		module="raytracer-build"
 		revision="0.1-SNAPSHOT"
 		status="integration"
-		publication="20161214224940"
+		publication="20170109180657"
 		e:sbtVersion="0.13" e:scalaVersion="2.10"
 	>
 		<description>
