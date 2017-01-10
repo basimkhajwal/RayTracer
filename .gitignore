@@ -8,3 +8,7 @@
 
 .idea/uiDesigner.xml
 
+
+project/target/streams/compile/compileIncremental/$global/streams/out
+
+project/target/streams/compile/copyResources/$global/streams/out
