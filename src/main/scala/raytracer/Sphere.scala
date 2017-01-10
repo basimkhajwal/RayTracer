@@ -1,7 +1,7 @@
 package raytracer
 
 import Constants.EPSILON
-import raytracer.math.Vec3
+import raytracer.math.{Ray, Vec3}
 
 /**
   * Created by Basim on 05/01/2017.

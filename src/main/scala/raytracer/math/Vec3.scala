@@ -27,11 +27,6 @@ case class Vec3(x: Double, y: Double, z: Double) {
   def /(sf: Double): Vec3 = this * (1 / sf)
   def *(sf: Double): Vec3 = Vec3(x * sf, y * sf, z * sf)
 
-  private def sqr(x: Double) = x*x
-
-  def dist2(other: Vec3) = sqr(other.x - x) + sqr(other.y - y) + sqr(other.z - z)
-  def dist(other: Vec3) = Math.sqrt(dist2(other))
-
   def dot(that: Vec3): Double = x*that.x + y*that.y + z*that.z
 }
 
