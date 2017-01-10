@@ -1,5 +1,6 @@
 package raytracer.integrators
 import raytracer._
+import raytracer.math.Ray
 
 /**
   * Created by Basim on 05/01/2017.

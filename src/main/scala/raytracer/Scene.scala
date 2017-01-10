@@ -1,5 +1,7 @@
 package raytracer
 
+import raytracer.math.Ray
+
 /**
   * Created by Basim on 18/12/2016.
   */

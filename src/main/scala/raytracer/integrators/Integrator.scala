@@ -1,6 +1,7 @@
 package raytracer.integrators
 
-import raytracer.{Ray, RenderOpts, Spectrum}
+import raytracer.math.Ray
+import raytracer.{RenderOpts, Spectrum}
 
 /**
   * Created by Basim on 05/01/2017.
