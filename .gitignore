@@ -1,6 +1,6 @@
 /target/*
-.idea/libraries/*
-project/target/*
+/.idea/libraries/*
+/project/target/*
 
 .idea/workspace.xml
 .idea/tasks.xml
