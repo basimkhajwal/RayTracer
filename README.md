@@ -14,7 +14,9 @@ Behind the scenes, these renderers have a high variety of techniques they employ
 
 There are two main formats that renderers follow. The distinction is made between techniques relying on _rasterization_ vs _ray/path tracing_. The basic methodology for ray tracing is to fire a ray for each pixel of the resulting image and compute how much light arrives from that direction, the main disadvantage of this method is that it is incredibly slow compared to rasterization, millions of rays have to fired. Rasterization provides a faster approach by dealing directly with triangles and transformations. The rendering is done by mapping 3D co-ordinates to a 2D section of the screen allowing for efficient rendering 
 
-In order to build the application, I intend to use the programming language Scala. The advantage of this language being that it is very expressive, offers good library support and is cross platform therefore I can easily distribute it amongst different operating systems. However, the language comes at a performance cost compared to languages such as C/C++ which are the industry standard for rendering systems. The reason I did not choose to use these languages was because the development time would be much larger and the performance gain would only be measurable if considerable was spent in optimizing the lower level details of the program.
+In order to build the application, I need to first decide which programming language to use to build it in. The industry standard for rendering systems is using C++ since it provides a high degree of low level support which allows you to optimise efficient code, also C++ provides very little overhead meaning its memory usage is often far lower as well. However, for this project I have decided to use a different programming language called Scala. This language is more expressive and higher level meaning it would require less program code to be written than the equivalent in C++, so would require less development time. Another advantage is that it runs on the Java Virtual Machine (JVM), as a result the program, once compiled, can be run on any system supporting Java and the JVM is a highly optimised system which will provide a fast runtime (although not as fast as C++). 
+
+An experimental ray tracer<sup>[[]]<sup> was run as a benchmark to compare the performances of languages. It showed that Scala is roughly 3 times slower than the same algorithm written in C++, but it used less than half the number of lines of code. For a large project with many developers C++ is a good choice, but in my case Scala's conciseness outweighs the relatively small performance loss. In addition, Scala is easier to maintain and debug therefore even more time would be saved in development when reasoning about the algorithms.
 
 ## References
 
@@ -32,3 +34,6 @@ In order to build the application, I intend to use the programming language Scal
 
 ##### 5
 ###### Price, A. (2015) 24 Photorealistic blender renders. Available at: http://www.blenderguru.com/articles/24-photorealistic-blender-renders/ (Accessed: 8 January 2017).
+
+##### 6
+###### Ainsworth, H. (2013) < H X A 7 2 4 1 >: Minilight. Available at: http://www.hxa.name/minilight/ (Accessed: 10 January 2017).
