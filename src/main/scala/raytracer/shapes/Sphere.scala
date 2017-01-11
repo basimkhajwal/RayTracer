@@ -1,12 +1,22 @@
-package raytracer
+package raytracer.shapes
 
-import Constants.EPSILON
-import raytracer.math.{Point, Ray, Vec3}
+import raytracer.math._
+import raytracer.{Intersection, Spectrum}
+import raytracer.Constants.EPSILON
 
 /**
   * Created by Basim on 05/01/2017.
   */
-case class Sphere(val r: Double, val centre: Point, val colour: Spectrum) extends SceneObject {
+case class Sphere(val r: Double, val centre: Point, val colour: Spectrum) extends Shape {
+
+  override val objectBounds: BBox = {
+    val offset = Vec3(r, r, r)
+    new BBox(centre - offset, centre + offset)
+  }
+
+  // TODO: Complete these definitions
+  override val objectToWorld: Transform = Transform.identity
+  override val worldToObject: Transform = Transform.identity
 
   override def intersect(ray: Ray): Option[Intersection] = {
 
@@ -35,4 +45,5 @@ case class Sphere(val r: Double, val centre: Point, val colour: Spectrum) extend
 
     Some(Intersection(t, point + normal * EPSILON, normal, colour))
   }
+
 }
