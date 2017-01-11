@@ -9,6 +9,7 @@ import javax.swing.{JFrame, JPanel}
 
 import raytracer.Constants._
 import raytracer.math.{Point, Vec3}
+import raytracer.shapes.Sphere
 
 /**
   * Created by Basim on 18/12/2016.

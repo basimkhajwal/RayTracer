@@ -11,7 +11,7 @@ case class Sphere(val r: Double, val centre: Point, val colour: Spectrum) extend
 
   override val objectBounds: BBox = {
     val offset = Vec3(r, r, r)
-    new BBox(centre - offset, centre + offset)
+    BBox(centre - offset, centre + offset)
   }
 
   // TODO: Complete these definitions

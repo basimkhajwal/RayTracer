@@ -1,11 +1,12 @@
 package raytracer
 
 import raytracer.math.Ray
+import raytracer.shapes.Shape
 
 /**
   * Created by Basim on 18/12/2016.
   */
-class Scene(val lights: List[PointLight], val objects: List[SceneObject]) {
+class Scene(val lights: List[PointLight], val objects: List[Shape]) {
 
   def intersect(ray: Ray): Option[Intersection] = {
     val intersections = objects
