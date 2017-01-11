@@ -9,9 +9,11 @@ class Transform(val mat: Mat4, _matInv: => Mat4) {
 
   lazy val matInv = _matInv
 
-  def apply(point: Vec3, isVector: Boolean = false): Vec3 = mat.multiply(point, if (isVector) 0 else 1)
+  def apply(vec: Vec3): Vec3 = mat * vec
 
-  def apply(bbox: BBox): BBox = (0 to 7).map(bbox(_)).foldLeft(bbox)(_.union(_))
+  def apply(point: Point): Point = mat * point
+
+  def apply(bbox: BBox): BBox = (0 to 7).map(p => this(bbox(p))).foldLeft(bbox)(_.union(_))
 }
 
 object Transform {

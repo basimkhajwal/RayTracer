@@ -102,22 +102,29 @@ case class Mat4(val data: Array[Double]) {
     data(r*4+c)
   }
 
-  def multiply(point: Vec3, w: Double): Vec3 = {
+  def *(vec: Vec3): Vec3 = {
     Vec3(
-      data(0)*point(0)+data(1)*point(1)+data(2)*point(2)+data(3)*w,
-      data(4)*point(0)+data(5)*point(1)+data(6)*point(2)+data(7)*w,
-      data(8)*point(0)+data(9)*point(1)+data(10)*point(2)+data(11)*w
+      data(0)*vec(0)+data(1)*vec(1)+data(2)*vec(2)+data(3),
+      data(4)*vec(0)+data(5)*vec(1)+data(6)*vec(2)+data(7),
+      data(8)*vec(0)+data(9)*vec(1)+data(10)*vec(2)+data(11)
     )
   }
 
-  def *(that: Mat4): Mat4 = new Mat4 (
+  def *(point: Point): Point = {
+    Point(
+      data(0)*point(0)+data(1)*point(1)+data(2)*point(2)+data(3),
+      data(4)*point(0)+data(5)*point(1)+data(6)*point(2)+data(7),
+      data(8)*point(0)+data(9)*point(1)+data(10)*point(2)+data(11)
+    )
+  }
+
+  def *(that: Mat4): Mat4 = Mat4(
       (
         for (r <- 0 to 3; c <- 0 to 3) yield (0 to 3).map(i => this(r, i)*that(i, c)).sum
-      ).toArray
-    )
+      ).toArray)
 
-  def *(sf: Double): Mat4 = new Mat4(data map (_ * sf))
-  def /(sf: Double): Mat4 = new Mat4(data map (_ / sf))
+  def *(sf: Double): Mat4 = Mat4(data map (_ * sf))
+  def /(sf: Double): Mat4 = Mat4(data map (_ / sf))
 }
 
 object Mat4 {
