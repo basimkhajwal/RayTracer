@@ -11,7 +11,7 @@ trait Shape {
   val worldToObject: Transform
 
   val objectBounds: BBox
-  val worldBounds: BBox = objectToWorld(objectBounds)
+  lazy val worldBounds: BBox = objectToWorld(objectBounds)
 
   def intersect(ray: Ray): Option[Intersection]
 }

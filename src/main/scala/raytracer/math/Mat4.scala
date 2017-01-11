@@ -136,6 +136,9 @@ object Mat4 {
     0, 0, 0, 1.0
   )) {
     override lazy val inv = this
+    override lazy val det = 1
     override def *(that: Mat4) = that
+    override def *(that: Point) = that
+    override def *(that: Vec3) = that
   }
 }
