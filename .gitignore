@@ -1,5 +1,7 @@
 /target/*
 /.idea/libraries/*
+
+/project/project/*
 /project/target/*
 
 .idea/workspace.xml
