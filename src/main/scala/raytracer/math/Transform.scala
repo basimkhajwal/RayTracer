@@ -16,16 +16,20 @@ class Transform(val mat: Mat4, _matInv: => Mat4) {
 
 object Transform {
 
+  def apply(mat: Mat4, matInv: => Mat4): Transform = new Transform(mat, matInv)
+
+  val identity = Transform(Mat4.identity, Mat4.identity)
+
   def translate(delta: Vec3): Transform = translate(delta.x, delta.y, delta.z)
   def translate(dx: Double, dy: Double, dz: Double): Transform = {
-    new Transform(
-      new Mat4(Array(
+    Transform(
+      Mat4(Array(
         1, 0, 0, dx,
         0, 1, 0, dy,
         0, 0, 1, dz,
         0, 0, 1, 1
       )),
-      new Mat4(Array(
+      Mat4(Array(
         1, 0, 0, -dx,
         0, 1, 0, -dy,
         0, 0, 1, -dz,
@@ -36,14 +40,14 @@ object Transform {
 
   def scale(sf: Vec3): Transform = scale(sf.x, sf.y, sf.z)
   def scale(sx: Double, sy: Double, sz: Double): Transform = {
-    new Transform(
-      new Mat4(Array(
+    Transform(
+      Mat4(Array(
         sx, 0, 0, 0,
         0, sy, 0, 0,
         0, 0, sy, 0,
         0, 0, 1, 1
       )),
-      new Mat4(Array(
+      Mat4(Array(
         1/sx, 0, 0, 0,
         0, 1/sy, 0, 0,
         0, 0, 1/sy, 0,

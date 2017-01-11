@@ -3,10 +3,10 @@ package raytracer.math
 /**
   * Created by Basim on 08/01/2017.
   */
-class Mat4(val data: Array[Double]) {
+case class Mat4(val data: Array[Double]) {
   require(data.length == 16, "All 16 elements must be specified")
 
-  def inv: Mat4 = {
+  lazy val inv: Mat4 = {
 
     val inv: Array[Double] = new Array[Double](16)
 
@@ -77,10 +77,10 @@ class Mat4(val data: Array[Double]) {
     val det = data(0) * inv(0) + data(1) * inv(4) + data(2) * inv(8) + data(3) * inv(12)
     require(det != 0, "Determinant of matrix cannot be 0 for inverse")
 
-    new Mat4( inv map (_ / det))
+    Mat4( inv map (_ / det))
   }
 
-  def det: Double = {
+  lazy val det: Double = {
     data(12) * data(9)  * data(6)  * data(3)   -  data(8) * data(13) * data(6)  * data(3)   -
     data(12) * data(5)  * data(10) * data(3)   +  data(4) * data(13) * data(10) * data(3)   +
     data(8)  * data(5)  * data(14) * data(3)   -  data(4) * data(9)  * data(14) * data(3)   -
@@ -102,13 +102,6 @@ class Mat4(val data: Array[Double]) {
     data(r*4+c)
   }
 
-  @inline
-  final def update(r: Int, c: Int, v: Double): Unit = {
-    require(r >= 0 && r < 4, "Row index out of bounds")
-    require(c >= 0 && c < 4, "Column index out of bounds")
-    data(r*4+c) = v
-  }
-
   def multiply(point: Vec3, w: Double): Vec3 = {
     Vec3(
       data(0)*point(0)+data(1)*point(1)+data(2)*point(2)+data(3)*w,
@@ -125,4 +118,17 @@ class Mat4(val data: Array[Double]) {
 
   def *(sf: Double): Mat4 = new Mat4(data map (_ * sf))
   def /(sf: Double): Mat4 = new Mat4(data map (_ / sf))
+}
+
+object Mat4 {
+
+  val identity = new Mat4(Array(
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1.0
+  )) {
+    override lazy val inv = this
+    override def *(that: Mat4) = that
+  }
 }
