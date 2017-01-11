@@ -8,7 +8,7 @@ import javax.imageio.ImageIO
 import javax.swing.{JFrame, JPanel}
 
 import raytracer.Constants._
-import raytracer.math.Vec3
+import raytracer.math.{Point, Vec3}
 
 /**
   * Created by Basim on 18/12/2016.
@@ -16,21 +16,21 @@ import raytracer.math.Vec3
 object Main {
 
   val lights =
-    PointLight(Vec3(0, 0.5, -0.5), Spectrum.WHITE*0.6) ::
-    PointLight(Vec3(-1, -0.5, 1), Spectrum.WHITE * 0.6) ::
+    PointLight(Point(0, 0.5, -0.5), Spectrum.WHITE*0.6) ::
+    PointLight(Point(-1, -0.5, 1), Spectrum.WHITE * 0.6) ::
     Nil
 
   val bigWidth: Double = 1e5
   val room:Double = 5
   val spheres =
-    Sphere(1, Vec3(3, 0, 4), Spectrum(0.8, 0.8, 0.8)) ::
-    //Sphere(0.5, Vec3(1, 0, 2), Spectrum.WHITE) ::
-    Sphere(bigWidth, Vec3(-room-bigWidth, 0, 0), Spectrum(0.2, 0.3, 0.8)) :: // L
-    Sphere(bigWidth, Vec3(room+bigWidth, 0, 0), Spectrum(0.2, 0.8, 0.3)) :: // R
-    Sphere(bigWidth, Vec3(0, 0, room+bigWidth), Spectrum(0.7, 0.2, 0.3)) :: // F
-    Sphere(bigWidth, Vec3(0, 0, -room-bigWidth), Spectrum.WHITE) :: // B
-    Sphere(bigWidth, Vec3(0, room+bigWidth, 0), Spectrum(0.4, 0.4, 0.4)) :: // U
-    Sphere(bigWidth, Vec3(0, -room-bigWidth, 0), Spectrum.WHITE * 0.2) :: // D
+    Sphere(1, Point(3, 0, 4), Spectrum(0.8, 0.8, 0.8)) ::
+    //Sphere(0.5, Point(1, 0, 2), Spectrum.WHITE) ::
+    Sphere(bigWidth, Point(-room-bigWidth, 0, 0), Spectrum(0.2, 0.3, 0.8)) :: // L
+    Sphere(bigWidth, Point(room+bigWidth, 0, 0), Spectrum(0.2, 0.8, 0.3)) :: // R
+    Sphere(bigWidth, Point(0, 0, room+bigWidth), Spectrum(0.7, 0.2, 0.3)) :: // F
+    Sphere(bigWidth, Point(0, 0, -room-bigWidth), Spectrum.WHITE) :: // B
+    Sphere(bigWidth, Point(0, room+bigWidth, 0), Spectrum(0.4, 0.4, 0.4)) :: // U
+    Sphere(bigWidth, Point(0, -room-bigWidth, 0), Spectrum.WHITE * 0.2) :: // D
     Nil
 
   def main(args: Array[String]) = draw

@@ -1,12 +1,12 @@
 package raytracer
 
 import Constants.EPSILON
-import raytracer.math.{Ray, Vec3}
+import raytracer.math.{Point, Ray, Vec3}
 
 /**
   * Created by Basim on 05/01/2017.
   */
-case class Sphere(val r: Double, val centre: Vec3, val colour: Spectrum) extends SceneObject {
+case class Sphere(val r: Double, val centre: Point, val colour: Spectrum) extends SceneObject {
 
   override def intersect(ray: Ray): Option[Intersection] = {
 

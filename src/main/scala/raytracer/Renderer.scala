@@ -6,7 +6,7 @@ package raytracer
 import java.awt.image.BufferedImage
 
 import raytracer.integrators.{Integrator, Whitted}
-import raytracer.math.{Ray, Vec3}
+import raytracer.math.{Point, Ray, Vec3}
 
 import scala.util.Random
 
@@ -14,7 +14,7 @@ trait RenderOpts {
   val maxRayDepth: Int = 4
   val pixelSampleCount: Int = 2
 
-  val cameraPos: Vec3 = Vec3(0, 0, -2)
+  val cameraPos: Point = Point(0, 0, -2)
   val cameraAngle: Vec3 = Vec3.ZERO
 
   val imgWidth: Int
