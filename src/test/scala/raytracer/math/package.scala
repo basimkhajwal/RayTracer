@@ -15,4 +15,7 @@ package object math {
   def epsilonEquals(a: Vec3, b: Vec3): Unit = {
     for (i <- 0 to 2) epsilonEquals(a(i), b(i))
   }
+  def epsilonEquals(a: Point, b: Point): Unit = {
+    for (i <- 0 to 2) epsilonEquals(a(i), b(i))
+  }
 }
