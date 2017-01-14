@@ -5,6 +5,13 @@ import scala.math._
 /**
   * Created by Basim on 09/01/2017.
   */
+object BBox {
+  val empty = BBox(Point(Double.PositiveInfinity, Double.PositiveInfinity, Double.PositiveInfinity),
+    Point(Double.NegativeInfinity, Double.NegativeInfinity, Double.NegativeInfinity))
+
+  def fromPoints(points: Point*): BBox = points.foldLeft(empty)(_.union(_))
+}
+
 case class BBox(pMin: Point, pMax: Point) {
   require(pMin.x <= pMax.x)
   require(pMin.y <= pMax.y)
