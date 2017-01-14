@@ -9,6 +9,8 @@ class Transform(val mat: Mat4, _matInv: => Mat4) {
 
   lazy val matInv = _matInv
 
+  lazy val inverse = Transform(matInv, mat)
+
   def apply(vec: Vec3): Vec3 = mat * vec
 
   def apply(point: Point): Point = mat * point
