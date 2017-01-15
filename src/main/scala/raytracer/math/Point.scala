@@ -15,6 +15,8 @@ case class Point(x: Double, y: Double, z: Double) {
 
   def +(that: Vec3): Point = Point(x + that.x, y + that.y, z + that.z)
 
+  def +(that: Point): Point = Point(x + that.x, y + that.y, z + that.z)
+
   def -(that: Vec3): Point = Point(x - that.x, y - that.y, z - that.z)
 
   def -(that: Point): Vec3 = Vec3(x - that.x, y - that.y, z - that.z)
