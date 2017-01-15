@@ -28,5 +28,11 @@ case class Vec3(x: Double, y: Double, z: Double) {
   def *(sf: Double): Vec3 = Vec3(x * sf, y * sf, z * sf)
 
   def dot(that: Vec3): Double = x*that.x + y*that.y + z*that.z
+
+  def cross(that: Vec3): Vec3 = Vec3(
+    y*that.z - z*that.y,
+    z*that.x - x*that.z,
+    x*that.y - y*that.x
+  )
 }
 
