@@ -13,9 +13,6 @@ object BBox {
 }
 
 case class BBox(pMin: Point, pMax: Point) {
-  require(pMin.x <= pMax.x)
-  require(pMin.y <= pMax.y)
-  require(pMin.z <= pMax.z)
 
   @inline
   private final def inRange(v: Double, a: Double, b: Double): Boolean = v >= a && v <= b
