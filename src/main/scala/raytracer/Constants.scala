@@ -7,5 +7,5 @@ import java.awt.Dimension
   */
 object Constants {
   val EPSILON = 1e-10
-  val viewportSize: Dimension = new Dimension(800, 600)
+  val viewportSize: Dimension = new Dimension(1600, 1200)
 }

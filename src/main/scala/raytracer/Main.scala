@@ -9,7 +9,7 @@ import javax.swing.{JFrame, JPanel}
 
 import raytracer.Constants._
 import raytracer.math.{Point, Vec3}
-import raytracer.shapes.Sphere
+import raytracer.shapes.{Sphere, Triangle}
 
 /**
   * Created by Basim on 18/12/2016.
@@ -26,6 +26,8 @@ object Main {
   val spheres =
     Sphere(1, Point(3, 0, 4), Spectrum(0.8, 0.8, 0.8)) ::
     //Sphere(0.5, Point(1, 0, 2), Spectrum.WHITE) ::
+    Triangle(Point(-1, 0, 2), Point(0, 0, 2), Point(-1, 1, 2), Spectrum(0.5, 0.3, 0.9)) ::
+    Triangle(Point(0, 1, 2), Point(0, 0, 2), Point(-1, 1, 2), Spectrum(0.3, 0.9, 0.5)) ::
     Sphere(bigWidth, Point(-room-bigWidth, 0, 0), Spectrum(0.2, 0.3, 0.8)) :: // L
     Sphere(bigWidth, Point(room+bigWidth, 0, 0), Spectrum(0.2, 0.8, 0.3)) :: // R
     Sphere(bigWidth, Point(0, 0, room+bigWidth), Spectrum(0.7, 0.2, 0.3)) :: // F
@@ -41,7 +43,7 @@ object Main {
       override val imgWidth: Int = 400
       override val imgHeight: Int = 300
       override val scene: Scene = new Scene(lights, spheres)
-      override val pixelSampleCount: Int = 5
+      override val pixelSampleCount: Int = 20
       override val maxRayDepth: Int = 3
     }).render
   }

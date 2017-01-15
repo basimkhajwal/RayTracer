@@ -7,9 +7,7 @@ import raytracer.Constants._
 /**
   * Created by Basim on 14/01/2017.
   */
-case class Triangle(p1: Point, p2: Point, p3: Point) extends Shape {
-
-  def this(t: Seq[Point]) = this(t(0), t(1), t(2))
+case class Triangle(p1: Point, p2: Point, p3: Point, colour: Spectrum) extends Shape {
 
   override val objectToWorld: Transform = Transform.identity
   override val worldToObject: Transform = Transform.identity
@@ -42,6 +40,7 @@ case class Triangle(p1: Point, p2: Point, p3: Point) extends Shape {
 
     val intersectionPoint = (1-u-v)*p1 + u*p2 + v*p3
 
-    Some(Intersection(t, intersectionPoint, if (det < 0) -nor else nor, Spectrum(0.8, 0.6, 0.2)))
+    val n = if (det < 0) -nor else nor
+    Some(Intersection(t, intersectionPoint + n*EPSILON, n, colour))
   }
 }
