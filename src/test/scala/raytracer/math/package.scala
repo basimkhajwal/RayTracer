@@ -7,15 +7,17 @@ import org.scalatest.Assertions._
   */
 package object math {
 
-  val EPSILON = 0.0001
+  val EPSILON = 0.00001
+
+  private def epEq(a: Double, b: Double): Boolean = a > b-EPSILON && a < b+EPSILON
+
   def epsilonEquals(a: Double, b: Double): Unit = {
-    assert(a > b-EPSILON)
-    assert(a < b+EPSILON)
+    assert(epEq(a, b), s"$a and $b are not equal")
   }
   def epsilonEquals(a: Vec3, b: Vec3): Unit = {
-    for (i <- 0 to 2) epsilonEquals(a(i), b(i))
+    assert((0 to 2).map(i => epEq(a(i), b(i))).reduce(_ && _), s"$a and $b are not equal")
   }
   def epsilonEquals(a: Point, b: Point): Unit = {
-    for (i <- 0 to 2) epsilonEquals(a(i), b(i))
+    assert((0 to 2).map(i => epEq(a(i), b(i))).reduce(_ && _), s"$a and $b are not equal")
   }
 }
