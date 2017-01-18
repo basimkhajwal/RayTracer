@@ -16,6 +16,8 @@ class Transform(val mat: Mat4, _matInv: => Mat4) {
   def apply(point: Point): Point = mat * point
 
   def apply(bbox: BBox): BBox = (0 to 7).map(p => this(bbox(p))).foldLeft(bbox)(_.union(_))
+
+  def *(that: Transform): Transform = Transform(mat * that.mat, matInv * that.matInv)
 }
 
 object Transform {
