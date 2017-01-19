@@ -1,0 +1,11 @@
+LookAt 1 1 10   0 0 -1  0 1 0 #ex ey ez lx ly lz ux uy uz
+
+#the camera
+Camera "perspective" "float fov" [30]
+
+#this is the filter used for antialiasing
+PixelFilter "mitchell" "float xwidth" [2] "float ywidth" [2]
+
+#name the file
+Film "image" "string filename" ["sharp.exr"]
+     "integer xresolution" [400] "integer yresolution" [400]
