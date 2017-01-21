@@ -28,14 +28,14 @@ class Lexer(val fileName: String) {
     case StreamTokenizer.TT_WORD => Some(tokenize.sval)
     case '"' => Some(tokenize.sval)
     case StreamTokenizer.TT_NUMBER => Some(tokenize.nval.toString)
-    case c => Some(c.toChar.toString)
     case StreamTokenizer.TT_EOL => getNextToken
-
     case StreamTokenizer.TT_EOF => {
       finished = true
       close()
       None
     }
+
+    case c => Some(c.toChar.toString)
   }
 
   def next(): Option[String] = {
