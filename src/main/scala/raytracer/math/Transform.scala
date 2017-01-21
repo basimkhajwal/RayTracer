@@ -62,4 +62,41 @@ object Transform {
     )
   }
 
+  def rotate(rx: Double, ry: Double, rz: Double): Transform = rotateX(rx) * rotateY(ry) * rotateZ(rz)
+
+  def rotateX(t: Double): Transform = {
+    val c = math.cos(t)
+    val s = math.sin(t)
+    val m = Mat4(Array(
+      1, 0, 0, 0,
+      0, c, -s, 0,
+      0, s, c, 0,
+      0, 0, 0, 1
+    ))
+    Transform(m, m.transpose)
+  }
+
+  def rotateY(t: Double): Transform = {
+    val c = math.cos(t)
+    val s = math.sin(t)
+    val m = Mat4(Array(
+      c, 0, s, 0,
+      0, 1, 0, 0,
+      -s, 0, c, 0,
+      0, 0, 0, 1
+    ))
+    Transform(m, m.transpose)
+  }
+
+  def rotateZ(t: Double): Transform = {
+    val c = math.cos(t)
+    val s = math.sin(t)
+    val m = Mat4(Array(
+      c, -s, 0, 0,
+      s, c, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+    ))
+    Transform(m, m.transpose)
+  }
 }
