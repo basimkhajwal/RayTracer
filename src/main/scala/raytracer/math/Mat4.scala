@@ -95,6 +95,11 @@ case class Mat4(val data: Array[Double]) {
     data(4)  * data(1)  * data(10) * data(15)  +  data(0) * data(5)  * data(10) * data(15)
   }
 
+  lazy val transpose =
+    Mat4(
+      Array(0,5,8,12,1,5,9,13,2,6,10,14,3,7,11,15) map (data(_))
+    )
+
   @inline
   final def apply(r: Int, c: Int): Double = {
     require(r >= 0 && r < 4, "Row index out of bounds")
