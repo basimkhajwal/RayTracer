@@ -2,6 +2,8 @@ package raytracer.math
 
 import org.scalatest.FunSuite
 
+import scala.util.Random
+
 /**
   * Created by Basim on 09/01/2017.
   */
@@ -29,5 +31,17 @@ class Mat4Suite extends FunSuite {
     val matInv = mat.inv.data
 
     matInv.zip(expected) foreach (v => epsilonEquals(v._1, v._2))
+  }
+
+  test ("Transpose correctly computed") {
+
+    val rand = new Random
+
+    for (i <- (0 to 30).par) {
+      val m = Mat4(new Array[Double](16) map (_ => rand.nextDouble()))
+      val mt = m.transpose
+      for (r <- 0 to 3; c <- 0 to 3) assert(m(r,c) == mt(c,r))
+    }
+
   }
 }
