@@ -1,6 +1,6 @@
 package raytracer.parsing
 
-import raytracer.math.{Point, Transform, Vec3}
+import raytracer.math.{Mat4, Point, Transform, Vec3}
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
@@ -30,6 +30,7 @@ class SceneParser(sceneFile: String) {
 
   private def popTransform: Unit = transformStack = transformStack.tail
 
+  @tailrec
   private def nextToken(): Option[String] = {
     if (lexerStack isEmpty) None
     else {
@@ -59,12 +60,27 @@ class SceneParser(sceneFile: String) {
   private def getNumbers(n: Int): List[Double] = {
     var i = 0
     val ns = ListBuffer[Double]()
+    var bracketed = false
+
     while (i < n) {
+      tokens.peek() match {
+        case Some("[") => {
+          bracketed = true
+          nextToken()
+        }
+        case _ =>
+      }
       nextToken match {
         case Some(t) => Try(ns append t.toDouble).getOrElse(throwError(s"Invalid numerical value $t"))
         case None => throwError(s"Error expected $n tokens but only got $i")
       }
       i += 1
+    }
+    if (bracketed) {
+      nextToken() match {
+        case Some("]") =>
+        case _ => throwError("Bracketed statements must be properly closed!")
+      }
     }
     ns toList
   }
@@ -218,16 +234,43 @@ class SceneParser(sceneFile: String) {
     case _ => throwError("Shape type " + shape + " not implemented")
   }
 
-  def parseTransform(token: String): Boolean = token match {
+  def parseTransform(token: String): Boolean = token.toLowerCase match {
 
-    case "Identity" => {
+    case "identity" => {
       setTransform(Transform.identity)
       true
     }
 
-    case "Translate" => {
+    case "translate" => {
       val ps = getNumbers(3)
       applyTransform(Transform.translate(ps(0), ps(1), ps(2)))
+      true
+    }
+
+    case "rotate" => {
+      val ps = getNumbers(4)
+      applyTransform(Transform.rotate(ps(0), Vec3(ps(1), ps(2), ps(3))))
+      true
+    }
+
+    case "lookat" => {
+      val ps = getNumbers(9)
+      applyTransform(Transform.lookAt(
+        Point(ps(0), ps(1), ps(2)),
+        Point(ps(3), ps(4), ps(5)),
+        Vec3(ps(6), ps(7), ps(8))))
+      true
+    }
+
+    case "transform" => {
+      val ps = getNumbers(16)
+      setTransform(Transform(Mat4(ps toArray).transpose))
+      true
+    }
+
+    case "concattransform" => {
+      val ps = getNumbers(16)
+      applyTransform(Transform(Mat4(ps toArray).transpose))
       true
     }
 
