@@ -3,6 +3,7 @@ package raytracer.parsing
 import raytracer.math.{Mat4, Point, Transform, Vec3}
 
 import scala.annotation.tailrec
+import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
 import scala.util.{Success, Try}
@@ -12,9 +13,13 @@ import scala.util.{Success, Try}
   */
 class SceneParser(sceneFile: String) {
 
-  var lexerStack: List[Lexer] = new Lexer(sceneFile) :: Nil
+  private val validParameters = List("float", "integer", "string", "bool", "vector", "point", "rgb")
 
-  var transformStack: List[Transform] = Transform.identity :: Nil
+  private var lexerStack: List[Lexer] = new Lexer(sceneFile) :: Nil
+
+  private var transformStack: List[Transform] = Transform.identity :: Nil
+
+  private val namedTransforms: mutable.Map[String, Transform] = mutable.Map()
 
   @inline
   private def tokens = lexerStack head
@@ -102,8 +107,6 @@ class SceneParser(sceneFile: String) {
   case class PPoint(p: Array[Point]) extends ParamT
 
   type Params = Map[String, ParamT]
-
-  private val validParameters = List("float", "integer", "string", "bool", "vector", "point", "rgb")
 
   private def isValidHeader(paramHeader: String): Option[(String, String)] = {
     val splitParts = paramHeader.split(' ')
@@ -196,8 +199,13 @@ class SceneParser(sceneFile: String) {
       t = nextToken()
       t.isDefined
     }) {
-      t.get match {
-        case "WorldBegin" => parseWorld
+      t.get.toLowerCase match {
+        case "worldbegin" => parseWorld
+
+        case "include" => parseInclude
+
+        case token if parseTransform(token) =>
+
         case _ =>
       }
     }
@@ -207,14 +215,26 @@ class SceneParser(sceneFile: String) {
     var t: Option[String] = None
     var done = false
 
+    setTransform(Transform.identity)
+
     while ({
     t = nextToken()
     !done && t.isDefined
-    }) t.get match {
+    }) t.get.toLowerCase match {
 
-      case "WorldEnd" => done = true
+      case "worldend" => done = true
 
-      case "Shape" => {
+      case "include" => parseInclude
+
+      case "attributebegin" => {
+        pushTransform
+      }
+
+      case "attributeend" => {
+        popTransform
+      }
+
+      case "shape" => {
         val shapeType = nextToken().getOrElse(throwError("Shape type not specified"))
         parseShape(shapeType, parseParams())
       }
@@ -222,6 +242,13 @@ class SceneParser(sceneFile: String) {
       case token if parseTransform(token) =>
 
       case token => throwError(s"Token $token not recognised")
+    }
+  }
+
+  private def parseInclude: Unit = {
+    nextToken match {
+      case None => throwError("Include directive requires a file name to be specified")
+      case Some(file) => lexerStack ::= new Lexer(file)
     }
   }
 
@@ -271,6 +298,35 @@ class SceneParser(sceneFile: String) {
     case "concattransform" => {
       val ps = getNumbers(16)
       applyTransform(Transform(Mat4(ps toArray).transpose))
+      true
+    }
+
+    case "coordinatesystem" => {
+      nextToken() match {
+        case Some(name) => namedTransforms.put(name, ctm)
+        case None => throwError("Name needed for coordinate system")
+      }
+      true
+    }
+
+    case "coordsystransform" => {
+      nextToken() match {
+        case Some(name) => namedTransforms.get(name) match {
+          case Some(t) => setTransform(t)
+          case None => throwError(s"Coordinate system $name not defined")
+        }
+        case None => throwError("Name not specified for coordinate system transform")
+      }
+      true
+    }
+
+    case "transformbegin" => {
+      pushTransform
+      true
+    }
+
+    case "transformend" => {
+      popTransform
       true
     }
 
