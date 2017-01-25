@@ -7,7 +7,7 @@ import raytracer.Constants._
   */
 case class Ray(val start: Point, val dir: Vec3) {
   private val m = dir.mag2
-  require(m > 1-EPSILON && m<1+EPSILON)
+  require(m > 1-EPSILON && m<1+EPSILON, s"Found $m with $start + $dir")
 
   def reflect(normal: Vec3): Vec3 = {
     val cosTheta = (-dir).dot(normal)
