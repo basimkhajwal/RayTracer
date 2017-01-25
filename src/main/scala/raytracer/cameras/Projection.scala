@@ -7,9 +7,8 @@ import raytracer.math.Transform
   */
 object Projection {
 
-  def orthographic(near: Double, far: Double): Transform = {
-    ???
-  }
+  def orthographic(near: Double, far: Double): Transform =
+    Transform.scale(1, 1, 1/(far-near)) * Transform.translate(0,0,-near)
 
   def perspective(fov: Double, near: Double, far: Double): Transform = {
     ???
