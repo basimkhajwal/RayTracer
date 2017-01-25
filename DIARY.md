@@ -12,3 +12,9 @@ Using information gained from the prototype, I have begun to think about dividin
 
 ##### 06/01/17
 Today I completed my project review, my supervisor approved of my project proposal and I plan on continuing the project as planned.
+
+##### 18/01/17
+The rendering code has been going well with each part working as I would have expected so far, this week I have also put a strong focus on writing Unit Tests which I run every now and then to ensure that new additions to the code don't break other parts which should be functioning properly.
+
+##### 25/01/17
+TODO: Complete diary
