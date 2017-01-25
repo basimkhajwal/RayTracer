@@ -12,6 +12,9 @@ object Vec3 {
 }
 
 case class Vec3(x: Double, y: Double, z: Double) {
+  require(x != Double.NaN)
+  require(y != Double.NaN)
+  require(z != Double.NaN)
 
   lazy val mag2 = x*x + y*y + z*z
   lazy val mag = Math.sqrt(mag2)
