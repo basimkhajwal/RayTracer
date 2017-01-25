@@ -109,9 +109,9 @@ case class Mat4(val data: Array[Double]) {
 
   def *(vec: Vec3): Vec3 = {
     Vec3(
-      data(0)*vec(0)+data(1)*vec(1)+data(2)*vec(2)+data(3),
-      data(4)*vec(0)+data(5)*vec(1)+data(6)*vec(2)+data(7),
-      data(8)*vec(0)+data(9)*vec(1)+data(10)*vec(2)+data(11)
+      data(0)*vec(0)+data(1)*vec(1)+data(2)*vec(2),
+      data(4)*vec(0)+data(5)*vec(1)+data(6)*vec(2),
+      data(8)*vec(0)+data(9)*vec(1)+data(10)*vec(2)
     )
   }
 
