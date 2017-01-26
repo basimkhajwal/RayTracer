@@ -8,45 +8,79 @@ import javax.imageio.ImageIO
 import javax.swing.{JFrame, JPanel}
 
 import raytracer.Constants._
-import raytracer.math.{Point, Vec3}
-import raytracer.shapes.{Sphere, Triangle}
+import raytracer.integrators.Integrator
+import raytracer.math.{Point, Transform, Vec3}
+import raytracer.shapes.{Shape, Sphere, Triangle}
 
 /**
   * Created by Basim on 18/12/2016.
   */
 object Main {
 
-  val lights =
-    PointLight(Point(0, 0.5, -0.5), Spectrum.WHITE*0.6) ::
-    PointLight(Point(-1, -0.5, 1), Spectrum.WHITE * 0.6) ::
-    Nil
+  val scene1 = new RenderOpts {
+    val lights =
+      PointLight(Point(0, 0.5, -0.5), Spectrum.WHITE*0.6) ::
+      PointLight(Point(-1, -0.5, 1), Spectrum.WHITE * 0.6) ::
+      Nil
 
-  val bigWidth: Double = 1e5
-  val room:Double = 5
-  val spheres =
-    Sphere(1, Point(3, 0, 4), Spectrum(0.8, 0.8, 0.8)) ::
-    //Sphere(0.5, Point(1, 0, 2), Spectrum.WHITE) ::
-    Triangle(Point(-1, 0, 2), Point(0, 0, 2), Point(-1, 1, 2), Spectrum(0.5, 0.3, 0.9)) ::
-    Triangle(Point(0, 1, 2), Point(0, 0, 2), Point(-1, 1, 2), Spectrum(0.3, 0.9, 0.5)) ::
-    Sphere(bigWidth, Point(-room-bigWidth, 0, 0), Spectrum(0.2, 0.3, 0.8)) :: // L
-    Sphere(bigWidth, Point(room+bigWidth, 0, 0), Spectrum(0.2, 0.8, 0.3)) :: // R
-    Sphere(bigWidth, Point(0, 0, room+bigWidth), Spectrum(0.7, 0.2, 0.3)) :: // F
-    Sphere(bigWidth, Point(0, 0, -room-bigWidth), Spectrum.WHITE) :: // B
-    Sphere(bigWidth, Point(0, room+bigWidth, 0), Spectrum(0.4, 0.4, 0.4)) :: // U
-    Sphere(bigWidth, Point(0, -room-bigWidth, 0), Spectrum.WHITE * 0.2) :: // D
-    Nil
+    val bigWidth: Double = 1e5
+    val room:Double = 5
+    val spheres =
+      Sphere(1, Point(3, 0, 4), Spectrum(0.8, 0.8, 0.8)) ::
+      //Sphere(0.5, Point(1, 0, 2), Spectrum.WHITE) ::
+      Triangle(Point(-1, 0, 2), Point(0, 0, 2), Point(-1, 1, 2), Spectrum(0.5, 0.3, 0.9)) ::
+      Triangle(Point(0, 1, 2), Point(0, 0, 2), Point(-1, 1, 2), Spectrum(0.3, 0.9, 0.5)) ::
+      Sphere(bigWidth, Point(-room-bigWidth, 0, 0), Spectrum(0.2, 0.3, 0.8)) :: // L
+      Sphere(bigWidth, Point(room+bigWidth, 0, 0), Spectrum(0.2, 0.8, 0.3)) :: // R
+      Sphere(bigWidth, Point(0, 0, room+bigWidth), Spectrum(0.7, 0.2, 0.3)) :: // F
+      Sphere(bigWidth, Point(0, 0, -room-bigWidth), Spectrum.WHITE) :: // B
+      Sphere(bigWidth, Point(0, room+bigWidth, 0), Spectrum(0.4, 0.4, 0.4)) :: // U
+      Sphere(bigWidth, Point(0, -room-bigWidth, 0), Spectrum.WHITE * 0.2) :: // D
+      Nil
 
-  def main(args: Array[String]) = draw
+    override val imgWidth: Int = 400
+    override val imgHeight: Int = 300
+    override val scene: Scene = new Scene(lights, spheres)
+    override val pixelSampleCount: Int = 2
+    override val maxRayDepth: Int = 3
 
-  def render: BufferedImage = {
-    new Renderer(new RenderOpts {
-      override val imgWidth: Int = 400
-      override val imgHeight: Int = 300
-      override val scene: Scene = new Scene(lights, spheres)
-      override val pixelSampleCount: Int = 20
-      override val maxRayDepth: Int = 3
-    }).render
+    override val cameraToWorld: Transform = Transform.translate(0,0,-2)
   }
+
+  val scene2 = new RenderOpts {
+
+    val lights: List[PointLight] =
+      PointLight(Point(-3, 5, 0), Spectrum.WHITE * 0.6) ::
+      PointLight(Point(0, 5, 0), Spectrum.WHITE * .5) ::
+      PointLight(Point(3, 5, 0), Spectrum.WHITE *.4) ::
+      Nil
+
+    val bigWidth: Double = 1e5
+    val hroom:Double = 100000
+    val vroom:Double = 8
+    val shapes =
+      Sphere(2, Point(-2.1, -6, 0), Spectrum(0.5, 0.2, 0.2)) ::
+      Sphere(2, Point(2.1, -6, 0), Spectrum(0.2, 0.4, 0.3)) ::
+      //Sphere(bigWidth, Point(-hroom-bigWidth, 0, 0), Spectrum(0.2, 0.3, 0.8)) :: // L
+      //Sphere(bigWidth, Point(hroom+bigWidth, 0, 0), Spectrum(0.2, 0.8, 0.3)) :: // R
+      //Sphere(bigWidth, Point(0, 0, hroom+bigWidth), Spectrum(0.7, 0.2, 0.3)) :: // F
+      //Sphere(bigWidth, Point(0, 0, -hroom-bigWidth), Spectrum.WHITE) :: // B
+      Sphere(bigWidth, Point(0, vroom+bigWidth, 0), Spectrum(0.4, 0.4, 0.4)) :: // U
+      Sphere(bigWidth, Point(0, -vroom-bigWidth, 0), Spectrum.WHITE * 0.2) :: // D
+      Nil
+
+    override val cameraToWorld: Transform = Transform.lookAt(Point(5,0,-4), Point(0,-8,0), Vec3(0,1,0)).inverse //Transform.translate(0,-1,-4)
+
+    override val imgWidth: Int = 1600
+    override val imgHeight: Int = 1200
+    override val scene: Scene = new Scene(lights, shapes)
+    override val pixelSampleCount: Int = 2
+    override val maxRayDepth: Int = 3
+  }
+
+  def main(args: Array[String]) = save
+
+  def render: BufferedImage = new Renderer(scene2).render
 
   def bench: Unit = {
     val before = System.currentTimeMillis
