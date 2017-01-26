@@ -27,7 +27,7 @@ class Whitted extends Integrator{
             .foldLeft(Spectrum.BLACK)(_ + _)
 
         if (depth == options.maxRayDepth) c * directLight
-        else c * (directLight + 0.2 * traceRay(Ray(p, ray reflect n), depth + 1))
+        else c * (directLight + 0.2 * traceRay(Ray(p, (ray reflect n).nor), depth + 1))
       }
     }
   }
