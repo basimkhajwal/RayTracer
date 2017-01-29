@@ -3,7 +3,6 @@ package raytracer.parsing
 import raytracer.math.{Mat4, Point, Transform, Vec3}
 
 import scala.annotation.tailrec
-import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
 import scala.util.{Success, Try}
@@ -11,29 +10,14 @@ import scala.util.{Success, Try}
 /**
   * Created by Basim on 17/01/2017.
   */
-class SceneParser(sceneFile: String) {
+class SceneParser(sceneFile: String) extends SceneBuilder {
 
   private val validParameters = List("float", "integer", "string", "bool", "vector", "point", "rgb")
 
   private var lexerStack: List[Lexer] = new Lexer(sceneFile) :: Nil
 
-  private var transformStack: List[Transform] = Transform.identity :: Nil
-
-  private val namedTransforms: mutable.Map[String, Transform] = mutable.Map()
-
   @inline
   private def tokens = lexerStack head
-
-  @inline
-  private def ctm: Transform = transformStack head
-
-  private def applyTransform(t: Transform): Unit = setTransform(transformStack.head * t)
-
-  private def setTransform(t: Transform): Unit = transformStack = t :: transformStack.tail
-
-  private def pushTransform: Unit = transformStack ::= transformStack.head
-
-  private def popTransform: Unit = transformStack = transformStack.tail
 
   @tailrec
   private def nextToken(): Option[String] = {
@@ -98,15 +82,13 @@ class SceneParser(sceneFile: String) {
     )
   }
 
-  sealed trait ParamT
-  case class PFloat(x: Array[Double]) extends ParamT
-  case class PInteger(x: Array[Int]) extends ParamT
-  case class PString(str: Array[String]) extends ParamT
-  case class PBool(b: Array[Boolean]) extends ParamT
-  case class PVector(v: Array[Vec3]) extends ParamT
-  case class PPoint(p: Array[Point]) extends ParamT
-
-  type Params = Map[String, ParamT]
+  private def catchError(f: => Unit): Unit = {
+    try(f) catch {
+      case e: AssertionError => throwError("Assertion failed:\t" + e.getMessage)
+      case e: IllegalArgumentException => throwError("Invalid argument:\t" + e.getMessage)
+      case e => throwError(e.toString)
+    }
+  }
 
   private def isValidHeader(paramHeader: String): Option[(String, String)] = {
     val splitParts = paramHeader.split(' ')
@@ -120,38 +102,40 @@ class SceneParser(sceneFile: String) {
     }
   }
 
-  private def parseParam(paramType: String, paramValues: ListBuffer[String]): ParamT = {
+  private def parseParameter(params: ParamSet, paramName: String, paramType: String, paramValues: ListBuffer[String]): Unit = {
 
-    def checkedMap[T:ClassTag](err: String => String, f: String => T): Array[T] = {
+    def checkedMap[T:ClassTag](err: String => String, f: String => T): Seq[T] = {
       paramValues.map(value => Try(f(value)) match {
         case Success(out: T) => out
         case _ => throwError(err(value))
-      }).toArray[T]
+      })
+    }
+
+    def mapAndAdd[T:ClassTag](err: String => String, f: String => T): Unit = {
+      params.add(paramName, checkedMap(err, f))
     }
 
     paramType match {
-      case "float" => PFloat(checkedMap(_ + " is not a valid float", _.toDouble))
-      case "integer" => PInteger(checkedMap(_ + " is not a valid integer", _.toDouble.toInt))
-      case "string" => PString(paramValues toArray)
+      case "float" => mapAndAdd(_ + " is not a valid float", _.toDouble)
+      case "integer" => mapAndAdd(_ + " is not a valid integer", _.toDouble.toInt)
+      case "string" => mapAndAdd[String](_, _)
 
-      case "bool" => PBool(checkedMap(_ + " is not a valid boolean", _ match {
+      case "bool" => mapAndAdd(_ + " is not a valid boolean", _ match {
         case "true" => true
         case "false" => false
         case _ => ???
-      }))
+      })
 
       case "vector" => {
         val elements = checkedMap(_ + "is not a valid vector part", _.toDouble)
-        if (elements.size % 3 != 0) throwError("Invalid parts, 3 doubles per vector required")
-
-        PVector(elements grouped(3) map(p => Vec3(p(0), p(1), p(2))) toArray)
+        if (elements.length % 3 != 0) throwError("Invalid parts, 3 doubles per vector required")
+        params.add(paramName, elements.grouped(3).map(p => Vec3(p(0), p(1), p(2))).toSeq)
       }
 
       case "point" => {
         val elements = checkedMap(_ + "is not a valid point part", _.toDouble)
-        if (elements.size % 3 != 0) throwError("Invalid parts, 3 doubles per point required")
-
-        PPoint(elements grouped(3) map(p => Point(p(0), p(1), p(2))) toArray)
+        if (elements.length % 3 != 0) throwError("Invalid parts, 3 doubles per point required")
+        params.add(paramName, elements.grouped(3).map(p => Point(p(0), p(1), p(2))).toSeq)
       }
 
       case _ => throwError("Unimplemented type " + paramType)
@@ -167,7 +151,7 @@ class SceneParser(sceneFile: String) {
   }
 
   @tailrec
-  private def getParamValues(acc: ListBuffer[String]): ListBuffer[String] = {
+  private final def getParamValues(acc: ListBuffer[String]): ListBuffer[String] = {
     nextToken() match {
       case None => throwError("Parameter list must end in a ]")
       case Some("]")  => acc
@@ -178,22 +162,26 @@ class SceneParser(sceneFile: String) {
     }
   }
 
-  @tailrec
-  private def parseParams(acc: Params = Map.empty): Params = {
-    tokens.peek() match {
-      case None => acc
-      case Some(paramHeader) => isValidHeader(paramHeader) match {
-        case None => acc
-        case Some((pType, pName)) => {
-          nextToken()
-          parseParams(acc +
-            (pName -> parseParam(pType, getParamValues)))
-        }
+  private def parseParams(): ParamSet = {
+    var done = false
+    val params = new ParamSet
+
+    while (!done) {
+      done = true
+      for {
+        paramHeader <- tokens.peek()
+        (pType, pName) <- isValidHeader(paramHeader)
+      } {
+        nextToken()
+        done = false
+        parseParameter(params, pType, pName, getParamValues)
       }
     }
+
+    params
   }
 
-  final def parse: Unit = {
+  def parse: Unit = {
     var t: Option[String] = None
     while ({
       t = nextToken()
@@ -211,7 +199,7 @@ class SceneParser(sceneFile: String) {
     }
   }
 
-  final def parseWorld: Unit = {
+  private final def parseWorld: Unit = {
     var t: Option[String] = None
     var done = false
 
@@ -227,21 +215,21 @@ class SceneParser(sceneFile: String) {
       case "include" => parseInclude
 
       case "attributebegin" => {
-        pushTransform
+
       }
 
       case "attributeend" => {
-        popTransform
+
       }
 
       case "shape" => {
         val shapeType = nextToken().getOrElse(throwError("Shape type not specified"))
-        parseShape(shapeType, parseParams())
+        shape(shapeType, parseParams())
       }
 
       case token if parseTransform(token) =>
 
-      case token => throwError(s"Token $token not recognised")
+      case token => throwError(s"Identifier $token not recognised")
     }
   }
 
@@ -252,84 +240,63 @@ class SceneParser(sceneFile: String) {
     }
   }
 
-  private def parseShape(shape: String, params: Params): Unit = shape match {
+  def parseTransform(token: String): Boolean = {
+    var matched = true
 
-    case "sphere" => {
+    token.toLowerCase match {
 
-    }
+      case "identity" => identityTransform()
 
-    case _ => throwError("Shape type " + shape + " not implemented")
-  }
-
-  def parseTransform(token: String): Boolean = token.toLowerCase match {
-
-    case "identity" => {
-      setTransform(Transform.identity)
-      true
-    }
-
-    case "translate" => {
-      val ps = getNumbers(3)
-      applyTransform(Transform.translate(ps(0), ps(1), ps(2)))
-      true
-    }
-
-    case "rotate" => {
-      val ps = getNumbers(4)
-      applyTransform(Transform.rotate(ps(0), Vec3(ps(1), ps(2), ps(3))))
-      true
-    }
-
-    case "lookat" => {
-      val ps = getNumbers(9)
-      applyTransform(Transform.lookAt(
-        Point(ps(0), ps(1), ps(2)),
-        Point(ps(3), ps(4), ps(5)),
-        Vec3(ps(6), ps(7), ps(8))))
-      true
-    }
-
-    case "transform" => {
-      val ps = getNumbers(16)
-      setTransform(Transform(Mat4(ps toArray).transpose))
-      true
-    }
-
-    case "concattransform" => {
-      val ps = getNumbers(16)
-      applyTransform(Transform(Mat4(ps toArray).transpose))
-      true
-    }
-
-    case "coordinatesystem" => {
-      nextToken() match {
-        case Some(name) => namedTransforms.put(name, ctm)
-        case None => throwError("Name needed for coordinate system")
+      case "translate" => {
+        val ps = getNumbers(3)
+        translateTransform(ps(0), ps(1), ps(2))
       }
-      true
-    }
 
-    case "coordsystransform" => {
-      nextToken() match {
-        case Some(name) => namedTransforms.get(name) match {
-          case Some(t) => setTransform(t)
-          case None => throwError(s"Coordinate system $name not defined")
+      case "rotate" => {
+        val ps = getNumbers(4)
+        rotateTransform(ps(0), ps(1), ps(2), ps(3))
+      }
+
+      case "lookat" => {
+        val ps = getNumbers(9)
+        lookAtTransform(
+          Point(ps(0), ps(1), ps(2)),
+          Point(ps(3), ps(4), ps(5)),
+          Vec3(ps(6), ps(7), ps(8)))
+      }
+
+      case "transform" => {
+        val ps = getNumbers(16)
+        setTransform(Transform(Mat4(ps toArray).transpose))
+      }
+
+      case "concattransform" => {
+        val ps = getNumbers(16)
+        applyTransform(Transform(Mat4(ps toArray).transpose))
+      }
+
+      case "coordinatesystem" => {
+        nextToken() match {
+          case Some(name) => coordinateSystem(name)
+          case None => throwError("Name needed for coordinate system")
         }
-        case None => throwError("Name not specified for coordinate system transform")
       }
-      true
+
+      case "coordsystransform" => {
+        nextToken() match {
+          case Some(name) => catchError { coordSysTranform(name) }
+          case None => throwError("Name not specified for coordinate system transform")
+        }
+      }
+
+      case "transformbegin" => transformBegin()
+
+      case "transformend" => transformEnd()
+
+      case _ => matched = false
     }
 
-    case "transformbegin" => {
-      pushTransform
-      true
-    }
-
-    case "transformend" => {
-      popTransform
-      true
-    }
-
-    case _ => false
+    matched
   }
+
 }
