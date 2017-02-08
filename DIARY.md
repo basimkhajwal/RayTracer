@@ -1,10 +1,10 @@
 # EPQ Diary
 
 ##### 14/12/16
-I have begun working on a prototype for my Ray Tracer, in order to test if the project is feasible whilst it is being approved by my supervisor. It will render basic spheres in a hard coded scene.
+I have begun working on a prototype for my Ray Tracer, in order to test if the project is feasible whilst it is being approved by my supervisor, which will render basic spheres in a hard coded scene. The reason I am doing this is so that I can be more confident that I can complete the project in time since doing a practical software project means I will be more pushed for time than most report-based EPQ projects.
 
 ##### 18/12/16
-So far, development on the prototype has been going well I've been able to accurately render spheres with reflections and corrrect calculations of the geometry and intersections, this gives me confidence that my project will be feasible and a better insight into which tasks will require the most effort to complete.
+So far, development on the prototype has been going well I've been able to accurately render basic spheres with reflections and corrrect calculations of the geometry and intersections. This gives me confidence that my project will be feasible and has given me a better insight into which tasks will require the most effort to complete. Specifically, I've now realised that there is a lot of material available of this topic, much of it is very advanced and only for rendering specific types of scenes so I will need to filter out important information when doing research which will also require more time than I had intially thought it would. Also, before starting I thought the transformations involving maths would take a
 
 <img src="progress/ganttchart.png" alt="Gantt Chart" height="450" align="right"/>
 ##### 02/01/17
