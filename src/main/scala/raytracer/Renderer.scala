@@ -27,8 +27,9 @@ trait RenderOpts {
 class Renderer(options: RenderOpts) {
 
   def render: BufferedImage = {
+    val ar = options.imgWidth.toDouble / options.imgHeight
     val cam = new PerspectiveCamera(options.cameraToWorld,
-      (-1, 1, -1, 1), options.imgWidth, options.imgHeight, 0.1, 100, 160)
+      (-ar, ar, -1, 1), options.imgWidth, options.imgHeight, 0.1, 100, 80)
     val img = new BufferedImage(options.imgWidth, options.imgHeight, BufferedImage.TYPE_INT_RGB)
 
     for (y <- 0 until options.imgHeight; x <- 0 until options.imgWidth) {
