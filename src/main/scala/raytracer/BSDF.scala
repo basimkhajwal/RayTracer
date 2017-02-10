@@ -17,6 +17,11 @@ final class BSDF (
   private val bxdfs = new ListBuffer[BxDF]
 
   def add(b: BxDF) = bxdfs append b
+
+  def apply(woW: Vec3, wiW: Vec3, flags: Int): Spectrum = {
+    // TODO: Complete method definition to convert vectors from world space to normal space
+    bxdfs.withFilter(_ matches flags).map(_(woW, wiW)).foldLeft(Spectrum.BLACK)(_ + _)
+  }
 }
 
 trait BxDF {
@@ -33,6 +38,10 @@ object BSDFType {
   val DIFFUSE = 4
   val GLOSSY = 8
   val SPECULAR = 16
+
+  val ALL = DIFFUSE | GLOSSY | SPECULAR
+  val ALL_REFLECTION = ALL | REFLECTION
+  val ALL_TRANSMISSION = ALL | TRANSMISSION
 }
 
 class Lambertian(reflectance: Spectrum) extends BxDF {
