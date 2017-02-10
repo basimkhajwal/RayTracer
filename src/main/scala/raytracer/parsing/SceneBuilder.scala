@@ -1,6 +1,6 @@
 package raytracer.parsing
 
-import raytracer.Spectrum
+import raytracer.{Material, Spectrum, Texture}
 import raytracer.math.{Point, Transform, Vec3}
 import raytracer.shapes.{Shape, Sphere, Triangle}
 
@@ -19,6 +19,19 @@ class SceneBuilder {
   private var worldSection = false
 
   private val shapes = new ListBuffer[Shape]()
+
+  class GraphicsState {
+    var materialParams: ParamSet = new ParamSet()
+    var material: String = "matte"
+
+    val namedMaterials: mutable.Map[String, Material] = mutable.Map()
+    val floatTextures: mutable.Map[String, Texture[Double]] = mutable.Map()
+    val spectrumTextures: mutable.Map[String, Texture[Spectrum]] = mutable.Map()
+
+    def createMaterial(params: ParamSet): Material = {
+      ???
+    }
+  }
 
   @inline
   final def currentTransform: Transform = transformStack head
