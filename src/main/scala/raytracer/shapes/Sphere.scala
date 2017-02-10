@@ -1,13 +1,12 @@
 package raytracer.shapes
 
 import raytracer.math._
-import raytracer.{Intersection, Spectrum}
 import raytracer.Constants.EPSILON
 
 /**
   * Created by Basim on 05/01/2017.
   */
-case class Sphere(val r: Double, val centre: Point, val colour: Spectrum) extends Shape {
+case class Sphere(val r: Double, val centre: Point) extends Shape {
 
   override val objectBounds: BBox = {
     val offset = Vec3(r, r, r)
@@ -18,7 +17,7 @@ case class Sphere(val r: Double, val centre: Point, val colour: Spectrum) extend
   override val objectToWorld: Transform = Transform.identity
   override val worldToObject: Transform = Transform.identity
 
-  override def intersect(ray: Ray): Option[Intersection] = {
+  override def intersect(ray: Ray): Option[(DifferentialGeometry, Double)] = {
 
     // Solve the quadratic equation for t
     val dx = (ray.start.x-centre.x)
@@ -42,8 +41,9 @@ case class Sphere(val r: Double, val centre: Point, val colour: Spectrum) extend
     val t =  if (t2 <= 0) t1 else t2 //if (t1 < 0) t2 else if (t2 < 0) t1 else Math.min(t1, t2)
     val point = ray.start + ray.dir*t
     val normal = (point - centre).nor
+    val surfacePoint = point + normal*EPSILON
 
-    Some(Intersection(t, point + normal * EPSILON, normal, colour))
+    Some((DifferentialGeometry(surfacePoint, normal, 0, 0, this), t))
   }
 
 }

@@ -1,6 +1,6 @@
 package raytracer.shapes
 
-import raytracer.{Intersection, Spectrum}
+import raytracer.{Spectrum}
 import raytracer.math._
 import raytracer.Constants._
 
@@ -18,7 +18,7 @@ case class Triangle(p1: Point, p2: Point, p3: Point, colour: Spectrum) extends S
   private val e2: Vec3 = p3-p1
   private val nor = e1.cross(e2)
 
-  override def intersect(ray: Ray): Option[Intersection] = {
+  override def intersect(ray: Ray): Option[(DifferentialGeometry, Double)] = {
 
     // Compute triangle intersection using Moller-Trombore algorithm
     val D = ray.dir
@@ -39,8 +39,9 @@ case class Triangle(p1: Point, p2: Point, p3: Point, colour: Spectrum) extends S
     if (t < 0) return None
 
     val intersectionPoint = (1-u-v)*p1 + u*p2 + v*p3
-
     val n = if (det < 0) -nor else nor
-    Some(Intersection(t, intersectionPoint + n*EPSILON, n, colour))
+    val surfacePoint = intersectionPoint + n*EPSILON
+
+    Some((DifferentialGeometry(surfacePoint, n, u, v, this), t))
   }
 }
