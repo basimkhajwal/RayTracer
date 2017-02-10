@@ -14,9 +14,10 @@ class Whitted extends Integrator{
     val scene = options.scene
     scene intersect ray match {
       case None => Spectrum.BLACK
-      case Some(Intersection(dg, _, _)) => {
+      case Some(isect @ Intersection(dg, _, _)) => {
 
         val p = dg.p
+        val bsdf = isect.getBSDF
 
         val directLight =
           scene.lights.filter(l => {
@@ -26,11 +27,17 @@ class Whitted extends Integrator{
               case Some(Intersection(_, _, newT)) => newT > lightT
             }
           })
-            .map(l => l.colour * (l.pos - p).nor.dot(dg.nn))
+            .map(l => {
+              val dir = (l.pos - p).nor
+              l.colour * dir.dot(dg.nn) * bsdf(ray.dir, dir, BSDFType.ALL_REFLECTION)
+            })
             .foldLeft(Spectrum.BLACK)(_ + _)
 
         if (depth == options.maxRayDepth) directLight
-        else directLight + 0.2 * traceRay(Ray(p, (ray reflect dg.nn).nor), depth + 1)
+        else {
+          val newDir = (ray reflect dg.nn).nor
+          directLight + bsdf(ray.dir, newDir, BSDFType.ALL_REFLECTION) * traceRay(Ray(p, newDir), depth + 1)
+        }
       }
     }
   }
