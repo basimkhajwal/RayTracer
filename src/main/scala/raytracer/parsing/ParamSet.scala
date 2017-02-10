@@ -24,3 +24,11 @@ class ParamSet {
 
   def getOneOr[T](paramName: String, default: T): T = getOne(paramName) getOrElse default
 }
+
+object ParamSet {
+
+  def from(xs: (String, Seq[Any])*): ParamSet = new ParamSet {
+    xs foreach { x => add(x._1, x._2) }
+  }
+
+}
