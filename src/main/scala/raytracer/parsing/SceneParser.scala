@@ -227,6 +227,12 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
         shape(shapeType, parseParams())
       }
 
+      case "texture" => {
+        val texName = nextToken().getOrElse(throwError("Texture name not specified"))
+        val texType = nextToken().getOrElse(throwError("Texture type not specified"))
+        val texClass = nextToken().getOrElse(throwError("Texture class not specified"))
+      }
+
       case token if parseTransform(token) =>
 
       case token => throwError(s"Identifier $token not recognised")
