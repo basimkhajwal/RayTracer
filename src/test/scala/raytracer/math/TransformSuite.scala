@@ -20,12 +20,12 @@ class TransformSuite extends FunSuite {
   }
 
   test ("Translate works correctly"){
-    val start = Vec3(1, 2, 3)
+    val start = Point(1, 2, 3)
     val t1 = Transform.translate(2, 3, 4)
     val t2 = Transform.translate(1, 0, -9)
 
-    epsilonEquals(t1(start), Vec3(3, 5, 7))
-    epsilonEquals(t2(start), Vec3(2, 2, -6))
+    epsilonEquals(t1(start), Point(3, 5, 7))
+    epsilonEquals(t2(start), Point(2, 2, -6))
   }
 
   test ("Scale works correctly"){
