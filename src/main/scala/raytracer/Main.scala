@@ -10,6 +10,7 @@ import javax.swing.{JFrame, JPanel}
 import raytracer.Constants._
 import raytracer.integrators.Integrator
 import raytracer.math.{Point, Transform, Vec3}
+import raytracer.parsing.{ParamSet, SceneBuilder}
 import raytracer.primitives.Primitive
 import raytracer.shapes.{Shape, Sphere, Triangle}
 
@@ -59,10 +60,43 @@ object Main {
     val bigWidth: Double = 1e5
     val hroom:Double = 100000
     val vroom:Double = 8
-    val shapes =
-      new Primitive(Sphere(2, Point(2.1, -6, 0)), new MatteMaterial(ConstantTexture(Spectrum(1, 1, 1)))) ::
-      new Primitive(Sphere(hroom, Point(2.1, -6-hroom-1, 0)), new MatteMaterial(ConstantTexture(Spectrum.WHITE))) ::
-      Nil
+    val shapes = new SceneBuilder {
+      material("matte", ParamSet.from("kd" -> List(Spectrum(1, 0, 0))))
+
+      transformBegin()
+        translateTransform(2.1, -6, 0)
+        shape("sphere", ParamSet.from("radius" -> List(3.0)))
+      transformEnd()
+
+      material("matte", ParamSet.from("kd" -> List(Spectrum.WHITE)))
+
+      transformBegin()
+        translateTransform(2.1, -6-hroom-6, 0)
+        shape("sphere", ParamSet.from("radius" -> List(hroom)))
+      transformEnd()
+
+      transformBegin()
+        translateTransform(2.1-hroom-6, -6, 0)
+        shape("sphere", ParamSet.from("radius" -> List(hroom)))
+      transformEnd()
+
+      transformBegin()
+        translateTransform(2.1+hroom+6, -6, 0)
+        shape("sphere", ParamSet.from("radius" -> List(hroom)))
+      transformEnd()
+
+      transformBegin()
+        translateTransform(2.1, -6, hroom+6)
+        shape("sphere", ParamSet.from("radius" -> List(hroom)))
+      transformEnd()
+
+      transformBegin()
+        translateTransform(2.1, -6, -hroom-6)
+        shape("sphere", ParamSet.from("radius" -> List(hroom)))
+      transformEnd()
+
+    }.getPrimitives
+
       /*Sphere(2, Point(-2.1, -6, 0), Spectrum(0.5, 0.2, 0.2)) ::
       Sphere(2, Point(2.1, -6, 0), Spectrum(0.2, 0.4, 0.3)) ::
       //Sphere(bigWidth, Point(-hroom-bigWidth, 0, 0), Spectrum(0.2, 0.3, 0.8)) :: // L
