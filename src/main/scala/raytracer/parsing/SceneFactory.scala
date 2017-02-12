@@ -1,6 +1,8 @@
 package raytracer.parsing
 
 import raytracer._
+import raytracer.math.{Point, Transform}
+import raytracer.shapes.{Shape, Sphere, Triangle, TriangleMesh}
 
 /**
   * Created by Basim on 12/02/2017.
@@ -34,6 +36,32 @@ object SceneFactory {
         new ConstantTexture[Double](params.getOneOr("value", 1.0))
       }
       case _ => throw new IllegalArgumentException(s"Unknown float texture class $textureClass")
+    }
+  }
+
+  def makeShape(name: String, objToWorld: Transform, params: ParamSet): Shape = {
+    name match {
+
+      case "sphere" => {
+        val radius = params.getOneOr[Int]("radius", 1)
+
+        Sphere(radius, objToWorld(Point.ZERO))
+      }
+
+      case "trianglemesh" => {
+
+        val indices = params.get[Int]("indices")
+          .getOrElse(throw new IllegalArgumentException("Indices parameter required for triangle mesh"))
+
+        val points = params.get[Point]("P")
+          .getOrElse(throw new IllegalArgumentException("Point (P) parameter required for triangle mesh"))
+
+        require(indices.length % 3 == 0, "Indices must specify 3 points for each triangle")
+
+        TriangleMesh(indices.toArray, points.toArray)
+      }
+
+      case _ => throw new IllegalArgumentException(s"Unimplemented shape type $name")
     }
   }
 }
