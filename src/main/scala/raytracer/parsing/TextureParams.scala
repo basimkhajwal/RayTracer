@@ -22,6 +22,10 @@ case class TextureParams(
     getTexture[Double](name, default, floatTextures)
   }
 
+  def getOne[T](name: String): Option[T] = {
+    geomParams.getOne(name).orElse(materialParams.getOne(name))
+  }
+
   def getOneOr[T](name: String, default: T): T = {
     geomParams.getOneOr(name, materialParams.getOneOr(name, default))
   }
