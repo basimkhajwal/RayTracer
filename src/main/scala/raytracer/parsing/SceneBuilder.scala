@@ -1,7 +1,8 @@
 package raytracer.parsing
 
-import raytracer.{ConstantTexture, Material, Spectrum, Texture}
+import raytracer._
 import raytracer.math.{Point, Transform, Vec3}
+import raytracer.primitives.Primitive
 import raytracer.shapes.{Shape, Sphere, Triangle}
 
 import scala.collection.mutable
@@ -18,7 +19,9 @@ class SceneBuilder {
 
   private var worldSection = false
 
-  private val shapes = new ListBuffer[Shape]()
+  private var primitives: List[Primitive] = Nil
+
+  def getPrimitives: List[Primitive] = primitives
 
   @inline
   final def currentTransform: Transform = transformStack head
@@ -89,31 +92,9 @@ class SceneBuilder {
   }
 
   final def shape(name: String, params: ParamSet): Unit = {
-    name.toLowerCase match {
-
-      case "sphere" => {
-        val radius = params.getOneOr[Int]("radius", 1)
-
-        shapes append Sphere(radius, currentTransform(Point.ZERO))
-      }
-
-      case "trianglemesh" => {
-
-        val indices = params.get[Int]("indices")
-          .getOrElse(throw new IllegalArgumentException("Indices parameter required for triangle mesh"))
-
-        val points = params.get[Point]("P")
-          .getOrElse(throw new IllegalArgumentException("Point (P) parameter required for triangle mesh"))
-
-        require(indices.length % 3 == 0, "Indices must specify 3 points for each triangle")
-
-        indices grouped(3) foreach { t =>
-          shapes append Triangle(points(t(0)), points(t(1)), points(t(2)), Spectrum.WHITE)
-        }
-      }
-
-      case _ => throw new IllegalArgumentException(s"Shape type $name not recognised")
-    }
+    val shape = SceneFactory.makeShape(name, currentTransform, params)
+    val mat = graphicsState.createMaterial(params)
+    primitives ::= new Primitive(shape, mat)
   }
 
 
