@@ -24,6 +24,9 @@ class GraphicsState {
   }
 
   def createMaterial(params: ParamSet): Material = {
-    ???
+    if (namedMaterial != "" && namedMaterials.isDefinedAt(namedMaterial))
+      namedMaterials(namedMaterial)
+    else
+      SceneFactory.makeMaterial(material, getTextureParams(params))
   }
 }
