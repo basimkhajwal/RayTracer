@@ -116,41 +116,40 @@ class SceneBuilder {
     }
   }
 
-  private final def makeSpectrumTexture(textureClass: String, params: TextureParams): Texture[Spectrum] = {
-    textureClass match {
-      case "constant" => {
-        new ConstantTexture[Spectrum](params.getOneOr("value", Spectrum.WHITE))
-      }
-      case _ => throw new IllegalArgumentException(s"Unknown spectrum texture class $textureClass")
-    }
-  }
-
-  private final def makeFloatTexture(textureClass: String, params: TextureParams): Texture[Double] = {
-    textureClass match {
-      case "constant" => {
-        new ConstantTexture[Double](params.getOneOr("value", 1.0))
-      }
-      case _ => throw new IllegalArgumentException(s"Unknown float texture class $textureClass")
-    }
-  }
 
   final def texture(name: String, textureType: String, textureClass: String, params: ParamSet): Unit = {
 
-    val textureParams = TextureParams(params, params, graphicsState.floatTextures, graphicsState.spectrumTextures)
+    val textureParams = graphicsState.getTextureParams(params, params)
 
     if (textureType == "float") {
-      val tex = makeFloatTexture(textureClass, textureParams)
+      val tex = SceneFactory.makeFloatTexture(textureClass, textureParams)
       graphicsState.floatTextures(name) = tex
 
     } else {
       require(textureClass == "spectrum" || textureClass == "color", s"Unknown texture type $textureType")
 
-      val tex = makeSpectrumTexture(textureClass, textureParams)
+      val tex = SceneFactory.makeSpectrumTexture(textureClass, textureParams)
       graphicsState.spectrumTextures(name) = tex
     }
   }
 
   final def material(name: String, params: ParamSet): Unit = {
+    graphicsState.material = name
+    graphicsState.namedMaterial = ""
+    graphicsState.materialParams = params
+  }
 
+  final def namedMaterial(name: String): Unit = {
+    graphicsState.namedMaterial = name
+  }
+
+  final def makeNamedMaterial(name: String, params: ParamSet): Unit = {
+
+    val tp = graphicsState.getTextureParams(params)
+
+    val matType: String = tp.getOne("type")
+      .getOrElse(throw new IllegalArgumentException("Parameter string type required in named material"))
+
+    graphicsState.namedMaterials(name) = SceneFactory.makeMaterial(matType, tp)
   }
 }
