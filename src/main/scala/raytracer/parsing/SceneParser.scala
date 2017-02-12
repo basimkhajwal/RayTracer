@@ -138,6 +138,8 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
         params.add(paramName, elements.grouped(3).map(p => Point(p(0), p(1), p(2))).toSeq)
       }
 
+      case "texture" => mapAndAdd[String](_, _)
+
       case _ => throwError("Unimplemented type " + paramType)
     }
   }
@@ -231,6 +233,23 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
         val texName = nextToken().getOrElse(throwError("Texture name not specified"))
         val texType = nextToken().getOrElse(throwError("Texture type not specified"))
         val texClass = nextToken().getOrElse(throwError("Texture class not specified"))
+
+        texture(texName, texType, texClass, parseParams())
+      }
+
+      case "material" => {
+        val name = nextToken().getOrElse(throwError("Material name not specified"))
+        material(name, parseParams())
+      }
+
+      case "makenamedmaterial" => {
+        val name = nextToken().getOrElse(throwError("Material name not specified"))
+        makeNamedMaterial(name, parseParams())
+      }
+
+      case "namedmaterial" => {
+        val name = nextToken().getOrElse(throwError("Material name not specified"))
+        namedMaterial(name)
       }
 
       case token if parseTransform(token) =>
