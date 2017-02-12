@@ -13,10 +13,15 @@ class GraphicsState {
 
   var materialParams: ParamSet = new ParamSet()
   var material: String = "matte"
+  var namedMaterial: String = ""
 
   val namedMaterials: mutable.Map[String, Material] = mutable.Map()
   val floatTextures: mutable.Map[String, Texture[Double]] = mutable.Map()
   val spectrumTextures: mutable.Map[String, Texture[Spectrum]] = mutable.Map()
+
+  def getTextureParams(geomParams: ParamSet, matParams: ParamSet = materialParams): TextureParams = {
+    TextureParams(geomParams, matParams, floatTextures, spectrumTextures)
+  }
 
   def createMaterial(params: ParamSet): Material = {
     ???
