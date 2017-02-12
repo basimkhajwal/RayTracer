@@ -24,7 +24,7 @@ object SceneFactory {
   def makeSpectrumTexture(textureClass: String, params: TextureParams): Texture[Spectrum] = {
     textureClass match {
       case "constant" => {
-        new ConstantTexture[Spectrum](params.getOneOr("value", Spectrum.WHITE))
+        new ConstantTexture[Spectrum](params.getOneOr("value", Spectrum(0.5, 0.5, 0.5)))
       }
       case _ => throw new IllegalArgumentException(s"Unknown spectrum texture class $textureClass")
     }
@@ -43,7 +43,7 @@ object SceneFactory {
     name match {
 
       case "sphere" => {
-        val radius = params.getOneOr[Int]("radius", 1)
+        val radius = params.getOneOr[Double]("radius", 1)
 
         Sphere(radius, objToWorld(Point.ZERO))
       }
