@@ -11,11 +11,11 @@ class ParamSet {
 
   def add[T](paramName: String, paramValue: Seq[T]): Unit = {
     require(paramValue.length > 0, "Empty parameter value passed!")
-    allParams += (paramName -> paramValue)
+    allParams += (paramName.toLowerCase -> paramValue)
   }
 
   def get[T](paramName: String): Option[Seq[T]] = {
-    allParams.get(paramName).flatMap(p => Try(p.asInstanceOf[Seq[T]]).toOption)
+    allParams.get(paramName.toLowerCase).flatMap(p => Try(p.asInstanceOf[Seq[T]]).toOption)
   }
 
   def getOr[T](paramName: String, default: Seq[T]): Seq[T] = get(paramName) getOrElse default
