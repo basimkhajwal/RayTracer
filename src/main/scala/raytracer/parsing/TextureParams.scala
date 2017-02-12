@@ -3,6 +3,7 @@ package raytracer.parsing
 import raytracer.{ConstantTexture, Spectrum, Texture}
 
 import scala.collection.mutable
+import scala.reflect.ClassTag
 
 /**
   * Created by Basim on 11/02/2017.
@@ -22,15 +23,15 @@ case class TextureParams(
     getTexture[Double](name, default, floatTextures)
   }
 
-  def getOne[T](name: String): Option[T] = {
-    geomParams.getOne(name).orElse(materialParams.getOne(name))
+  def getOne[T : ClassTag](name: String): Option[T] = {
+    geomParams.getOne[T](name).orElse(materialParams.getOne[T](name))
   }
 
-  def getOneOr[T](name: String, default: T): T = {
-    geomParams.getOneOr(name, materialParams.getOneOr(name, default))
+  def getOneOr[T : ClassTag](name: String, default: T): T = {
+    geomParams.getOneOr[T](name, materialParams.getOneOr[T](name, default))
   }
 
-  private def getTexture[T](
+  private def getTexture[T : ClassTag](
     name: String,
     default: T,
     textureMap: mutable.Map[String, Texture[T]]

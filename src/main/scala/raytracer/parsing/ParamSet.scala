@@ -1,7 +1,7 @@
 package raytracer.parsing
 
 import scala.collection.mutable
-import scala.util.Try
+import scala.reflect.ClassTag
 
 /**
   * Created by Basim on 28/01/2017.
@@ -14,15 +14,25 @@ class ParamSet {
     allParams += (paramName.toLowerCase -> paramValue)
   }
 
-  def get[T](paramName: String): Option[Seq[T]] = {
-    allParams.get(paramName.toLowerCase).flatMap(p => Try(p.asInstanceOf[Seq[T]]).toOption)
+  final def optionTry[T: ClassTag](block: Seq[Any]): Option[Seq[T]] = {
+    try {
+      val values = block.map(_ match { case e: T => e })
+      Some(values)
+    } catch { case e: RuntimeException => {
+      println(e.toString)
+      None
+    } }
   }
 
-  def getOr[T](paramName: String, default: Seq[T]): Seq[T] = get(paramName) getOrElse default
+  def get[T : ClassTag](paramName: String): Option[Seq[T]] = {
+    allParams.get(paramName.toLowerCase).flatMap(p => optionTry[T](p))
+  }
 
-  def getOne[T](paramName: String): Option[T] = get(paramName) map (_.head)
+  def getOr[T: ClassTag](paramName: String, default: Seq[T]): Seq[T] = get[T](paramName) getOrElse default
 
-  def getOneOr[T](paramName: String, default: T): T = getOne(paramName) getOrElse default
+  def getOne[T: ClassTag](paramName: String): Option[T] = get[T](paramName) map (_.head)
+
+  def getOneOr[T: ClassTag](paramName: String, default: T): T = getOne[T](paramName) getOrElse default
 }
 
 object ParamSet {
