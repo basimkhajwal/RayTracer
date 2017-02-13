@@ -1,8 +1,10 @@
 package raytracer.parsing
 
 import raytracer._
+import raytracer.materials.{Material, MatteMaterial}
 import raytracer.math.{Point, Transform}
 import raytracer.shapes.{Shape, Sphere, Triangle, TriangleMesh}
+import raytracer.textures.{ConstantTexture, Texture}
 
 /**
   * Created by Basim on 12/02/2017.

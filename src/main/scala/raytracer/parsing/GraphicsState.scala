@@ -1,7 +1,9 @@
 package raytracer.parsing
 
-import raytracer.{Material, Spectrum, Texture}
+import raytracer.Spectrum
+import raytracer.materials.Material
 import raytracer.math.Transform
+import raytracer.textures.Texture
 
 import scala.collection.mutable
 

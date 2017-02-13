@@ -1,12 +1,7 @@
 package raytracer.parsing
 
-import raytracer._
 import raytracer.math.{Point, Transform, Vec3}
 import raytracer.primitives.Primitive
-import raytracer.shapes.{Shape, Sphere, Triangle}
-
-import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
 /**
   * Created by Basim on 27/01/2017.

@@ -1,6 +1,7 @@
 package raytracer.parsing
 
-import raytracer.{ConstantTexture, Spectrum, Texture}
+import raytracer.textures.{ConstantTexture, Texture}
+import raytracer.{ConstantTexture, Spectrum}
 
 import scala.collection.mutable
 import scala.reflect.ClassTag
