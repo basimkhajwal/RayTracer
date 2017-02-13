@@ -107,7 +107,7 @@ object Main {
       Sphere(bigWidth, Point(0, -vroom-bigWidth, 0), Spectrum.WHITE * 0.2) :: // D
       Nil*/
 
-    override val cameraToWorld: Transform = Transform.lookAt(Point(3,0,-5), Point(0,-8,0), Vec3(0,1,0)).inverse //Transform.translate(0,-1,-4)
+    override val cameraToWorld: Transform = Transform.lookAt(Point(3,0,-5), Point(0,-8,0), Vec3(0,1,0)).inverse
 
     override val imgWidth: Int = 800
     override val imgHeight: Int = 600
