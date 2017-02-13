@@ -1,4 +1,4 @@
-package raytracer
+package raytracer.textures
 
 import raytracer.shapes.DifferentialGeometry
 

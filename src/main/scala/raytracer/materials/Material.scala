@@ -1,6 +1,8 @@
-package raytracer
+package raytracer.materials
 
 import raytracer.shapes.DifferentialGeometry
+import raytracer.textures.Texture
+import raytracer.{BSDF, Lambertian, Spectrum}
 
 /**
   * Created by Basim on 28/01/2017.
