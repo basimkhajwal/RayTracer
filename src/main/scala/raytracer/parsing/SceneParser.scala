@@ -216,17 +216,14 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
       case "include" => parseInclude
 
-      case "attributebegin" => {
+      case "attributebegin" => catchError { attributeBegin() }
 
-      }
 
-      case "attributeend" => {
-
-      }
+      case "attributeend" => catchError { attributeEnd() }
 
       case "shape" => {
         val shapeType = nextToken().getOrElse(throwError("Shape type not specified"))
-        shape(shapeType, parseParams())
+        catchError { shape(shapeType, parseParams()) }
       }
 
       case "texture" => {
@@ -234,22 +231,23 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
         val texType = nextToken().getOrElse(throwError("Texture type not specified"))
         val texClass = nextToken().getOrElse(throwError("Texture class not specified"))
 
-        texture(texName, texType, texClass, parseParams())
+        catchError { texture(texName, texType, texClass, parseParams()) }
       }
 
       case "material" => {
         val name = nextToken().getOrElse(throwError("Material name not specified"))
-        material(name, parseParams())
+
+        catchError { material(name, parseParams()) }
       }
 
       case "makenamedmaterial" => {
         val name = nextToken().getOrElse(throwError("Material name not specified"))
-        makeNamedMaterial(name, parseParams())
+        catchError { makeNamedMaterial(name, parseParams()) }
       }
 
       case "namedmaterial" => {
         val name = nextToken().getOrElse(throwError("Material name not specified"))
-        namedMaterial(name)
+        catchError { namedMaterial(name) }
       }
 
       case token if parseTransform(token) =>
@@ -270,53 +268,51 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
     token.toLowerCase match {
 
-      case "identity" => identityTransform()
+      case "identity" => catchError { identityTransform() }
 
       case "translate" => {
         val ps = getNumbers(3)
-        translateTransform(ps(0), ps(1), ps(2))
+        catchError { translateTransform(ps(0), ps(1), ps(2)) }
       }
 
       case "rotate" => {
         val ps = getNumbers(4)
-        rotateTransform(ps(0), ps(1), ps(2), ps(3))
+        catchError { rotateTransform(ps(0), ps(1), ps(2), ps(3)) }
       }
 
       case "lookat" => {
         val ps = getNumbers(9)
-        lookAtTransform(
-          Point(ps(0), ps(1), ps(2)),
-          Point(ps(3), ps(4), ps(5)),
-          Vec3(ps(6), ps(7), ps(8)))
+        catchError {
+          lookAtTransform(
+            Point(ps(0), ps(1), ps(2)),
+            Point(ps(3), ps(4), ps(5)),
+            Vec3(ps(6), ps(7), ps(8)))
+        }
       }
 
       case "transform" => {
         val ps = getNumbers(16)
-        setTransform(Transform(Mat4(ps toArray).transpose))
+        catchError { setTransform(Transform(Mat4(ps toArray).transpose)) }
       }
 
       case "concattransform" => {
         val ps = getNumbers(16)
-        applyTransform(Transform(Mat4(ps toArray).transpose))
+        catchError { applyTransform(Transform(Mat4(ps toArray).transpose)) }
       }
 
       case "coordinatesystem" => {
-        nextToken() match {
-          case Some(name) => coordinateSystem(name)
-          case None => throwError("Name needed for coordinate system")
-        }
+        val name = nextToken().getOrElse("Name needed for coordinate system")
+        catchError { coordinateSystem(name) }
       }
 
       case "coordsystransform" => {
-        nextToken() match {
-          case Some(name) => catchError { coordSysTranform(name) }
-          case None => throwError("Name not specified for coordinate system transform")
-        }
+        val name = nextToken().getOrElse("Name not specified for coordinate system transform")
+        catchError { coordSysTranform(name) }
       }
 
-      case "transformbegin" => transformBegin()
+      case "transformbegin" => catchError { transformBegin() }
 
-      case "transformend" => transformEnd()
+      case "transformend" => catchError { transformEnd() }
 
       case _ => matched = false
     }
