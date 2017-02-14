@@ -11,12 +11,12 @@ import scala.collection.mutable
   * Created by Basim on 11/02/2017.
   */
 class GraphicsState {
-  val namedTransforms: mutable.Map[String, Transform] = mutable.Map()
 
   var materialParams: ParamSet = new ParamSet()
   var material: String = "matte"
   var namedMaterial: String = ""
 
+  val namedTransforms: mutable.Map[String, Transform] = mutable.Map()
   val namedMaterials: mutable.Map[String, Material] = mutable.Map()
   val floatTextures: mutable.Map[String, Texture[Double]] = mutable.Map()
   val spectrumTextures: mutable.Map[String, Texture[Spectrum]] = mutable.Map()
@@ -30,5 +30,20 @@ class GraphicsState {
       namedMaterials(namedMaterial)
     else
       SceneFactory.makeMaterial(material, getTextureParams(params))
+  }
+
+  def makeCopy(): GraphicsState = {
+    val copy = new GraphicsState
+
+    copy.materialParams = materialParams
+    copy.material = material
+    copy.namedMaterial = namedMaterial
+
+    copy.namedTransforms ++= namedTransforms
+    copy.namedMaterials ++= namedMaterials
+    copy.floatTextures ++= floatTextures
+    copy.spectrumTextures ++= spectrumTextures
+
+    copy
   }
 }
