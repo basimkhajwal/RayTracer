@@ -16,7 +16,6 @@ class SceneBuilder {
 
   private var primitives: List[Primitive] = Nil
 
-  def getPrimitives: List[Primitive] = primitives
 
   @inline
   final def currentTransform: Transform = transformStack head
@@ -29,6 +28,8 @@ class SceneBuilder {
   private final def popTransform: Unit = transformStack = transformStack.tail
 
   /* --------- PUBLIC METHODS ------------------ */
+
+  final def getPrimitives: List[Primitive] = primitives
 
   final def applyTransform(t: Transform): Unit = setTransform(transformStack.head * t)
 
@@ -53,11 +54,12 @@ class SceneBuilder {
 
   final def attributeBegin(): Unit = {
     transformBegin()
-    graphicsStateStack ::= new GraphicsState
+    graphicsStateStack ::= graphicsState.makeCopy()
   }
 
   final def attributeEnd(): Unit = {
     assert(graphicsStateStack.size > 1, "Unmatched attribute end!")
+    graphicsStateStack = graphicsStateStack.tail
     transformEnd()
   }
 
