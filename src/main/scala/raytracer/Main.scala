@@ -116,7 +116,10 @@ object Main {
     override val maxRayDepth: Int = 3
   }
 
-  def main(args: Array[String]) = draw
+  def main(args: Array[String]) = {
+    Logger.info.log("Running the program")
+    draw
+  }
 
   def render: BufferedImage = new Renderer(scene2).render
 
