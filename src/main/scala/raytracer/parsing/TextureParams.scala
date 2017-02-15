@@ -1,7 +1,7 @@
 package raytracer.parsing
 
 import raytracer.textures.{ConstantTexture, Texture}
-import raytracer.{ConstantTexture, Spectrum}
+import raytracer.Spectrum
 
 import scala.collection.mutable
 import scala.reflect.ClassTag
@@ -30,6 +30,11 @@ case class TextureParams(
 
   def getOneOr[T : ClassTag](name: String, default: T): T = {
     geomParams.getOneOr[T](name, materialParams.getOneOr[T](name, default))
+  }
+
+  def reportUnused: Unit = {
+    geomParams.reportUnused
+    materialParams.reportUnused
   }
 
   private def getTexture[T : ClassTag](
