@@ -1,5 +1,6 @@
 package raytracer.parsing
 
+import raytracer.Logger
 import raytracer.math.{Mat4, Point, Transform, Vec3}
 
 import scala.annotation.tailrec
@@ -15,6 +16,10 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
   private val validParameters = List("float", "integer", "string", "bool", "vector", "point", "rgb")
 
   private var lexerStack: List[Lexer] = new Lexer(sceneFile) :: Nil
+
+  private val warningLogger = new Logger {
+    override def log(msg: String) = warningMsg(msg)
+  }
 
   @inline
   private def tokens = lexerStack head
@@ -32,6 +37,9 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
       }
     }
   }
+
+  @inline
+  private def currentLexer(): Lexer = lexerStack head
 
   private def getTokens(n: Int): List[String] = {
     var i = 0
@@ -74,12 +82,15 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
     ns toList
   }
 
-  private def throwError(msg: String): Nothing = {
-    val currentLexer = lexerStack.head
+  protected final def throwError(msg: String): Nothing = {
     throw new RuntimeException(
-      "Error parsing " + currentLexer.fileName + " at line " + currentLexer.currentLine
+      "Parse error in " + currentLexer.fileName + " at line " + currentLexer.currentLine
       + ":\t" + msg
     )
+  }
+
+  protected final def warningMsg(msg: String): Unit = {
+    Logger.warning.log(s"In ${currentLexer.fileName} at ${currentLexer.currentLine} - $msg")
   }
 
   private def catchError(f: => Unit): Unit = {
@@ -166,7 +177,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
   private def parseParams(): ParamSet = {
     var done = false
-    val params = new ParamSet
+    val params = new ParamSet(warningLogger)
 
     while (!done) {
       done = true
