@@ -11,8 +11,19 @@ import raytracer.textures.{ConstantTexture, Texture}
   */
 object SceneFactory {
 
+  private def reportUnused[T](tp: TextureParams)(b: => T): T = {
+    val returnValue = b
+    tp.reportUnused
+    returnValue
+  }
 
-  def makeMaterial(matType: String, textureParams: TextureParams): Material = {
+  private def reportUnused[T](ps: ParamSet)(b: => T): T = {
+    val returnValue = b
+    ps.reportUnused
+    returnValue
+  }
+
+  def makeMaterial(matType: String, textureParams: TextureParams): Material = reportUnused(textureParams){
     matType match {
 
       case "matte" => {
@@ -23,7 +34,7 @@ object SceneFactory {
     }
   }
 
-  def makeSpectrumTexture(textureClass: String, params: TextureParams): Texture[Spectrum] = {
+  def makeSpectrumTexture(textureClass: String, params: TextureParams): Texture[Spectrum] = reportUnused(params){
     textureClass match {
       case "constant" => {
         new ConstantTexture[Spectrum](params.getOneOr("value", Spectrum(0.5, 0.5, 0.5)))
@@ -32,7 +43,7 @@ object SceneFactory {
     }
   }
 
-  def makeFloatTexture(textureClass: String, params: TextureParams): Texture[Double] = {
+  def makeFloatTexture(textureClass: String, params: TextureParams): Texture[Double] = reportUnused(params){
     textureClass match {
       case "constant" => {
         new ConstantTexture[Double](params.getOneOr("value", 1.0))
@@ -41,7 +52,7 @@ object SceneFactory {
     }
   }
 
-  def makeShape(name: String, objToWorld: Transform, params: ParamSet): Shape = {
+  def makeShape(name: String, objToWorld: Transform, params: ParamSet): Shape = reportUnused(params){
     name match {
 
       case "sphere" => {
