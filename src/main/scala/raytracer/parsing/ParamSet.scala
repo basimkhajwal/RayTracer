@@ -24,12 +24,7 @@ class ParamSet(logger: Logger) {
     try {
       val values = block.map(_ match { case e: T => e })
       Some(values)
-    } catch {
-      case e: MatchError => {
-          logger.log("Invalid cast of " + name + " to " + e.getMessage())
-          None
-        }
-    }
+    } catch { case _: MatchError => None }
   }
 
   def get[T : ClassTag](paramName: String): Option[Seq[T]] = {

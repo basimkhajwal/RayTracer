@@ -93,6 +93,11 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
     Logger.warning.log(s"In ${currentLexer.fileName} at ${currentLexer.currentLine} - $msg")
   }
 
+  protected final def infoMsg(msg: String, fileInfo: Boolean = true): Unit = {
+    if (fileInfo) Logger.info.log(s"In ${currentLexer.fileName} at ${currentLexer.currentLine} - $msg")
+    else Logger.info.log(msg)
+  }
+
   private def catchError(f: => Unit): Unit = {
     try(f) catch {
       case e: AssertionError => throwError("Assertion failed:\t" + e.getMessage)
@@ -151,7 +156,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
       case "texture" => mapAndAdd[String](_, _)
 
-      case _ => throwError("Unimplemented type " + paramType)
+      case _ => warningMsg("Unimplemented parameter type " + paramType)
     }
   }
 
@@ -195,6 +200,9 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
   }
 
   def parse: Unit = {
+
+    infoMsg("Began parsing scene definition")
+
     var t: Option[String] = None
     while ({
       t = nextToken()
@@ -210,12 +218,15 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
         case _ =>
       }
     }
+
+    infoMsg("Parsing complete!", false)
   }
 
   private final def parseWorld: Unit = {
     var t: Option[String] = None
     var done = false
 
+    infoMsg("Began parsing world")
     setTransform(Transform.identity)
 
     while ({
@@ -270,7 +281,10 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
   private def parseInclude: Unit = {
     nextToken match {
       case None => throwError("Include directive requires a file name to be specified")
-      case Some(file) => lexerStack ::= new Lexer(file)
+      case Some(file) => {
+        infoMsg(s"Added lexer from file $file")
+        lexerStack ::= new Lexer(file)
+      }
     }
   }
 
@@ -327,6 +341,8 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
       case _ => matched = false
     }
+
+    if (matched) infoMsg(s"Applied transform $token")
 
     matched
   }

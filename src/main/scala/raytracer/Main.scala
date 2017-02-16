@@ -61,14 +61,13 @@ object Main {
     val hroom:Double = 100000
     val vroom:Double = 8
     val shapes = new SceneBuilder {
-      material("matte", ParamSet.from("kd" -> List(Spectrum(1, 0, 0))))
+      worldBegin()
+      material("matte", ParamSet.from("kd" -> List(Spectrum.WHITE)))
 
       transformBegin()
         translateTransform(2.1, -6, 0)
-        shape("sphere", ParamSet.from("radius" -> List(3.0)))
+        shape("sphere", ParamSet.from("radius" -> List(2.0), "kd" -> List(Spectrum(1,0,0))))
       transformEnd()
-
-      material("matte", ParamSet.from("kd" -> List(Spectrum.WHITE)))
 
       transformBegin()
         translateTransform(2.1, -6-hroom-6, 0)
@@ -95,17 +94,8 @@ object Main {
         shape("sphere", ParamSet.from("radius" -> List(hroom)))
       transformEnd()
 
+      worldEnd()
     }.getPrimitives
-
-      /*Sphere(2, Point(-2.1, -6, 0), Spectrum(0.5, 0.2, 0.2)) ::
-      Sphere(2, Point(2.1, -6, 0), Spectrum(0.2, 0.4, 0.3)) ::
-      //Sphere(bigWidth, Point(-hroom-bigWidth, 0, 0), Spectrum(0.2, 0.3, 0.8)) :: // L
-      //Sphere(bigWidth, Point(hroom+bigWidth, 0, 0), Spectrum(0.2, 0.8, 0.3)) :: // R
-      //Sphere(bigWidth, Point(0, 0, hroom+bigWidth), Spectrum(0.7, 0.2, 0.3)) :: // F
-      //Sphere(bigWidth, Point(0, 0, -hroom-bigWidth), Spectrum.WHITE) :: // B
-      Sphere(bigWidth, Point(0, vroom+bigWidth, 0), Spectrum(0.4, 0.4, 0.4)) :: // U
-      Sphere(bigWidth, Point(0, -vroom-bigWidth, 0), Spectrum.WHITE * 0.2) :: // D
-      Nil*/
 
     override val cameraToWorld: Transform = Transform.lookAt(Point(3,0,-5), Point(0,-8,0), Vec3(0,1,0)).inverse
 
