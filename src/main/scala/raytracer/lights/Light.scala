@@ -7,5 +7,5 @@ import raytracer.math.{Point, Vec3}
   * Created by Basim on 18/02/2017.
   */
 trait Light {
-  def sample(point: Point): (Spectrum, Vec3)
+  def sample(point: Point): (Spectrum, Vec3, Double) // Intensity, direction, distance
 }
