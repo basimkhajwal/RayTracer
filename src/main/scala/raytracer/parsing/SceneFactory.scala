@@ -1,6 +1,7 @@
 package raytracer.parsing
 
 import raytracer._
+import raytracer.lights.{Light, PointLight}
 import raytracer.materials.{Material, MatteMaterial}
 import raytracer.math.{Point, Transform}
 import raytracer.shapes.{Shape, Sphere, Triangle, TriangleMesh}
@@ -21,6 +22,22 @@ object SceneFactory {
     val returnValue = b
     ps.reportUnused
     returnValue
+  }
+
+  def makeLightSource(lightType: String, lightToWorld: Transform, params: ParamSet): Light = reportUnused(params) {
+    lightType match {
+
+      case "point" => {
+        val intensity = params.getOneOr[Spectrum]("I", Spectrum.WHITE)
+        val scale = params.getOneOr[Spectrum]("scale", Spectrum.WHITE)
+        val from = params.getOneOr[Point]("from", Point.ZERO)
+        val l2w = Transform.translate(from.x, from.y, from.z) * lightToWorld
+
+        PointLight(l2w, intensity * scale)
+      }
+
+      case _ => throw new IllegalArgumentException(s"Un-implemented light source type $lightType")
+    }
   }
 
   def makeMaterial(matType: String, textureParams: TextureParams): Material = reportUnused(textureParams){
