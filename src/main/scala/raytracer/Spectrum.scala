@@ -4,6 +4,9 @@ package raytracer
   * Created by Basim on 05/01/2017.
   */
 case class Spectrum(val r: Double, val g: Double, val b: Double) {
+
+  def this(colour: Double) = this(colour, colour, colour)
+
   def toRGBInt: Int = (b*255.0).toInt + ((g*255.0).toInt << 8) + ((r*255.0).toInt << 16)
 
   def +(that: Spectrum): Spectrum = Spectrum(r + that.r, g + that.g, b + that.b)
