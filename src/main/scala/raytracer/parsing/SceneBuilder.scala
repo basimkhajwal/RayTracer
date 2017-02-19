@@ -1,6 +1,7 @@
 package raytracer.parsing
 
 import raytracer.Logger
+import raytracer.lights.Light
 import raytracer.math.{Point, Transform, Vec3}
 import raytracer.primitives.Primitive
 
@@ -19,6 +20,8 @@ class SceneBuilder {
 
   private var primitives: List[Primitive] = Nil
 
+  private var lights: List[Light] = Nil
+
   /* --------------------- Utility Methods --------------------------- */
 
   @inline
@@ -36,6 +39,8 @@ class SceneBuilder {
   /* --------------------- Public Methods --------------------------- */
 
   final def getPrimitives: List[Primitive] = primitives
+
+  final def getLights: List[Light] = lights
 
   final def worldBegin(): Unit = {
     worldSection = true
@@ -112,6 +117,13 @@ class SceneBuilder {
   //</editor-fold>
 
   //<editor-fold desc="Public World Methods">
+
+  final def lightSource(name: String, params: ParamSet): Unit = {
+    val newLight = SceneFactory.makeLightSource(name, currentTransform, params)
+    lights ::= newLight
+
+    log(s"Added light of type $name")
+  }
 
   final def shape(name: String, params: ParamSet): Unit = {
     require(worldSection, "Shapes can only be defined in the world section")
