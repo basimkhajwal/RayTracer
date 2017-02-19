@@ -240,8 +240,12 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
       case "attributebegin" => catchError { attributeBegin() }
 
-
       case "attributeend" => catchError { attributeEnd() }
+
+      case "lightsource" => {
+        val lightType = nextToken().getOrElse("Light type not specified")
+        catchError { lightSource(lightType, parseParams()) }
+      }
 
       case "shape" => {
         val shapeType = nextToken().getOrElse(throwError("Shape type not specified"))
@@ -258,7 +262,6 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
       case "material" => {
         val name = nextToken().getOrElse(throwError("Material name not specified"))
-
         catchError { material(name, parseParams()) }
       }
 
