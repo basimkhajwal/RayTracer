@@ -9,6 +9,8 @@ import raytracer.primitives.Primitive
   */
 class SceneBuilder {
 
+  /* --------------------- STATE --------------------------- */
+
   private var transformStack: List[Transform] = Transform.identity :: Nil
 
   private var graphicsStateStack: List[GraphicsState] = new GraphicsState :: Nil
@@ -17,11 +19,13 @@ class SceneBuilder {
 
   private var primitives: List[Primitive] = Nil
 
-  @inline
-  final def currentTransform: Transform = transformStack head
+  /* --------------------- Utility Methods --------------------------- */
 
   @inline
-  final def graphicsState: GraphicsState = graphicsStateStack head
+  private final def currentTransform: Transform = transformStack head
+
+  @inline
+  private final def graphicsState: GraphicsState = graphicsStateStack head
 
   private final def pushTransform: Unit = transformStack ::= transformStack.head
 
@@ -29,13 +33,9 @@ class SceneBuilder {
 
   private final def log(msg: String): Unit = Logger.info.log(msg)
 
-  /* --------- PUBLIC METHODS ------------------ */
+  /* --------------------- Public Methods --------------------------- */
 
   final def getPrimitives: List[Primitive] = primitives
-
-  final def applyTransform(t: Transform): Unit = setTransform(transformStack.head * t)
-
-  final def setTransform(t: Transform): Unit = transformStack = t :: transformStack.tail
 
   final def worldBegin(): Unit = {
     worldSection = true
@@ -44,6 +44,16 @@ class SceneBuilder {
   final def worldEnd(): Unit = {
     worldSection = false
   }
+
+  final def camera(camType: String, params: ParamSet): Unit = {
+
+  }
+
+  //<editor-fold desc="Transformation Methods">
+
+  final def applyTransform(t: Transform): Unit = setTransform(transformStack.head * t)
+
+  final def setTransform(t: Transform): Unit = transformStack = t :: transformStack.tail
 
   final def transformBegin(): Unit = {
     pushTransform
@@ -99,6 +109,9 @@ class SceneBuilder {
     setTransform(graphicsState.namedTransforms(name))
     log(s"Set coordinate system transform to $name")
   }
+  //</editor-fold>
+
+  //<editor-fold desc="Public World Methods">
 
   final def shape(name: String, params: ParamSet): Unit = {
     require(worldSection, "Shapes can only be defined in the world section")
@@ -109,7 +122,6 @@ class SceneBuilder {
 
     log(s"Added primitive of shape type $name")
   }
-
 
   final def texture(name: String, textureType: String, textureClass: String, params: ParamSet): Unit = {
     require(worldSection, "Textures can only be defined in the world section")
@@ -155,4 +167,5 @@ class SceneBuilder {
     graphicsState.namedMaterials(name) = SceneFactory.makeMaterial(matType, tp)
     log(s"Made named material $name")
   }
+  //</editor-fold>
 }
