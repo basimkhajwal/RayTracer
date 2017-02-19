@@ -18,20 +18,28 @@ import raytracer.lights._
   */
 object Main {
 
-  val scene2 = new RenderOpts {
+  val scene = new RenderOpts {
 
-    val lights: List[Light] =
-      PointLight(Transform.translate(-3, 5, 0), Spectrum.WHITE) ::
-      PointLight(Transform.translate(0, 5, 0), Spectrum.WHITE) ::
-      PointLight(Transform.translate(3, 5, 0), Spectrum.WHITE) ::
-      Nil
+    val sceneBuilder = new SceneBuilder {
+      val spacing: Double = 100000
 
-    val bigWidth: Double = 1e5
-    val hroom:Double = 100000
-    val vroom:Double = 8
-    val shapes = new SceneBuilder {
       worldBegin()
       material("matte", ParamSet.from("kd" -> List(Spectrum.WHITE)))
+
+      transformBegin()
+        translateTransform(-3, 5, 0)
+        lightSource("point", ParamSet.from("I" -> List(Spectrum.WHITE)))
+      transformEnd()
+
+      transformBegin()
+        translateTransform(0, 5, 0)
+        lightSource("point", ParamSet.from("I" -> List(Spectrum.WHITE)))
+      transformEnd()
+
+      transformBegin()
+        translateTransform(3, 5, 0)
+        lightSource("point", ParamSet.from("I" -> List(Spectrum.WHITE)))
+      transformEnd()
 
       transformBegin()
         translateTransform(2.1, -6, 0)
@@ -39,38 +47,38 @@ object Main {
       transformEnd()
 
       transformBegin()
-        translateTransform(2.1, -6-hroom-6, 0)
-        shape("sphere", ParamSet.from("radius" -> List(hroom)))
+        translateTransform(2.1, -6-spacing-6, 0)
+        shape("sphere", ParamSet.from("radius" -> List(spacing)))
       transformEnd()
 
       transformBegin()
-        translateTransform(2.1-hroom-6, -6, 0)
-        shape("sphere", ParamSet.from("radius" -> List(hroom)))
+        translateTransform(2.1-spacing-6, -6, 0)
+        shape("sphere", ParamSet.from("radius" -> List(spacing)))
       transformEnd()
 
       transformBegin()
-        translateTransform(2.1+hroom+6, -6, 0)
-        shape("sphere", ParamSet.from("radius" -> List(hroom)))
+        translateTransform(2.1+spacing+6, -6, 0)
+        shape("sphere", ParamSet.from("radius" -> List(spacing)))
       transformEnd()
 
       transformBegin()
-        translateTransform(2.1, -6, hroom+6)
-        shape("sphere", ParamSet.from("radius" -> List(hroom)))
+        translateTransform(2.1, -6, spacing+6)
+        shape("sphere", ParamSet.from("radius" -> List(spacing)))
       transformEnd()
 
       transformBegin()
-        translateTransform(2.1, -6, -hroom-6)
-        shape("sphere", ParamSet.from("radius" -> List(hroom)))
+        translateTransform(2.1, -6, -spacing-6)
+        shape("sphere", ParamSet.from("radius" -> List(spacing)))
       transformEnd()
 
       worldEnd()
-    }.getPrimitives
+    }
 
     override val cameraToWorld: Transform = Transform.lookAt(Point(3,0,-5), Point(0,-8,0), Vec3(0,1,0)).inverse
 
     override val imgWidth: Int = 800
     override val imgHeight: Int = 600
-    override val scene: Scene = new Scene(lights, shapes)
+    override val scene: Scene = new Scene(sceneBuilder.getLights, sceneBuilder.getPrimitives)
     override val pixelSampleCount: Int = 1
     override val maxRayDepth: Int = 3
   }
@@ -79,7 +87,7 @@ object Main {
     draw
   }
 
-  def render: BufferedImage = new Renderer(scene2).render
+  def render: BufferedImage = new Renderer(scene).render
 
   def bench: Unit = {
     val before = System.currentTimeMillis
