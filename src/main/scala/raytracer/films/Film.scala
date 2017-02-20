@@ -1,18 +1,16 @@
 package raytracer.films
 
-import java.awt.image.BufferedImage
-
 import raytracer.Spectrum
 
 /**
   * Created by Basim on 24/01/2017.
   */
-trait Film {
+abstract class Film(xRes: Int, yRes: Int) {
 
-  val xResolution: Int
-  val yResolution: Int
+  val xResolution = xRes
+  val yResolution = yRes
 
   def applySample(imageX: Int, imageY: Int, l: Spectrum)
 
-  def getResult: BufferedImage
+  def saveImage: Unit
 }
