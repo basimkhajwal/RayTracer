@@ -1,6 +1,8 @@
 package raytracer.parsing
 
 import raytracer.Logger
+import raytracer.cameras.Camera
+import raytracer.films.Film
 import raytracer.lights.Light
 import raytracer.math.{Point, Transform, Vec3}
 import raytracer.primitives.Primitive
@@ -19,8 +21,18 @@ class SceneBuilder {
   private var worldSection = false
 
   private var primitives: List[Primitive] = Nil
-
   private var lights: List[Light] = Nil
+
+  private var cameraName = "perspective"
+  private var cameraParams = new ParamSet()
+  private var cameraToWorld: Transform = Transform.identity
+
+  private var filmName = "screen"
+  private var filmParams = new ParamSet()
+
+  private lazy val film: Film = SceneFactory.makeFilm(filmName, filmParams)
+
+  private lazy val camera: Camera = SceneFactory.makeCamera(cameraName, cameraToWorld, film, cameraParams)
 
   /* --------------------- Utility Methods --------------------------- */
 
@@ -42,16 +54,35 @@ class SceneBuilder {
 
   final def getLights: List[Light] = lights
 
+  final def getFilm: Film = film
+
+  final def getCamera: Camera = camera
+
   final def worldBegin(): Unit = {
+    require(!worldSection, "World begin cannot be nested")
     worldSection = true
   }
 
   final def worldEnd(): Unit = {
+    require(worldSection, "Un-matched world end")
     worldSection = false
   }
 
   final def camera(camType: String, params: ParamSet): Unit = {
+    require(!worldSection, "Camera must be defined outside of the world section")
+    cameraName = camType
+    cameraParams = params
+    cameraToWorld = currentTransform.inverse
+    graphicsState.namedTransforms.put("camera", cameraToWorld)
 
+    log(s"Set camera to $camType")
+  }
+
+  final def film(filmType: String, params: ParamSet): Unit = {
+    require(worldSection, "Films must be defined outside of the world section")
+    filmName = filmType
+    filmParams = params
+    log(s"Set film to $filmType")
   }
 
   //<editor-fold desc="Transformation Methods">
@@ -119,6 +150,8 @@ class SceneBuilder {
   //<editor-fold desc="Public World Methods">
 
   final def lightSource(name: String, params: ParamSet): Unit = {
+    require(worldSection, "Light sources can only be defined in the world section")
+
     val newLight = SceneFactory.makeLightSource(name, currentTransform, params)
     lights ::= newLight
 
