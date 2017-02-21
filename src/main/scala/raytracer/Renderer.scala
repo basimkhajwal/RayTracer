@@ -6,10 +6,9 @@ package raytracer
 import java.awt.image.BufferedImage
 
 import raytracer.cameras.{OrthographicCamera, PerspectiveCamera}
+import raytracer.films.Film
 import raytracer.integrators.{Integrator, Whitted}
 import raytracer.math.{Point, Ray, Transform, Vec3}
-
-import scala.util.Random
 
 trait RenderOpts {
   val maxRayDepth: Int = 4
@@ -17,25 +16,27 @@ trait RenderOpts {
 
   val cameraToWorld: Transform
 
-  val imgWidth: Int
-  val imgHeight: Int
-
   val scene: Scene
   val integrator: Integrator = new Whitted()
+
+  val film: Film
 }
 
 class Renderer(options: RenderOpts) {
 
-  def render: BufferedImage = {
-    val ar = options.imgWidth.toDouble / options.imgHeight
+  def render: Unit = {
+    val width = options.film.xResolution
+    val height = options.film.yResolution
+    val ar = width.toDouble / height
     val cam = new PerspectiveCamera(options.cameraToWorld,
-      (-ar, ar, -1, 1), options.imgWidth, options.imgHeight, 0.1, 100, 80)
-    val img = new BufferedImage(options.imgWidth, options.imgHeight, BufferedImage.TYPE_INT_RGB)
+      (-ar, ar, -1, 1), width, height, 0.1, 100, 80)
 
-    for (y <- 0 until options.imgHeight; x <- 0 until options.imgWidth) {
+    for (y <- 0 until height; x <- 0 until width) {
       val lum = options.integrator.traceRay(cam.generateRay(x, y))(options)
-      img.setRGB(x, y, lum.clamp.toRGBInt)
+
+      options.film.applySample(x, y, lum.clamp)
     }
-    img
+
+    options.film.saveImage
   }
 }

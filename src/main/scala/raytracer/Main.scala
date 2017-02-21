@@ -8,10 +8,9 @@ import javax.imageio.ImageIO
 import javax.swing.{JFrame, JPanel}
 
 import raytracer.Constants._
+import raytracer.films.{Film, ImageFilm, ScreenFilm}
 import raytracer.math.{Point, Transform, Vec3}
 import raytracer.parsing.{ParamSet, SceneBuilder}
-
-import raytracer.lights._
 
 /**
   * Created by Basim on 18/12/2016.
@@ -76,50 +75,24 @@ object Main {
 
     override val cameraToWorld: Transform = Transform.lookAt(Point(3,0,-5), Point(0,-8,0), Vec3(0,1,0)).inverse
 
-    override val imgWidth: Int = 800
-    override val imgHeight: Int = 600
     override val scene: Scene = new Scene(sceneBuilder.getLights, sceneBuilder.getPrimitives)
     override val pixelSampleCount: Int = 1
     override val maxRayDepth: Int = 3
+
+    override val film: Film = new ScreenFilm(
+      1600,
+      1200,
+      800,
+      600
+    )
   }
 
   def main(args: Array[String]) = {
-    draw
+    new Renderer(scene).render
   }
 
-  def render: BufferedImage = new Renderer(scene).render
-
-  def bench: Unit = {
-    val before = System.currentTimeMillis
-    render
-    println("Time taken: " + (System.currentTimeMillis - before))
-  }
-
-  def draw: Unit = {
-    val frame = new JFrame("Sphere Render Test")
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-    frame.setResizable(false)
-    frame.add(new CustomRenderer(render))
-    frame.pack
-    frame.setVisible(true)
-  }
-
-  def save: Unit = {
-    def innerFile(n: Int) = "progress/" + n + ".png"
-    def exists(n: Int) = Files.exists(Paths.get(innerFile(n)))
-    def saveImage(n: Int, img: BufferedImage) = ImageIO.write(img, "png", new File(innerFile(n)))
-
-    def findFirst(n: Int): Unit = if (exists(n)) findFirst(n+1) else saveImage(n, render)
-    findFirst(0)
-  }
-
-  class CustomRenderer(val img: BufferedImage) extends JPanel {
-
-    override def getPreferredSize: Dimension = viewportSize
-
-    override def paint(g: Graphics): Unit = {
-      super.paint(g)
-      g.drawImage(img, 0, 0, viewportSize.width, viewportSize.height, null)
-    }
+  def findFirst(n: Int): String = {
+    val fName: String = "progress/" + n + ".png"
+    if (Files.exists(Paths.get(fName))) findFirst(n+1) else fName
   }
 }
