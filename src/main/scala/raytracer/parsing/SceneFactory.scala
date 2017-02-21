@@ -1,7 +1,7 @@
 package raytracer.parsing
 
 import raytracer._
-import raytracer.cameras.{Camera, PerspectiveCamera}
+import raytracer.cameras.{Camera, OrthographicCamera, PerspectiveCamera}
 import raytracer.films.{Film, ImageFilm, ScreenFilm}
 import raytracer.lights.{Light, PointLight}
 import raytracer.materials.{Material, MatteMaterial}
@@ -46,19 +46,29 @@ object SceneFactory {
         new ScreenFilm(xRes, yRes, width, height)
       }
 
-      case _ => throw new IllegalArgumentException(s"Un-implemented camera type $camType")
+      case _ => throw new IllegalArgumentException(s"Un-implemented film type $filmType")
     }
   }
 
   def makeCamera(camType: String, camToWorld: Transform, film: Film, params: ParamSet): Camera = reportUnused(params) {
+
+    val aspRatio: Double = params.getOneOr[Double]("frameaspectratio", film.xResolution.toDouble/film.yResolution)
+
+    val sw: Array[Double] = params.getOr[Double]("screenwindow",
+      if (aspRatio > 1) Array(-aspRatio, aspRatio, -1, 1) else Array(-1, 1, -1/aspRatio, 1/aspRatio))
+      .toArray
+
     camType match {
 
       case "perspective" => {
-        ???
+
+        val fov: Double = params.getOneOr[Double]("fov", 90)
+
+        new PerspectiveCamera(camToWorld, (sw(0), sw(1), sw(2), sw(3)), fov, film)
       }
 
       case "orthographic" => {
-        ???
+        new OrthographicCamera(camToWorld, (sw(0), sw(1), sw(2), sw(3)), film)
       }
 
       case _ => throw new IllegalArgumentException(s"Un-implemented camera type $camType")
