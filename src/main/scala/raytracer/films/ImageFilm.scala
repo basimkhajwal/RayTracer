@@ -10,7 +10,7 @@ import raytracer.Spectrum
   */
 class ImageFilm(fileName: String, xRes: Int, yRes: Int) extends Film(xRes, yRes) {
 
-  private val image = new BufferedImage(xRes, yRes, BufferedImage.TYPE_INT_RGB)
+  val image = new BufferedImage(xRes, yRes, BufferedImage.TYPE_INT_RGB)
 
   override def applySample(imageX: Int, imageY: Int, l: Spectrum): Unit = {
     image.setRGB(imageX, imageY, l.toRGBInt)
