@@ -10,10 +10,6 @@ import raytracer.Spectrum
   */
 class ScreenFilm(xRes: Int, yRes: Int, val width: Int, val height: Int) extends Film(xRes, yRes) {
 
-  def this(xRes: Int, yRes: Int) = this(xRes, yRes, xRes, yRes)
-
-  def this(xRes: Int, yRes: Int, sf: Double) = this(xRes, yRes, (xRes*sf).toInt, (yRes*sf).toInt)
-
   val image: BufferedImage = new BufferedImage(xRes, yRes, BufferedImage.TYPE_INT_RGB)
 
   override def applySample(imageX: Int, imageY: Int, l: Spectrum): Unit = {
