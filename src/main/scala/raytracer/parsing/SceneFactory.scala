@@ -1,6 +1,8 @@
 package raytracer.parsing
 
 import raytracer._
+import raytracer.cameras.{Camera, PerspectiveCamera}
+import raytracer.films.{Film, ImageFilm, ScreenFilm}
 import raytracer.lights.{Light, PointLight}
 import raytracer.materials.{Material, MatteMaterial}
 import raytracer.math.{Point, Transform}
@@ -22,6 +24,45 @@ object SceneFactory {
     val returnValue = b
     ps.reportUnused
     returnValue
+  }
+
+  def makeFilm(filmType: String, params: ParamSet): Film = reportUnused(params) {
+    filmType match {
+
+      case "image" => {
+        val xRes = params.getOneOr[Int]("xresolution", 640)
+        val yRes = params.getOneOr[Int]("yresolution", 480)
+        val fName = params.getOneOr[String]("filename", "default.png")
+
+        new ImageFilm(fName, xRes, yRes)
+      }
+
+      case "screen" => {
+        val xRes = params.getOneOr[Int]("xresolution", 640)
+        val yRes = params.getOneOr[Int]("yresolution", 480)
+        val width = params.getOneOr[Int]("width", xRes)
+        val height = params.getOneOr[Int]("height", yRes)
+
+        new ScreenFilm(xRes, yRes, width, height)
+      }
+
+      case _ => throw new IllegalArgumentException(s"Un-implemented camera type $camType")
+    }
+  }
+
+  def makeCamera(camType: String, camToWorld: Transform, film: Film, params: ParamSet): Camera = reportUnused(params) {
+    camType match {
+
+      case "perspective" => {
+        ???
+      }
+
+      case "orthographic" => {
+        ???
+      }
+
+      case _ => throw new IllegalArgumentException(s"Un-implemented camera type $camType")
+    }
   }
 
   def makeLightSource(lightType: String, lightToWorld: Transform, params: ParamSet): Light = reportUnused(params) {
