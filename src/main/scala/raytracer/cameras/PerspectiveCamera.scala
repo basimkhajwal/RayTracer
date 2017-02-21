@@ -1,5 +1,6 @@
 package raytracer.cameras
 
+import raytracer.films.Film
 import raytracer.math.{Point, Ray, Transform, Vec3}
 
 /**
@@ -8,11 +9,10 @@ import raytracer.math.{Point, Ray, Transform, Vec3}
 class PerspectiveCamera(
   camToWorld: Transform,
   screenWindow: (Double, Double, Double, Double),
-  xRes: Int, yRes: Int,
-  near: Double, far: Double, fov: Double
+  fov: Double, film: Film
 ) extends ProjectiveCamera(
   camToWorld,
-  Projection.perspective(fov, near, far), screenWindow, xRes, yRes) {
+  Projection.perspective(fov, 1e-2f, 1000), screenWindow, film.xResolution, film.yResolution) {
 
   val zdir = Vec3(0, 0, 1)
 
