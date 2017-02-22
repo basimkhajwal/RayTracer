@@ -1,15 +1,11 @@
 package raytracer
 
-import java.awt.image.BufferedImage
-import java.awt.{Dimension, Graphics}
-import java.io.File
 import java.nio.file.{Files, Paths}
-import javax.imageio.ImageIO
-import javax.swing.{JFrame, JPanel}
 
-import raytracer.Constants._
-import raytracer.films.{Film, ImageFilm, ScreenFilm}
-import raytracer.math.{Point, Transform, Vec3}
+import raytracer.cameras.Camera
+import raytracer.films.{Film, ScreenFilm}
+import raytracer.integrators.{Integrator, Whitted}
+import raytracer.math.{Point, Vec3}
 import raytracer.parsing.{ParamSet, SceneBuilder}
 
 /**
@@ -21,6 +17,13 @@ object Main {
 
     val sceneBuilder = new SceneBuilder {
       val spacing: Double = 100000
+
+      identityTransform()
+      lookAtTransform(Point(3,0,-5), Point(0,-8,0), Vec3(0,1,0))
+
+      film("screen", ParamSet.from("xresolution" -> List(800.0), "yresolution" -> List(600), "width" -> List(1600), "height" -> List(1200)))
+      camera("perspective", ParamSet.from("fov" -> List(80)))
+      identityTransform()
 
       worldBegin()
       material("matte", ParamSet.from("kd" -> List(Spectrum.WHITE)))
@@ -73,18 +76,14 @@ object Main {
       worldEnd()
     }
 
-    override val cameraToWorld: Transform = Transform.lookAt(Point(3,0,-5), Point(0,-8,0), Vec3(0,1,0)).inverse
-
+    override val camera: Camera = sceneBuilder.getCamera
     override val scene: Scene = new Scene(sceneBuilder.getLights, sceneBuilder.getPrimitives)
+
     override val pixelSampleCount: Int = 1
     override val maxRayDepth: Int = 3
 
-    override val film: Film = new ScreenFilm(
-      1600,
-      1200,
-      800,
-      600
-    )
+    override val integrator: Integrator = new Whitted
+    override val film: Film = sceneBuilder.getFilm
   }
 
   def main(args: Array[String]) = {
