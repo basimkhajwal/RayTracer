@@ -60,6 +60,7 @@ class SceneBuilder {
 
   final def worldBegin(): Unit = {
     require(!worldSection, "World begin cannot be nested")
+    identityTransform()
     worldSection = true
   }
 
@@ -79,7 +80,7 @@ class SceneBuilder {
   }
 
   final def film(filmType: String, params: ParamSet): Unit = {
-    require(worldSection, "Films must be defined outside of the world section")
+    require(!worldSection, "Films must be defined outside of the world section")
     filmName = filmType
     filmParams = params
     log(s"Set film to $filmType")
