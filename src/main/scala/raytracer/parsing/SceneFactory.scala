@@ -27,21 +27,20 @@ object SceneFactory {
   }
 
   def makeFilm(filmType: String, params: ParamSet): Film = reportUnused(params) {
+    val xRes = params.getOneOr[Double]("xresolution", params.getOneOr[Int]("xresolution", 640)).toInt
+    val yRes = params.getOneOr[Double]("yresolution", params.getOneOr[Int]("yresolution", 640)).toInt
+
     filmType match {
 
       case "image" => {
-        val xRes = params.getOneOr[Int]("xresolution", 640)
-        val yRes = params.getOneOr[Int]("yresolution", 480)
         val fName = params.getOneOr[String]("filename", "default.png")
 
         new ImageFilm(fName, xRes, yRes)
       }
 
       case "screen" => {
-        val xRes = params.getOneOr[Int]("xresolution", 640)
-        val yRes = params.getOneOr[Int]("yresolution", 480)
-        val width = params.getOneOr[Int]("width", xRes)
-        val height = params.getOneOr[Int]("height", yRes)
+        val width = params.getOneOr[Double]("width", params.getOneOr[Int]("width", xRes)).toInt
+        val height = params.getOneOr[Double]("height", params.getOneOr[Int]("height", yRes)).toInt
 
         new ScreenFilm(xRes, yRes, width, height)
       }
@@ -62,7 +61,7 @@ object SceneFactory {
 
       case "perspective" => {
 
-        val fov: Double = params.getOneOr[Double]("fov", 90)
+        val fov: Double = params.getOneOr[Double]("fov", params.getOneOr[Int]("fov", 90))
 
         new PerspectiveCamera(camToWorld, (sw(0), sw(1), sw(2), sw(3)), fov, film)
       }
@@ -79,7 +78,7 @@ object SceneFactory {
     lightType match {
 
       case "point" => {
-        val intensity = params.getOneOr[Spectrum]("I", Spectrum.WHITE)
+        val intensity = params.getOneOr[Spectrum]("i", Spectrum.WHITE)
         val scale = params.getOneOr[Spectrum]("scale", Spectrum.WHITE)
         val from = params.getOneOr[Point]("from", Point.ZERO)
         val l2w = Transform.translate(from.x, from.y, from.z) * lightToWorld
