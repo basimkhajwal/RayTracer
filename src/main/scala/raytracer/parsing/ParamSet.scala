@@ -20,7 +20,7 @@ class ParamSet(logger: Logger) {
     allParams += (paramName.toLowerCase -> paramValue)
   }
 
-  final def optionTry[T: ClassTag](name: String, block: Seq[Any]): Option[Seq[T]] = {
+  final def optionTry[T: ClassTag](block: Seq[Any]): Option[Seq[T]] = {
     try {
       val values = block.map(_ match { case e: T => e })
       Some(values)
@@ -28,8 +28,8 @@ class ParamSet(logger: Logger) {
   }
 
   def get[T : ClassTag](paramName: String): Option[Seq[T]] = {
-    val paramValue = allParams.get(paramName.toLowerCase).flatMap(p => optionTry[T](paramName, p))
-    if (paramValue.isDefined) usedParams ::= paramName
+    val paramValue = allParams.get(paramName.toLowerCase).flatMap(p => optionTry[T](p))
+    if (paramValue.isDefined) usedParams ::= paramName.toLowerCase
     paramValue
   }
 
@@ -41,7 +41,7 @@ class ParamSet(logger: Logger) {
 
   def reportUnused: Unit = {
     for (param <- allParams.keys) {
-      if (!usedParams.contains(param)) logger.log(s"Unused parameter $param")
+      if (!usedParams.exists(_.equals(param))) logger.log(s"Unused parameter $param")
     }
   }
 }
