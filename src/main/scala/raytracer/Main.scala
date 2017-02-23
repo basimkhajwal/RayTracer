@@ -78,8 +78,6 @@ object Main {
 
     override val camera: Camera = sceneBuilder.getCamera
     override val scene: Scene = new Scene(sceneBuilder.getLights, sceneBuilder.getPrimitives)
-
-    override val pixelSampleCount: Int = 1
     override val maxRayDepth: Int = 3
 
     override val integrator: Integrator = new Whitted

@@ -3,17 +3,13 @@ package raytracer
 /**
   * Created by Basim on 15/12/2016.
   */
-import java.awt.image.BufferedImage
 
-import raytracer.cameras.{Camera, OrthographicCamera, PerspectiveCamera}
+import raytracer.cameras.Camera
 import raytracer.films.Film
-import raytracer.integrators.{Integrator, Whitted}
-import raytracer.math.{Point, Ray, Transform, Vec3}
+import raytracer.integrators.Integrator
 
 trait RenderOpts {
-  val maxRayDepth: Int = 1
-  val pixelSampleCount: Int = 2
-
+  val maxRayDepth: Int
   val scene: Scene
   val integrator: Integrator
   val film: Film
@@ -28,7 +24,6 @@ class Renderer(options: RenderOpts) {
 
     for (y <- 0 until height; x <- 0 until width) {
       val lum = options.integrator.traceRay(options.camera.generateRay(x, y))(options)
-
       options.film.applySample(x, y, lum.clamp)
     }
 
