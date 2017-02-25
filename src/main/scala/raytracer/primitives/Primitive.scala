@@ -8,13 +8,9 @@ import raytracer.shapes.{DifferentialGeometry, Shape}
 /**
   * Created by Basim on 28/01/2017.
   */
-class Primitive(val shape: Shape, val material: Material) {
+trait Primitive {
 
-  final def intersect(ray: Ray): Option[Intersection] = {
-    shape.intersect(ray).map(x => Intersection(x._1, this, x._2))
-  }
+  def intersect(ray: Ray): Option[Intersection]
 
-  final def getBSDF(dg: DifferentialGeometry): BSDF = {
-    material.getBSDF(dg, shape.getShadingGeometry(dg))
-  }
+  def getBSDF(dg: DifferentialGeometry): BSDF
 }
