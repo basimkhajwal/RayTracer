@@ -19,18 +19,17 @@ class Whitted extends Integrator{
         val p = dg.p
         val bsdf = isect.getBSDF
 
-        val directLight =
-          scene.lights
-            .map(l => {
-              val (lightIntensity, wi, lightDist) = l.sample(p)
-              val lightValue = lightIntensity * wi.dot(dg.nn) * bsdf(ray.dir, wi, BSDFType.ALL_REFLECTION)
+        val directLight = scene.lights
+          .map(l => {
+            val (lightIntensity, wi, lightDist) = l.sample(p)
+            val lightValue = lightIntensity * wi.dot(dg.nn) * bsdf(ray.dir, wi, BSDFType.ALL_REFLECTION)
 
-              scene intersect(Ray(p, wi), 0, lightDist) match {
-                case None => lightValue
-                case Some(_) => Spectrum.BLACK
-              }
-            })
-            .foldLeft(Spectrum.BLACK)(_ + _)
+            scene intersect(Ray(p, wi), 0, lightDist) match {
+              case None => lightValue
+              case Some(_) => Spectrum.BLACK
+            }
+          })
+          .foldLeft(Spectrum.BLACK)(_ + _)
 
         if (depth >= options.maxRayDepth) directLight
         else {
