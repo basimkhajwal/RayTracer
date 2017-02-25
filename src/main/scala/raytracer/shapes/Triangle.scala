@@ -1,16 +1,15 @@
 package raytracer.shapes
 
-import raytracer.{Spectrum}
 import raytracer.math._
 import raytracer.Constants._
 
 /**
   * Created by Basim on 14/01/2017.
   */
-case class Triangle(p1: Point, p2: Point, p3: Point, colour: Spectrum) extends Shape {
+case class Triangle(p1: Point, p2: Point, p3: Point, o2w: Transform) extends Shape {
 
-  override val objectToWorld: Transform = Transform.identity
-  override val worldToObject: Transform = Transform.identity
+  override val objectToWorld: Transform = o2w
+  override val worldToObject: Transform = o2w.inverse
 
   override val objectBounds: BBox = BBox.fromPoints(p1, p2, p3)
 
@@ -18,7 +17,9 @@ case class Triangle(p1: Point, p2: Point, p3: Point, colour: Spectrum) extends S
   private val e2: Vec3 = p3-p1
   private val nor = e1.cross(e2)
 
-  override def intersect(ray: Ray): Option[(DifferentialGeometry, Double)] = {
+  override def intersect(worldRay: Ray): Option[(DifferentialGeometry, Double)] = {
+
+    val ray = worldToObject(worldRay)
 
     // Compute triangle intersection using Moller-Trombore algorithm
     val D = ray.dir
@@ -42,6 +43,6 @@ case class Triangle(p1: Point, p2: Point, p3: Point, colour: Spectrum) extends S
     val n = if (det < 0) -nor else nor
     val surfacePoint = intersectionPoint + n*EPSILON
 
-    Some((DifferentialGeometry(surfacePoint, n, u, v, this), t))
+    Some((DifferentialGeometry(objectToWorld(surfacePoint), n, u, v, this), t))
   }
 }
