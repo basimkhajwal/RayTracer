@@ -6,7 +6,7 @@ import raytracer.cameras.Camera
 import raytracer.films.{Film, ScreenFilm}
 import raytracer.integrators.{Integrator, Whitted}
 import raytracer.math.{Point, Vec3}
-import raytracer.parsing.{ParamSet, SceneBuilder}
+import raytracer.parsing.{ParamSet, SceneBuilder, SceneParser}
 
 /**
   * Created by Basim on 18/12/2016.
@@ -84,8 +84,20 @@ object Main {
     override val film: Film = sceneBuilder.getFilm
   }
 
+  val fileScene = new RenderOpts {
+    override val integrator: Integrator = new Whitted
+
+    val sceneParser: SceneParser = new SceneParser("scenes/testscene.txt")
+    sceneParser.parse
+
+    override val film: Film = sceneParser.getFilm
+    override val maxRayDepth: Int = 3
+    override val scene: Scene = new Scene(sceneParser.getLights, sceneParser.getPrimitives)
+    override val camera: Camera = sceneParser.getCamera
+  }
+
   def main(args: Array[String]) = {
-    new Renderer(scene).render
+    new Renderer(fileScene).render
   }
 
   def findFirst(n: Int): String = {
