@@ -13,5 +13,5 @@ case class Intersection (
 
   // TODO: Add derivative terms
 ) {
-  final def getBSDF: BSDF = primitive.material.getBSDF(dg, dg)
+  final def getBSDF: BSDF = primitive.getBSDF(dg)
 }
