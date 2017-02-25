@@ -6,16 +6,16 @@ import raytracer.Constants.EPSILON
 /**
   * Created by Basim on 05/01/2017.
   */
-case class Sphere(val r: Double, val centre: Point) extends Shape {
+case class Sphere(r: Double, o2w: Transform) extends Shape {
+
+  override val objectToWorld: Transform = o2w
+  override val worldToObject: Transform = o2w.inverse
+  val centre: Point = o2w(Point.ZERO)
 
   override val objectBounds: BBox = {
     val offset = Vec3(r, r, r)
     BBox(centre - offset, centre + offset)
   }
-
-  // TODO: Complete these definitions
-  override val objectToWorld: Transform = Transform.identity
-  override val worldToObject: Transform = Transform.identity
 
   override def intersect(ray: Ray): Option[(DifferentialGeometry, Double)] = {
 
