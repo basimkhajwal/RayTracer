@@ -1,0 +1,20 @@
+WorldBegin
+
+Material "matte" "rgb kd" [1 0 0]
+
+TransformBegin
+    Translate 0 0 0
+    LightSource "point"
+TransformEnd
+
+TransformBegin
+    Translate 0 0 2
+    Shape "sphere"
+TransformEnd
+
+#TransformBegin
+    #Translate 0 0 2
+    #Shape "trianglemesh" "integer indices" [0 1 2] "point P" [ 0 1 0 1 0 0 -1 0 0 ]
+#TransformEnd
+
+WorldEnd
