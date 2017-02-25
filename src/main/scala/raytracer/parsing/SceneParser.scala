@@ -1,6 +1,6 @@
 package raytracer.parsing
 
-import raytracer.Logger
+import raytracer.{Logger, Spectrum}
 import raytracer.math.{Mat4, Point, Transform, Vec3}
 
 import scala.annotation.tailrec
@@ -156,6 +156,12 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
       case "texture" => mapAndAdd[String](_, _)
 
+      case "rgb" => {
+        val parts = checkedMap(_ + "is not a valid RGB value", _.toDouble)
+        if (parts.length % 3 != 0) throwError("Each RGB requires exactly 3 doubles!")
+        params.add(paramName, parts.grouped(3).map(p => Spectrum(p(0), p(1), p(2))).toSeq)
+      }
+
       case _ => warningMsg("Unimplemented parameter type " + paramType)
     }
   }
@@ -192,14 +198,14 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
       } {
         nextToken()
         done = false
-        parseParameter(params, pType, pName, getParamValues)
+        parseParameter(params, pName, pType, getParamValues)
       }
     }
 
     params
   }
 
-  def parse: Unit = {
+  def parse(): Unit = {
 
     infoMsg("Began parsing scene definition")
 
@@ -212,6 +218,16 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
         case "worldbegin" => parseWorld
 
         case "include" => parseInclude
+
+        case "camera" => {
+          val camType = nextToken().getOrElse("Camera type must be specified")
+          catchError { camera(camType, parseParams()) }
+        }
+
+        case "film" => {
+          val filmType = nextToken().getOrElse("Film type must be specified")
+          catchError { film(filmType, parseParams()) }
+        }
 
         case token if parseTransform(token) =>
 
@@ -226,8 +242,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
     var t: Option[String] = None
     var done = false
 
-    infoMsg("Began parsing world")
-    setTransform(Transform.identity)
+    worldBegin()
 
     while ({
     t = nextToken()
@@ -279,6 +294,8 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
       case token => throwError(s"Identifier $token not recognised")
     }
+
+    worldEnd()
   }
 
   private def parseInclude: Unit = {
@@ -291,7 +308,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
     }
   }
 
-  def parseTransform(token: String): Boolean = {
+  private def parseTransform(token: String): Boolean = {
     var matched = true
 
     token.toLowerCase match {
