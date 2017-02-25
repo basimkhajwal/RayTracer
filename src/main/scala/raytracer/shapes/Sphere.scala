@@ -10,19 +10,20 @@ case class Sphere(r: Double, o2w: Transform) extends Shape {
 
   override val objectToWorld: Transform = o2w
   override val worldToObject: Transform = o2w.inverse
-  val centre: Point = o2w(Point.ZERO)
 
   override val objectBounds: BBox = {
     val offset = Vec3(r, r, r)
-    BBox(centre - offset, centre + offset)
+    BBox(Point.ZERO+(-offset), Point.ZERO+offset)
   }
 
-  override def intersect(ray: Ray): Option[(DifferentialGeometry, Double)] = {
+  override def intersect(worldRay: Ray): Option[(DifferentialGeometry, Double)] = {
+
+    val ray = worldToObject(worldRay)
 
     // Solve the quadratic equation for t
-    val dx = (ray.start.x-centre.x)
-    val dy = (ray.start.y-centre.y)
-    val dz = (ray.start.z-centre.z)
+    val dx = ray.start.x
+    val dy = ray.start.y //(ray.start.y-centre.y)
+    val dz = ray.start.z // (ray.start.z-centre.z)
 
     val a = 1 // Assuming ray direction is normalized
     val b = 2 * (ray.dir.x*dx + ray.dir.y*dy + ray.dir.z*dz)
@@ -40,10 +41,10 @@ case class Sphere(r: Double, o2w: Transform) extends Shape {
 
     val t =  if (t2 <= 0) t1 else t2 //if (t1 < 0) t2 else if (t2 < 0) t1 else Math.min(t1, t2)
     val point = ray.start + ray.dir*t
-    val normal = (point - centre).nor
+    val normal = (point-Point.ZERO).nor
     val surfacePoint = point + normal*EPSILON
 
-    Some((DifferentialGeometry(surfacePoint, normal, 0, 0, this), t))
+    Some((DifferentialGeometry(objectToWorld(surfacePoint), normal, 0, 0, this), t))
   }
 
 }
