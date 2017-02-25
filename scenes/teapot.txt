@@ -8,7 +8,7 @@ WorldBegin
 
 TransformBegin
     CoordSysTransform "camera"
-    LightSource "point" "rgb I" [10 10 10]
+    LightSource "point" "rgb I" [1000 1000 1000]
 TransformEnd
 TransformBegin
     Translate 0 0 3

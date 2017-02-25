@@ -11,6 +11,6 @@ case class PointLight(lightToWorld: Transform, intensity: Spectrum) extends Ligh
 
   override def sample(point: Point): (Spectrum, Vec3, Double) = {
     val lightVec = lightPoint - point
-    (intensity, lightVec.nor, lightVec.mag)
+    (intensity * (1 / lightVec.mag2), lightVec.nor, lightVec.mag)
   }
 }
