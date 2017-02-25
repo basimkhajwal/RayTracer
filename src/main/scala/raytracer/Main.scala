@@ -87,7 +87,7 @@ object Main {
   val fileScene = new RenderOpts {
     override val integrator: Integrator = new Whitted
 
-    val sceneParser: SceneParser = new SceneParser("scenes/testscene.txt")
+    val sceneParser: SceneParser = new SceneParser("scenes/teapot.txt")
     sceneParser.parse
 
     override val film: Film = sceneParser.getFilm
