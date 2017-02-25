@@ -7,11 +7,19 @@ Film "screen" "integer xresolution" [200 ] "integer yresolution" [200 ]
 WorldBegin
 
 TransformBegin
-Translate 0 0 -3
-LightSource "point" "rgb I" [1 1 1]
+    CoordSysTransform "camera"
+    LightSource "point" "rgb I" [10 10 10]
+TransformEnd
+TransformBegin
+    Translate 0 0 3
+    LightSource "point" "rgb I" [10 10 10]
+TransformEnd
+TransformBegin
+    Translate 3 0 -3
+    LightSource "point" "rgb I" [10 10 10]
 TransformEnd
 
-Material "matte" "rgb Kd" [ .2 .2 .5 ]
+Material "matte" "rgb Kd" [ 1 1 .5 ]
 
 Shape "trianglemesh"  "integer indices" [0 2 1 ] "point P" [1.332760 -0.370922 2.454690 1.350740 -0.375926 2.400000 1.400000 0.000000 2.400000 ] "vector N" [0.953562 -0.257047 0.156989 0.871509 -0.234929 0.430442 0.902861 0.000000 0.429934 ]
 Shape "trianglemesh"  "integer indices" [0 2 1 ] "point P" [1.400000 0.000000 2.400000 1.381370 0.000000 2.454690 1.332760 -0.370922 2.454690 ] "vector N" [0.902861 0.000000 0.429934 0.987636 0.000000 0.156768 0.953562 -0.257047 0.156989 ]
