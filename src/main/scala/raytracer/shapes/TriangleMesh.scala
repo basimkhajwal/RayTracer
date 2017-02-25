@@ -20,6 +20,7 @@ case class TriangleMesh(
   override val objectBounds: BBox = triangles.map(_.objectBounds).reduce(_.union(_))
 
   override def intersect(ray: Ray): Option[(DifferentialGeometry, Double)] = {
+
     val intersections = triangles
       .map(_.intersect(ray))
       .filter(_.isDefined)

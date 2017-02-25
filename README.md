@@ -14,11 +14,23 @@ In contrast, rasterization provides a faster approach by dealing directly with p
 
 As a result, rasterization is mainly used for real-time applications such as games and interactive animations where the speed of rasterization pays off, but ray tracing is the go-to method for pre-rendered material such as films, packaging and anything relying on realistic CGI  . In this project, I plan on making a ray tracer because I am interested in investigating how and to what degree physically based models can produce accurate photo-realistic images and a real-time application isn't necessary. In addition, at the moment it is difficult to apply the same kind of optimisation for ray tracing due to hardware limitations but this is a field of active research with some very promising results <sup>[[7](#7)]</sup>. Therefore, with the advent of ever more powerful technology there is a high possibility that ray tracing could be made efficient enough for real-time purposes.
 
-## Choice of Technology
+### Choice of Technology
 
 In order to build the application, I need to first decide which programming language to use to build it in. The industry standard for rendering systems is using C++ since it provides a high degree of low level support which allows you to optimise efficient code, also C++ provides very little overhead meaning its memory usage is often far lower as well. However, for this project I have decided to use a different programming language called Scala. This language is more expressive and higher level meaning it would require less program code to be written than the equivalent in C++, so would require less development time. Another advantage is that it runs on the Java Virtual Machine (JVM), as a result the program, once compiled, can be run on any system supporting Java and the JVM is a highly optimised system which will provide a fast runtime (although not as fast as C++). 
 
 An experimental ray tracer <sup>[[6](#6)]</sup> was run as a benchmark to compare the performances of languages. It showed that Scala is roughly 3 times slower than the same algorithm written in C++, but it used less than half the number of lines of code. For a large project with many developers C++ is a good choice, but in my case Scala's conciseness outweighs the relatively small performance loss. In addition, Scala is easier to maintain and debug therefore even more time would be saved in development when reasoning about the algorithms.
+
+TODO Sections:
+- Overview of how the code was structured with unit tests and benchmarks
+- In-depth explanation of ray tracing algorithm, giving an overview of each separate part below
+- Short section on shape geomety and how intersections are computed analytically
+- Overview of different types of light sources and the effect it can have on the image
+- The simulation of cameras, orthographic vs perspective and how the image changes with depth of field
+- Explaining basic radiometry, the need for non-RGB spectral representation and gamma correction
+- Comparing the results of different ray tracing models (Whitted model, Path Tracing, Biased vs Un-biased etc.)
+- Optimization techniques (parallel run-times, efficient intersection testing)
+- Overview of how the parsing/building system works
+- Evaluation of how well the images output by the ray tracer are compared to actual real images
 
 ## References
 
