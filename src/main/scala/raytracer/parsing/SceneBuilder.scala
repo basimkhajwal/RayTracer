@@ -5,7 +5,7 @@ import raytracer.cameras.Camera
 import raytracer.films.Film
 import raytracer.lights.Light
 import raytracer.math.{Point, Transform, Vec3}
-import raytracer.primitives.Primitive
+import raytracer.primitives.{GeometricPrimitive, Primitive}
 
 /**
   * Created by Basim on 27/01/2017.
@@ -164,7 +164,7 @@ class SceneBuilder {
 
     val shape = SceneFactory.makeShape(name, currentTransform, params)
     val mat = graphicsState.createMaterial(params)
-    primitives ::= new Primitive(shape, mat)
+    primitives ::= new GeometricPrimitive(shape, mat)
 
     log(s"Added primitive of shape type $name")
   }

@@ -28,7 +28,7 @@ object SceneFactory {
 
   def makeFilm(filmType: String, params: ParamSet): Film = reportUnused(params) {
     val xRes = params.getOneOr[Double]("xresolution", params.getOneOr[Int]("xresolution", 640)).toInt
-    val yRes = params.getOneOr[Double]("yresolution", params.getOneOr[Int]("yresolution", 640)).toInt
+    val yRes = params.getOneOr[Double]("yresolution", params.getOneOr[Int]("yresolution", 480)).toInt
 
     filmType match {
 
@@ -125,7 +125,7 @@ object SceneFactory {
       case "sphere" => {
         val radius = params.getOneOr[Double]("radius", 1)
 
-        Sphere(radius, objToWorld(Point.ZERO))
+        Sphere(radius, objToWorld)
       }
 
       case "trianglemesh" => {
@@ -138,7 +138,7 @@ object SceneFactory {
 
         require(indices.length % 3 == 0, "Indices must specify 3 points for each triangle")
 
-        TriangleMesh(indices.toArray, points.toArray)
+        TriangleMesh(indices.toArray, points.toArray, objToWorld)
       }
 
       case _ => throw new IllegalArgumentException(s"Unimplemented shape type $name")
