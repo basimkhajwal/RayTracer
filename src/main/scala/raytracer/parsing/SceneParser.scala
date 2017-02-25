@@ -102,7 +102,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
     try(f) catch {
       case e: AssertionError => throwError("Assertion failed:\t" + e.getMessage)
       case e: IllegalArgumentException => throwError("Invalid argument:\t" + e.getMessage)
-      case e => throwError(e.toString)
+      case e => throw e
     }
   }
 
