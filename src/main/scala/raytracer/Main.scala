@@ -30,17 +30,17 @@ object Main {
 
       transformBegin()
         translateTransform(-3, 5, 0)
-        lightSource("point", ParamSet.from("I" -> List(Spectrum.WHITE)))
+        lightSource("point", ParamSet.from("I" -> List(Spectrum(100, 100, 100))))
       transformEnd()
 
       transformBegin()
         translateTransform(0, 5, 0)
-        lightSource("point", ParamSet.from("I" -> List(Spectrum.WHITE)))
+        lightSource("point", ParamSet.from("I" -> List(Spectrum(100, 100, 100))))
       transformEnd()
 
       transformBegin()
         translateTransform(3, 5, 0)
-        lightSource("point", ParamSet.from("I" -> List(Spectrum.WHITE)))
+        lightSource("point", ParamSet.from("I" -> List(Spectrum(100, 100, 100))))
       transformEnd()
 
       transformBegin()
@@ -84,20 +84,19 @@ object Main {
     override val film: Film = sceneBuilder.getFilm
   }
 
-  val fileScene = new RenderOpts {
+  /*val fileScene = new RenderOpts {
     override val integrator: Integrator = new Whitted
 
-    val sceneParser: SceneParser = new SceneParser("scenes/teapot.txt")
-    sceneParser.parse
+    val sceneParser: SceneParser = new SceneParser("scenes/teapot.txt") { parse }
 
     override val film: Film = sceneParser.getFilm
     override val maxRayDepth: Int = 3
     override val scene: Scene = new Scene(sceneParser.getLights, sceneParser.getPrimitives)
     override val camera: Camera = sceneParser.getCamera
-  }
+  }*/
 
   def main(args: Array[String]) = {
-    new Renderer(fileScene).render
+    new Renderer(scene).render
   }
 
   def findFirst(n: Int): String = {
