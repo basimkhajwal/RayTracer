@@ -1,6 +1,6 @@
-package raytracer
+package raytracer.bxdf
 
-import org.apache.commons.lang3.builder.Diff
+import raytracer.Spectrum
 import raytracer.math.Vec3
 import raytracer.shapes.DifferentialGeometry
 
@@ -24,15 +24,7 @@ final class BSDF (
   }
 }
 
-trait BxDF {
-  def matches(flags: Int): Boolean = (flags & bsdfType) == bsdfType
-
-  val bsdfType: Int
-
-  def apply(wo: Vec3, wi: Vec3): Spectrum
-}
-
-object BSDFType {
+object BSDF {
   val REFLECTION = 1
   val TRANSMISSION = 2
   val DIFFUSE = 4
@@ -42,13 +34,6 @@ object BSDFType {
   val ALL = DIFFUSE | GLOSSY | SPECULAR
   val ALL_REFLECTION = ALL | REFLECTION
   val ALL_TRANSMISSION = ALL | TRANSMISSION
-}
-
-class Lambertian(reflectance: Spectrum) extends BxDF {
-
-  override val bsdfType: Int = BSDFType.REFLECTION | BSDFType.DIFFUSE
-
-  override def apply(wo: Vec3, wi: Vec3): Spectrum = reflectance * (1 / Math.PI)
 }
 
 

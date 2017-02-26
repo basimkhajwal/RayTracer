@@ -1,6 +1,6 @@
 package raytracer.primitives
 
-import raytracer.BSDF
+import raytracer.bxdf.BSDF
 import raytracer.materials.Material
 import raytracer.math.Ray
 import raytracer.shapes.{DifferentialGeometry, Shape}
