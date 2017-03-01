@@ -20,6 +20,18 @@ In order to build the application, I need to first decide which programming lang
 
 An experimental ray tracer <sup>[[6](#6)]</sup> was run as a benchmark to compare the performances of languages. It showed that Scala is roughly 3 times slower than the same algorithm written in C++, but it used less than half the number of lines of code. For a large project with many developers C++ is a good choice, but in my case Scala's conciseness outweighs the relatively small performance loss. In addition, Scala is easier to maintain and debug therefore even more time would be saved in development when reasoning about the algorithms.
 
+## Project Development
+
+### Parsing Existing Scene Formats
+
+In order to be able to properly compare the output of my ray tracer with existing realistic implementations would be to render the exact same images which I could then use to evaluate the effectiveness of my ray tracer. For this purpose, I chose to write a scene parser that would read in a text file in the format specified by PBRT [INSERT CITATION HERE] and then use that to load the scene which would then be rendered using the ray tracer. The main difficulty in this was that I needed to follow the exact specification of the scene format in order to be able to read everything without coming across errors. In other parts of the project I was free to make modifications that would simplify the code and make it more efficient to do in Scala (since most existing implementations are in C++), however for the parsing I would have to implement all the details but I would still be free as to _how_ I would parse the details.
+
+- Describe the parsing process
+  1. Tokenising
+  2. Parsing (keeping track of program state)
+- Make a diagram to show the parsing process
+- Compare the line count in my parser/builder vs PBRT parser
+
 TODO Sections:
 - Overview of how the code was structured with unit tests and benchmarks
 - In-depth explanation of ray tracing algorithm, giving an overview of each separate part below
