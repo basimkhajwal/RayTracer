@@ -18,12 +18,10 @@ object Main {
     val sceneBuilder = new SceneBuilder {
       val spacing: Double = 100000
 
-      identityTransform()
       lookAtTransform(Point(3,0,-5), Point(0,-8,0), Vec3(0,1,0))
 
-      film("screen", ParamSet.from("xresolution" -> List(800.0), "yresolution" -> List(600), "width" -> List(1600), "height" -> List(1200)))
+      film("image", ParamSet.from("xresolution" -> List(800.0), "yresolution" -> List(600), "filename" -> List(findFirst(0)), "height" -> List(1200)))
       camera("perspective", ParamSet.from("fov" -> List(80)))
-      identityTransform()
 
       worldBegin()
       material("matte", ParamSet.from("kd" -> List(Spectrum.WHITE)))
