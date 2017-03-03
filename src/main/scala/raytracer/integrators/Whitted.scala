@@ -7,12 +7,11 @@ import raytracer.primitives.Intersection
 /**
   * Created by Basim on 05/01/2017.
   */
-class Whitted extends Integrator{
+class Whitted(maxRayDepth: Int) extends Integrator{
 
-  override def traceRay(ray: Ray)(implicit options: RenderOpts) = traceRay(ray, 0)
+  override def traceRay(scene: Scene, ray: Ray) = traceRay(scene, ray, 0)
 
-  def traceRay(ray: Ray, depth: Int)(implicit options: RenderOpts) : Spectrum = {
-    val scene = options.scene
+  def traceRay(scene: Scene, ray: Ray, depth: Int): Spectrum = {
     scene intersect ray match {
       case None => Spectrum.BLACK
       case Some(isect @ Intersection(dg, _, _)) => {
@@ -32,10 +31,10 @@ class Whitted extends Integrator{
           })
           .foldLeft(Spectrum.BLACK)(_ + _)
 
-        if (depth >= options.maxRayDepth) directLight
+        if (depth >= maxRayDepth) directLight
         else {
           val newDir = (ray reflect dg.nn).nor
-          directLight + bsdf(ray.dir, newDir, BSDF.ALL_REFLECTION) *traceRay(Ray(p, newDir), depth + 1)
+          directLight + bsdf(ray.dir, newDir, BSDF.ALL_REFLECTION) * traceRay(scene, Ray(p, newDir), depth + 1)
         }
       }
     }
