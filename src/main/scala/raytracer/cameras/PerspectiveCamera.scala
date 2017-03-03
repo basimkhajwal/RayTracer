@@ -11,10 +11,7 @@ class PerspectiveCamera(
   screenWindow: (Double, Double, Double, Double),
   fov: Double, film: Film
 ) extends ProjectiveCamera(
-  camToWorld,
-  Projection.perspective(fov, 1e-2f, 1000), screenWindow, film.xResolution, film.yResolution) {
-
-  val zdir = Vec3(0, 0, 1)
+  camToWorld, Projection.perspective(fov, 1e-2f, 1000), screenWindow, film) {
 
   override def generateRay(imageX: Double, imageY: Double): Ray = {
     val pCamera = rasterToCamera(Point(imageX, imageY, 0))

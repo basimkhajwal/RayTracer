@@ -10,9 +10,7 @@ class OrthographicCamera(
   camToWorld: Transform,
   screenWindow: (Double, Double, Double, Double),
   film: Film
-) extends ProjectiveCamera(
-  camToWorld,
-  Projection.orthographic(0, 1), screenWindow, film.xResolution, film.yResolution) {
+) extends ProjectiveCamera(camToWorld, Projection.orthographic(0, 1), screenWindow, film) {
 
   val zdir = Vec3(0, 0, 1)
 
