@@ -1,5 +1,5 @@
 package raytracer.renderers
-import raytracer.Scene
+import raytracer.{Logger, Scene}
 import raytracer.cameras.Camera
 import raytracer.integrators.Integrator
 import raytracer.sampling.Sampler
@@ -16,6 +16,7 @@ class SamplerRenderer(
 
   override def render(scene: Scene): Unit = {
 
+    val before = System.currentTimeMillis()
     val subTasks = new Array[Thread](taskCount)
     var i = 0
     while (i < taskCount) {
@@ -29,6 +30,8 @@ class SamplerRenderer(
       subTasks(i).join()
       i += 1
     }
+
+    Logger.info.log("Renderer", "Finish in " + (System.currentTimeMillis()-before) + "ms")
 
     camera.film.saveImage()
   }
@@ -49,7 +52,7 @@ class SamplerRendererTask(
     while (!sampler.isFinished()) {
       val sample = sampler.getNextSample(0,0)
       val ray = camera.generateRay(sample.imageX, sample.imageY)
-      val li = integrator.traceRay(scene, ray)
+      val li = integrator.traceRay(scene, ray).clamp
 
       camera.film.applySample(sample.imageX.toInt, sample.imageY.toInt, li)
     }
