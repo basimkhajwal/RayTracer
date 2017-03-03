@@ -9,6 +9,26 @@ abstract class Sampler(
   val samplesPerPixel: Int
 ) {
 
+  def getSubSampler(idx: Int, count: Int): Sampler
+
+  protected final def computeSubWindow(idx: Int, count: Int): (Int, Int, Int, Int) = {
+    val dx = xEnd - xStart
+    val dy = yEnd - yStart
+    var nx = count
+    var ny = 1
+    while (nx % 2 == 0 && 2*dx*ny < dy*nx) {
+      nx >>= 1
+      ny <<= 1
+    }
+    val x = count % nx
+    val y = count / nx
+
+    (
+      xStart + (x*dx)/nx, xStart + ((x+1)*dx)/nx,
+      yStart + (y*dy)/ny, yStart + ((y+1)*dy)/ny
+    )
+  }
+
   def getNextSample(nOneD: Int, nTwoD: Int): Sample
 
   def isFinished(): Boolean

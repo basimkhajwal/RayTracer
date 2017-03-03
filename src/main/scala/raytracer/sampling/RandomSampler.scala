@@ -44,4 +44,9 @@ class RandomSampler(
     samplePos += 1
     Sample(imageX, imageY, oneD, twoD)
   }
+
+  override def getSubSampler(idx: Int, count: Int): Sampler = {
+    val (nxs, nxe, nys, nye) = computeSubWindow(idx, count)
+    new RandomSampler(nxs, nxe, nys, nye, samplesPerPixel)
+  }
 }
