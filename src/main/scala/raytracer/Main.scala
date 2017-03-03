@@ -77,9 +77,7 @@ object Main {
 
     override val camera: Camera = sceneBuilder.getCamera
     override val scene: Scene = new Scene(sceneBuilder.getLights, sceneBuilder.getPrimitives)
-    override val maxRayDepth: Int = 4
-
-    override val integrator: Integrator = new Whitted
+    override val integrator: Integrator = new Whitted(3)
     override val film: Film = sceneBuilder.getFilm
   }
 

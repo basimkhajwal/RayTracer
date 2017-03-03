@@ -9,7 +9,6 @@ import raytracer.films.Film
 import raytracer.integrators.Integrator
 
 trait RenderOpts {
-  val maxRayDepth: Int
   val scene: Scene
   val integrator: Integrator
   val film: Film
@@ -23,7 +22,7 @@ class Renderer(options: RenderOpts) {
     val height = options.film.yResolution
 
     for (y <- 0 until height; x <- 0 until width) {
-      val lum = options.integrator.traceRay(options.camera.generateRay(x, y))(options)
+      val lum = options.integrator.traceRay(options.scene, options.camera.generateRay(x, y))
       options.film.applySample(x, y, lum.clamp)
     }
 
