@@ -23,7 +23,7 @@ class RandomSampler(
       samplePos = 0
       xPos += 1
 
-      if (xPos == xEnd) {
+      if (xPos > xEnd) {
         xPos = xStart
         yPos += 1
       }

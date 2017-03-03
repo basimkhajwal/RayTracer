@@ -1,5 +1,7 @@
 package raytracer.sampling
 
+import raytracer.Logger
+
 /**
   * Created by Basim on 02/03/2017.
   */
@@ -8,6 +10,7 @@ abstract class Sampler(
   val yStart: Int, val yEnd: Int,
   val samplesPerPixel: Int
 ) {
+  Logger.info.log("Sampler", s"Created sampler $xStart $xEnd $yStart $yEnd")
 
   def getSubSampler(idx: Int, count: Int): Sampler
 
@@ -20,9 +23,8 @@ abstract class Sampler(
       nx >>= 1
       ny <<= 1
     }
-    val x = count % nx
-    val y = count / nx
-
+    val x = idx % nx
+    val y = idx / nx
     (
       xStart + (x*dx)/nx, xStart + ((x+1)*dx)/nx,
       yStart + (y*dy)/ny, yStart + ((y+1)*dy)/ny
