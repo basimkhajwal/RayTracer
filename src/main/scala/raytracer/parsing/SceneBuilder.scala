@@ -46,7 +46,7 @@ class SceneBuilder {
 
   private final def popTransform: Unit = transformStack = transformStack.tail
 
-  private final def log(msg: String): Unit = Logger.info.log(msg)
+  private final def log(msg: String): Unit = Logger.info.log("SceneBuilder", msg)
 
   /* --------------------- Public Methods --------------------------- */
 

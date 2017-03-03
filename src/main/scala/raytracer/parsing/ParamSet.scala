@@ -41,7 +41,7 @@ class ParamSet(logger: Logger) {
 
   def reportUnused: Unit = {
     for (param <- allParams.keys) {
-      if (!usedParams.exists(_.equals(param))) logger.log(s"Unused parameter $param")
+      if (!usedParams.exists(_.equals(param))) logger.log("ParamSet", s"Unused parameter $param")
     }
   }
 }

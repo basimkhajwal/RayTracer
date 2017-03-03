@@ -18,7 +18,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
   private var lexerStack: List[Lexer] = new Lexer(sceneFile) :: Nil
 
   private val warningLogger = new Logger {
-    override def log(msg: String) = warningMsg(msg)
+    override def log(caller: String, msg: String) = warningMsg(msg)
   }
 
   @inline
@@ -90,12 +90,12 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
   }
 
   protected final def warningMsg(msg: String): Unit = {
-    Logger.warning.log(s"In ${currentLexer.fileName} at ${currentLexer.currentLine} - $msg")
+    Logger.warning.log("SceneParser", s"In ${currentLexer.fileName} at ${currentLexer.currentLine} - $msg")
   }
 
   protected final def infoMsg(msg: String, fileInfo: Boolean = true): Unit = {
-    if (fileInfo) Logger.info.log(s"In ${currentLexer.fileName} at ${currentLexer.currentLine} - $msg")
-    else Logger.info.log(msg)
+    if (fileInfo) Logger.info.log("SceneParser", s"In ${currentLexer.fileName} at ${currentLexer.currentLine} - $msg")
+    else Logger.info.log("SceneParser", msg)
   }
 
   private def catchError(f: => Unit): Unit = {

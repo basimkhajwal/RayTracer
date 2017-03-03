@@ -1,16 +1,14 @@
 package raytracer
 
-import java.util
-
 /**
   * Created by Basim on 15/02/2017.
   */
 trait Logger {
-  def log(msg: String): Unit
+  def log(caller: String, msg: String): Unit
 }
 
 class OutputLogger(val name: String) extends Logger {
-  def log(msg: String) = printf("%-15s %s\n", name, msg)
+  def log(caller: String, msg: String) = printf("%-10s %-15s %s\n", name, caller, msg)
 }
 
 object Logger {
