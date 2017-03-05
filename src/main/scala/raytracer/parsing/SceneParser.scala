@@ -156,7 +156,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
       case "texture" => mapAndAdd[String](_, _)
 
-      case "rgb" => {
+      case "rgb" | "color" => {
         val parts = checkedMap(_ + "is not a valid RGB value", _.toDouble)
         if (parts.length % 3 != 0) throwError("Each RGB requires exactly 3 doubles!")
         params.add(paramName, parts.grouped(3).map(p => Spectrum(p(0), p(1), p(2))).toSeq)
@@ -227,6 +227,21 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
         case "film" => {
           val filmType = nextToken().getOrElse("Film type must be specified")
           catchError { film(filmType, parseParams()) }
+        }
+
+        case "integrator" => {
+          val integratorType = nextToken().getOrElse("Integrator type must be specified")
+          catchError { integrator(integratorType, parseParams()) }
+        }
+
+        case "sampler" => {
+          val samplerType = nextToken().getOrElse("Sampler type must be specified")
+          catchError { sampler(samplerType, parseParams()) }
+        }
+
+        case "renderer" => {
+          val rendererType = nextToken().getOrElse("Renderer type must be specified")
+          catchError { renderer(rendererType, parseParams()) }
         }
 
         case token if parseTransform(token) =>
