@@ -1,14 +1,8 @@
 package raytracer
 
 import java.nio.file.{Files, Paths}
-
-import raytracer.cameras.Camera
-import raytracer.films.Film
-import raytracer.integrators.{Integrator, Whitted}
 import raytracer.math.{Point, Vec3}
 import raytracer.parsing.{ParamSet, SceneBuilder}
-import raytracer.renderers.SamplerRenderer
-import raytracer.sampling.{RandomSampler, Sampler}
 
 /**
   * Created by Basim on 18/12/2016.
@@ -21,8 +15,13 @@ object Main {
 
     lookAtTransform(Point(3,0,-5), Point(0,-8,0), Vec3(0,1,0))
 
-    film("image", ParamSet.from("xresolution" -> List(800), "yresolution" -> List(600), "filename" -> List(findFirst(0)), "width" -> List(1600), "height" -> List(1200)))
+    film("image", ParamSet.from("xresolution" -> List(800), "yresolution" -> List(600),
+      "filename" -> List(findFirst(0)), "width" -> List(1600), "height" -> List(1200)))
     camera("perspective", ParamSet.from("fov" -> List(80)))
+    integrator("whitted", ParamSet.from("maxdepth" -> List(3)))
+    sampler("random", ParamSet.from("pixelsamples" -> List(1)))
+
+    renderer("sampler", ParamSet.from("taskcount" -> List(10)))
 
     worldBegin()
     material("matte", ParamSet.from("kd" -> List(Spectrum.WHITE)))
@@ -74,19 +73,9 @@ object Main {
 
     worldEnd()
   }
-  val camera: Camera = sceneBuilder.getCamera
-  val scene: Scene = new Scene(sceneBuilder.getLights, sceneBuilder.getPrimitives)
-  val integrator: Integrator = new Whitted(3)
-  val film: Film = sceneBuilder.getFilm
-  val sampler: Sampler = new RandomSampler(0, film.xResolution-1, 0, film.yResolution-1, 1)
 
   def main(args: Array[String]) = {
-    new SamplerRenderer(
-      sampler,
-      camera,
-      integrator,
-      10
-    ).render(scene)
+    sceneBuilder.render
   }
 
   def findFirst(n: Int): String = {
