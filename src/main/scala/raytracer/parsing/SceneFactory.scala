@@ -3,9 +3,12 @@ package raytracer.parsing
 import raytracer._
 import raytracer.cameras.{Camera, OrthographicCamera, PerspectiveCamera}
 import raytracer.films.{Film, ImageFilm, ScreenFilm}
+import raytracer.integrators.{Integrator, Whitted}
 import raytracer.lights.{Light, PointLight}
 import raytracer.materials.{Material, MatteMaterial}
 import raytracer.math.{Point, Transform}
+import raytracer.renderers.{Renderer, SamplerRenderer}
+import raytracer.sampling.{RandomSampler, Sampler}
 import raytracer.shapes.{Shape, Sphere, Triangle, TriangleMesh}
 import raytracer.textures.{ConstantTexture, Texture}
 
@@ -24,6 +27,47 @@ object SceneFactory {
     val returnValue = b
     ps.reportUnused
     returnValue
+  }
+
+  def makeIntegrator(integratorType: String, params: ParamSet): Integrator = reportUnused(params) {
+    integratorType match {
+
+      case "whitted" => {
+        val maxDepth = params.getOneOr[Int]("maxdepth", 3)
+        new Whitted(maxDepth)
+      }
+
+      case _ => throw new IllegalArgumentException(s"Un-implemented integrator type $integratorType")
+    }
+  }
+
+  def makeSampler(samplerType: String, params: ParamSet, camera: Camera): Sampler = reportUnused(params) {
+    samplerType match {
+
+      case "random" => {
+        val samplesPerPixel = params.getOneOr[Int]("pixelsamples", 4)
+        val (xs, xe, ys, ye) = camera.film.getSampleExtent()
+
+        new RandomSampler(xs, xe, ys, ye, samplesPerPixel)
+      }
+
+      case _ => throw new IllegalArgumentException(s"Un-implemented sampler type $samplerType")
+    }
+  }
+
+  def makeRenderer(
+    rendererType: String, params: ParamSet,
+    sampler: Sampler, camera: Camera, integrator: Integrator
+  ): Renderer = reportUnused(params) {
+    rendererType match {
+
+      case "sampler" => {
+        val taskCount = params.getOneOr[Int]("taskcount", 10)
+        new SamplerRenderer(sampler, camera, integrator, taskCount)
+      }
+
+      case _ => throw new IllegalArgumentException(s"Un-implemented renderer type $rendererType")
+    }
   }
 
   def makeFilm(filmType: String, params: ParamSet): Film = reportUnused(params) {
