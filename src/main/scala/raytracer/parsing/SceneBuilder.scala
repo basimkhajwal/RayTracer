@@ -1,11 +1,14 @@
 package raytracer.parsing
 
-import raytracer.Logger
+import raytracer.{Logger, Scene}
 import raytracer.cameras.Camera
 import raytracer.films.Film
+import raytracer.integrators.Integrator
 import raytracer.lights.Light
 import raytracer.math.{Point, Transform, Vec3}
 import raytracer.primitives.{GeometricPrimitive, Primitive}
+import raytracer.renderers.Renderer
+import raytracer.sampling.Sampler
 
 /**
   * Created by Basim on 27/01/2017.
@@ -30,9 +33,25 @@ class SceneBuilder {
   private var filmName = "screen"
   private var filmParams = new ParamSet()
 
+  private var samplerName = "random"
+  private var samplerParams = new ParamSet()
+
+  private var integratorName = "whitted"
+  private var integratorParams = new ParamSet()
+
+  private var rendererName = "sampler"
+  private var rendererParams = new ParamSet()
+
   private lazy val film: Film = SceneFactory.makeFilm(filmName, filmParams)
 
   private lazy val camera: Camera = SceneFactory.makeCamera(cameraName, cameraToWorld, film, cameraParams)
+
+  private lazy val sampler: Sampler = SceneFactory.makeSampler(samplerName, samplerParams, camera)
+
+  private lazy val integrator: Integrator = SceneFactory.makeIntegrator(integratorName, integratorParams)
+
+  private lazy val renderer: Renderer =
+    SceneFactory.makeRenderer(rendererName, rendererParams, sampler, camera, integrator)
 
   /* --------------------- Utility Methods --------------------------- */
 
@@ -50,13 +69,21 @@ class SceneBuilder {
 
   /* --------------------- Public Methods --------------------------- */
 
-  final def getPrimitives: List[Primitive] = primitives
+  final def render(): Unit = {
+    renderer.render(new Scene(lights, primitives))
+  }
 
-  final def getLights: List[Light] = lights
+  final def getRenderer(): Renderer = renderer
 
-  final def getFilm: Film = film
+  final def getPrimitives(): List[Primitive] = primitives
 
-  final def getCamera: Camera = camera
+  final def getLights(): List[Light] = lights
+
+  final def getFilm(): Film = film
+
+  final def getCamera(): Camera = camera
+
+  final def getSampler(): Sampler = sampler
 
   final def worldBegin(): Unit = {
     require(!worldSection, "World begin cannot be nested")
@@ -67,6 +94,27 @@ class SceneBuilder {
   final def worldEnd(): Unit = {
     require(worldSection, "Un-matched world end")
     worldSection = false
+  }
+
+  final def renderer(rendererType: String, params: ParamSet): Unit = {
+    require(!worldSection, "The renderer must be defined outside of the world section")
+    rendererName = rendererType
+    rendererParams = params
+    log(s"Set renderer to type $renderer")
+  }
+
+  final def sampler(samplerType: String, params: ParamSet): Unit = {
+    require(!worldSection, "The sampler must be defined outside of the world section")
+    samplerName = samplerType
+    samplerParams = params
+    log(s"Set sampler to type $samplerType")
+  }
+
+  final def integrator(integratorType: String, params: ParamSet): Unit = {
+    require(!worldSection, "The integrator must be defined outside of the world section")
+    integratorName = integratorType
+    integratorParams = params
+    log(s"Set integrator to type $integratorType")
   }
 
   final def camera(camType: String, params: ParamSet): Unit = {
