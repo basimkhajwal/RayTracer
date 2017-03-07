@@ -15,13 +15,13 @@ object Main {
 
     lookAtTransform(Point(3,0,-5), Point(0,-8,0), Vec3(0,1,0))
 
-    film("image", ParamSet.from("xresolution" -> List(800), "yresolution" -> List(600),
+    film("screen", ParamSet.from("xresolution" -> List(800), "yresolution" -> List(600),
       "filename" -> List(findFirst(0)), "width" -> List(1600), "height" -> List(1200)))
     camera("perspective", ParamSet.from("fov" -> List(80)))
     integrator("whitted", ParamSet.from("maxdepth" -> List(3)))
-    sampler("random", ParamSet.from("pixelsamples" -> List(1)))
+    sampler("random", ParamSet.from("pixelsamples" -> List(2)))
 
-    renderer("sampler", ParamSet.from("taskcount" -> List(10)))
+    renderer("sampler", ParamSet.from("taskcount" -> List(20)))
 
     worldBegin()
     material("matte", ParamSet.from("kd" -> List(Spectrum.WHITE)))

@@ -5,7 +5,7 @@ package raytracer.sampling
   */
 class Sample(
  iX: Double, iY: Double,
- oneD: Array[Double], twoD: Array[Double]
+ val oneD: Array[Double], val twoD: Array[Double]
 ) extends CameraSample(iX, iY)
 
 object Sample {
