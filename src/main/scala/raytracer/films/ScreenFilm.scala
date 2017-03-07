@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage
 import javax.swing.{JFrame, JPanel}
 
 import raytracer.Spectrum
+import raytracer.sampling.{CameraSample, Sample}
 
 /**
   * Created by Basim on 20/02/2017.
@@ -12,8 +13,8 @@ class ScreenFilm(xRes: Int, yRes: Int, val width: Int, val height: Int) extends 
 
   val image: BufferedImage = new BufferedImage(xRes, yRes, BufferedImage.TYPE_INT_RGB)
 
-  override def applySample(imageX: Int, imageY: Int, l: Spectrum): Unit = {
-    image.setRGB(imageX, imageY, l.toRGBInt)
+  override def applySample(sample: CameraSample, l: Spectrum): Unit = {
+    image.setRGB(sample.imageX.toInt, sample.imageY.toInt, l.toRGBInt)
   }
 
   override def saveImage: Unit = {

@@ -51,10 +51,10 @@ class SamplerRendererTask(
 
     while (!sampler.isFinished()) {
       val sample = sampler.getNextSample(0,0)
-      val ray = camera.generateRay(sample.imageX, sample.imageY)
+      val ray = camera.generateRay(sample)
       val li = integrator.traceRay(scene, ray).clamp
 
-      camera.film.applySample(sample.imageX.toInt, sample.imageY.toInt, li)
+      camera.film.applySample(sample, li)
     }
   }
 }
