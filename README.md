@@ -1,4 +1,4 @@
-# Building a functional 3D ray tracer using physically based rendering techniques.
+# Building a functional 3D ray tracer and to what extent can it simulate realistic light behaviour.
 
 ## Introduction
 
@@ -25,6 +25,8 @@ An experimental ray tracer <sup>[[6](#6)]</sup> was run as a benchmark to compar
 ### Parsing Existing Scene Formats
 
 In order to be able to properly compare the output of my ray tracer with existing realistic implementations would be to render the exact same images which I could then use to evaluate the effectiveness of my ray tracer. For this purpose, I chose to write a scene parser that would read in a text file in the format specified by PBRT [INSERT CITATION HERE] and then use that to load the scene which would then be rendered using the ray tracer. The main difficulty in this was that I needed to follow the exact specification of the scene format in order to be able to read everything without coming across errors. In other parts of the project I was free to make modifications that would simplify the code and make it more efficient to do in Scala (since most existing implementations are in C++), however for the parsing I would have to implement all the details but I would still be free as to _how_ I would parse the details.
+
+
 
 - Describe the parsing process
   1. Tokenising
