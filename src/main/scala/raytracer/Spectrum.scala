@@ -3,7 +3,7 @@ package raytracer
 /**
   * Created by Basim on 05/01/2017.
   */
-case class Spectrum(val r: Double, val g: Double, val b: Double) {
+case class Spectrum(r: Double, g: Double, b: Double) {
 
   def this(colour: Double) = this(colour, colour, colour)
 
@@ -14,6 +14,8 @@ case class Spectrum(val r: Double, val g: Double, val b: Double) {
   def *(that: Spectrum): Spectrum = Spectrum(r * that.r, g * that.g, b * that.b)
 
   def clamp: Spectrum = Spectrum(Math.min(r, 1), Math.min(g, 1), Math.min(b, 1))
+
+  def isBlack(epsilon: Double = 0): Boolean = r <= epsilon && g <= epsilon && b <= epsilon
 }
 
 object Spectrum {
