@@ -1,10 +1,8 @@
 package raytracer.bxdf
 
 import raytracer.Spectrum
-import raytracer.math.Vec3
+import raytracer.math.{Mat4, Transform, Vec3}
 import raytracer.shapes.DifferentialGeometry
-
-import scala.collection.mutable.ListBuffer
 
 /**
   * Created by Basim on 31/01/2017.
@@ -14,13 +12,39 @@ final class BSDF (
   val ng: Vec3
 ) {
 
-  private val bxdfs = new ListBuffer[BxDF]
+  private var bxdfs: List[BxDF] = Nil
+  def add(b: BxDF) = bxdfs ::= b
 
-  def add(b: BxDF) = bxdfs append b
+  private val nn: Vec3 = dg.nn
+  private val sn: Vec3 = dg.dpdu.nor
+  private val tn: Vec3 = nn cross sn
+
+  private val transformMat: Mat4 = new Mat4(Array(
+    sn.x, sn.y, sn.z, 0,
+    tn.x, tn.y, tn.z, 0,
+    nn.x, nn.y, nn.z, 0,
+    0, 0, 0, 0
+  ))
+  private val worldToLocal = new Transform(transformMat, transformMat.transpose)
 
   def apply(woW: Vec3, wiW: Vec3, flags: Int): Spectrum = {
-    // TODO: Complete method definition to convert vectors from world space to normal space
-    bxdfs.withFilter(_ matches flags).map(_(woW, wiW)).foldLeft(Spectrum.BLACK)(_ + _)
+    val wo = worldToLocal(woW)
+    val wi = worldToLocal(wiW)
+    bxdfs.withFilter(_ matches flags).map(_(wo, wi)).foldLeft(Spectrum.BLACK)(_ + _)
+  }
+
+  def sample(woW: Vec3, u1: Double, u2: Double, flags: Int): (Spectrum, Vec3) = {
+    val wo = worldToLocal(woW)
+
+    bxdfs.find(_ matches flags) match {
+      case None => (Spectrum.BLACK, Vec3.ZERO)
+      case Some(b) => {
+        val (wi, _) = b.sample(wo, u1, u2)
+        val lum = bxdfs.withFilter(_ matches flags).map(_(wo, wi)).foldLeft(Spectrum.BLACK)(_ + _)
+
+        (lum, wi)
+      }
+    }
   }
 }
 
