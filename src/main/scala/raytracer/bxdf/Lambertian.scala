@@ -11,4 +11,8 @@ class Lambertian(reflectance: Spectrum) extends BxDF {
   override val bsdfType: Int = BSDF.REFLECTION | BSDF.DIFFUSE
 
   override def apply(wo: Vec3, wi: Vec3): Spectrum = reflectance * (1 / Math.PI)
+
+  override def sample(wo: Vec3, u1: Double, u2: Double): (Vec3, Spectrum) = {
+    ???
+  }
 }
