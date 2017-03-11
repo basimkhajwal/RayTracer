@@ -16,6 +16,6 @@ class OrthographicCamera(
   val zdir = Vec3(0, 0, 1)
 
   override def generateRay(sample: CameraSample): Ray = {
-    cameraToWorld(Ray(rasterToCamera(Point(sample.imageX, sample.imageY, 0)), zdir))
+    cameraToWorld(Ray(rasterToCamera(Point(sample.imageX, sample.imageY, 0)), zdir, 0))
   }
 }

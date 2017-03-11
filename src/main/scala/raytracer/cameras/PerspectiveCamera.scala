@@ -16,7 +16,7 @@ class PerspectiveCamera(
 
   override def generateRay(sample: CameraSample): Ray = {
     val pCamera = rasterToCamera(Point(sample.imageX, sample.imageY, 0))
-    cameraToWorld(Ray(Point.ZERO, (pCamera-Point.ZERO).nor))
+    cameraToWorld(Ray(Point.ZERO, (pCamera-Point.ZERO).nor, 0))
   }
 }
 
