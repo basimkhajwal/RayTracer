@@ -26,6 +26,7 @@ final class BSDF (
     0, 0, 0, 0
   ))
   private val worldToLocal = new Transform(transformMat, transformMat.transpose)
+  private val localToWorld = worldToLocal.inverse
 
   def apply(woW: Vec3, wiW: Vec3, flags: Int): Spectrum = {
     val wo = worldToLocal(woW)
@@ -39,10 +40,8 @@ final class BSDF (
     bxdfs.find(_ matches flags) match {
       case None => (Spectrum.BLACK, Vec3.ZERO)
       case Some(b) => {
-        val (wi, _) = b.sample(wo, u1, u2)
-        val lum = bxdfs.withFilter(_ matches flags).map(_(wo, wi)).foldLeft(Spectrum.BLACK)(_ + _)
-
-        (lum, wi)
+        val (wi, lum) = b.sample(wo, u1, u2)
+        (lum, localToWorld(wi))
       }
     }
   }
