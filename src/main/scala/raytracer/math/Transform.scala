@@ -11,7 +11,7 @@ case class Transform(mat: Mat4, matInv: Mat4) {
 
   def apply(point: Point): Point = mat * point
 
-  def apply(ray: Ray): Ray = Ray(this(ray.start), this(ray.dir).nor)
+  def apply(ray: Ray): Ray = Ray(this(ray.start), this(ray.dir).nor, ray.depth)
 
   def apply(bbox: BBox): BBox = (0 to 7).map(p => this(bbox(p))).foldLeft(bbox)(_.union(_))
 
