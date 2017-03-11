@@ -44,7 +44,17 @@ case class Sphere(r: Double, o2w: Transform) extends Shape {
     val normal = (point-Point.ZERO).nor
     val surfacePoint = point + normal*EPSILON
 
-    Some((DifferentialGeometry(objectToWorld(surfacePoint), normal, 0, 0, this), t))
+    val phiAngle = math.atan2(point.y, point.x)
+    val phi = if (phiAngle < 0) phiAngle+2*math.Pi else phiAngle
+    val theta = math.acos(math.min(1, math.max(-1, point.z / r)))
+    val u = phi / (2 * math.Pi)
+    val v = theta / math.Pi
+
+    val dpdu = Vec3(-2*math.Pi*point.y, -2*math.Pi*point.x, 0)
+    val dpdv = Vec3(point.z* math.cos(phi), point.z*math.sin(phi), -r*math.sin(theta)) * math.Pi
+
+    val dg = DifferentialGeometry(objectToWorld(surfacePoint), normal, u, v, dpdu, dpdv, this)
+    Some((dg, t))
   }
 
 }
