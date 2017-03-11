@@ -14,5 +14,5 @@ trait BxDF {
 
   def apply(wo: Vec3, wi: Vec3): Spectrum
 
-  def sample(wo: Vec3, u1: Double, u2: Double): (Vec3, Spectrum, Double) // wi, output, pdf
+  def sample(wo: Vec3, u1: Double, u2: Double): (Vec3, Spectrum) // wi, output
 }
