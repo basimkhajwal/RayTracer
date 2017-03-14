@@ -28,6 +28,10 @@ In order to be able to properly compare the output of my ray tracer with existin
 
 The parsing process itself is composed of a series of well-defined steps each which process the input file further in order to be used for the next stage. This process is very general and is commonly used in most parsing systems however, since the PBRT file format is quite simple the parsing that I will need to do will be relatively simple compared more complex parsing systems that are designed to operate on much more intricate language definitions. The diagram below illustrates the simplified pipeline that I have used in my own parsing system from the input file to the final image output.
 
+<p align="center">
+  <img src="progress/process.png" alt="Parsing Process" />
+</p>
+
 The first stage involves reading the stream of characters from the input file given to the program, then a process called _tokenising_ is performed. This heavily simplifies the input by removing comments, whitespace and sectionining groups of characters into entities known as _tokens_. Luckily for me, tokenising is a very common procedure and there was a builtin class in the Scala libraries called StreamTokeniser which handled most of heavy duty work and all I had to implement was a thin wrapper or it so it would function according to my needs. Now, the input file has been transformed from a stream of characters into a stream of tokens.
 
 Consequently, the second stage reads in these tokens and builds a sequence of rendering commands out of them. This is one of the more complex commands since it is specific to the PBRT file format and I needed to match the specification exactly doing this process.
