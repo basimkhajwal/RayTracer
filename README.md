@@ -43,18 +43,6 @@ Consequently, the second stage reads in these tokens and builds a sequence of re
 
 Eventually, each rendering command would then be passed onto the rendering pipeline, the details of which have been the topic of discussion of the rest of the report. From there the final image would then be generated using all the various rendering techniques and options set by the image file. In the end, I am quite happy with the results of my parser and I managed to read the vast majority of the file format (some parts were omitted for simplicity) using just under 1100 lines of code - compared to the C++ Parser used within the actual PBRT implementation which uses about 4500 lines of code. This further highlights how using Scala has been a good tool to increase productivity and reduce how much code will be needed. 
 
-TODO Sections:
-- Overview of how the code was structured with unit tests and benchmarks
-- In-depth explanation of ray tracing algorithm, giving an overview of each separate part below
-- Short section on shape geomety and how intersections are computed analytically
-- Overview of different types of light sources and the effect it can have on the image
-- The simulation of cameras, orthographic vs perspective and how the image changes with depth of field
-- Explaining basic radiometry, the need for non-RGB spectral representation and gamma correction
-- Comparing the results of different ray tracing models (Whitted model, Path Tracing, Biased vs Un-biased etc.)
-- Optimization techniques (parallel run-times, efficient intersection testing)
-- Overview of how the parsing/building system works -- DONE
-- Evaluation of how well the images output by the ray tracer are compared to actual real images
-
 ## References
 
 ##### 1 
