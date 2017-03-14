@@ -37,9 +37,6 @@ The first stage involves reading the stream of characters from the input file gi
 Consequently, the second stage reads in these tokens and builds a sequence of rendering commands out of them. This is one of the more complex commands since it is specific to the PBRT file format and I needed to match the specification exactly doing this process.
 
 - Describe the parsing process
-  1. Tokenising
-  2. Parsing (keeping track of program state)
-- Make a diagram to show the parsing process
 - Compare the line count in my parser/builder vs PBRT parser
 
 TODO Sections:
