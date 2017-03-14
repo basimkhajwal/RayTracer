@@ -32,3 +32,8 @@ Recently, I have been working on developing a generic scene builder class, curre
 
 ##### 25/02/17
 I have completed most of the base work required for parsing the existing scene format used for the PBRT file format as described in their book, this took a lot more time than I was expecting because I had to follow their exact specifications in order to be able to correcly parse and read information about the scene from the file. I've also made some slight modifications in the rendering code, previously light passed un-changed over distance but now it varies correctly inversely with the square of the distance. I've managed to render a basic file rendering a teapot from the PBRT website and, although it renders correctly, it runs very slowly and it has highlighted my next task which is to work on optimising the performance of the renderer.
+
+Below is my current status of my Trello chart showing which tasks I have compeleted and those which I plan on doing:
+<p align="center">
+<img src="progress/trello1.png" alt="Trello Progress" height="450" />
+</p>
