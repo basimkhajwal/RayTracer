@@ -14,6 +14,11 @@ In contrast, rasterization provides a faster approach by dealing directly with p
 
 As a result, rasterization is mainly used for real-time applications such as games and interactive animations where the speed of rasterization pays off, but ray tracing is the go-to method for pre-rendered material such as films, packaging and anything relying on realistic CGI  . In this project, I plan on making a ray tracer because I am interested in investigating how and to what degree physically based models can produce accurate photo-realistic images and a real-time application isn't necessary. In addition, at the moment it is difficult to apply the same kind of optimisation for ray tracing due to hardware limitations but this is a field of active research with some very promising results <sup>[[7](#7)]</sup>. Therefore, with the advent of ever more powerful technology there is a high possibility that ray tracing could be made efficient enough for real-time purposes.
 
+TODO
+- Describe how I plan to evaluate the project at the end
+
+Note: Throughout the project I will be making references and comparisons to an existing rendering system from a book called 'Physically Based Rendering Techniques'[[1](#1)] for which I will use the abbreviation PBRT (which is also the name given to the official renderer created based on the book).
+
 ### Choice of Technology
 
 In order to build the application, I need to first decide which programming language to use to build it in. The industry standard for rendering systems is using C++ since it provides a high degree of low level support which allows you to optimise efficient code, also C++ provides very little overhead meaning its memory usage is often far lower as well. However, for this project I have decided to use a different programming language called Scala. This language is more expressive and higher level meaning it would require less program code to be written than the equivalent in C++, so would require less development time. Another advantage is that it runs on the Java Virtual Machine (JVM), as a result the program, once compiled, can be run on any system supporting Java and the JVM is a highly optimised system which will provide a fast runtime (although not as fast as C++). 
@@ -34,10 +39,9 @@ The parsing process itself is composed of a series of well-defined steps each wh
 
 The first stage involves reading the stream of characters from the input file given to the program, then a process called _tokenising_ is performed. This heavily simplifies the input by removing comments, whitespace and sectionining groups of characters into entities known as _tokens_. Luckily for me, tokenising is a very common procedure and there was a builtin class in the Scala libraries called StreamTokeniser which handled most of heavy duty work and all I had to implement was a thin wrapper or it so it would function according to my needs. Now, the input file has been transformed from a stream of characters into a stream of tokens.
 
-Consequently, the second stage reads in these tokens and builds a sequence of rendering commands out of them. This is one of the more complex commands since it is specific to the PBRT file format and I needed to match the specification exactly doing this process.
+Consequently, the second stage reads in these tokens and builds a sequence of rendering commands out of them. This was one of the more complex tasks since it was specific to the PBRT file format and I needed to match the specification exactly doing this process. Each rendering command would require multiple tokens and I built a whole set of parsing functions in order to be handle each type.
 
-- Describe the parsing process
-- Compare the line count in my parser/builder vs PBRT parser
+Eventually, each rendering command would then be passed onto the rendering pipeline, the details of which have been the topic of discussion of the rest of the report. From there the final image would then be generated using all the various rendering techniques and options set by the image file. In the end, I am quite happy with the results of my parser and I managed to read the vast majority of the file format (some parts were omitted for simplicity) using just under 1100 lines of code - compared to the C++ Parser used within the actual PBRT implementation which uses about 4500 lines of code. This further highlights how using Scala has been a good tool to increase productivity and reduce how much code will be needed. 
 
 TODO Sections:
 - Overview of how the code was structured with unit tests and benchmarks
@@ -48,7 +52,7 @@ TODO Sections:
 - Explaining basic radiometry, the need for non-RGB spectral representation and gamma correction
 - Comparing the results of different ray tracing models (Whitted model, Path Tracing, Biased vs Un-biased etc.)
 - Optimization techniques (parallel run-times, efficient intersection testing)
-- Overview of how the parsing/building system works
+- Overview of how the parsing/building system works -- DONE
 - Evaluation of how well the images output by the ray tracer are compared to actual real images
 
 ## References
