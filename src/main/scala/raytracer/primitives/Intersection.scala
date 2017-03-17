@@ -10,8 +10,6 @@ case class Intersection (
   dg: DifferentialGeometry,
   primitive: Primitive,
   time: Double
-
-  // TODO: Add derivative terms
 ) {
-  final def getBSDF: BSDF = primitive.getBSDF(dg)
+  final def getBSDF(): BSDF = primitive.getBSDF(dg)
 }
