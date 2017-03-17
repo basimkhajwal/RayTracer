@@ -17,4 +17,6 @@ class GeometricPrimitive(val shape: Shape, val material: Material) extends Primi
   final def getBSDF(dg: DifferentialGeometry): BSDF = {
     material.getBSDF(dg, shape.getShadingGeometry(dg))
   }
+
+  override final val worldBound = shape.worldBounds
 }
