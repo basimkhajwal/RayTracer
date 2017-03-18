@@ -47,7 +47,7 @@ case class BBox(pMin: Point, pMax: Point) {
     }
   }
 
-  def checkIntersect(ray: Ray): Option[(Double, Double)] = {
+  def checkIntersect(ray: Ray): Option[Double] = {
     var i = 0
     var t0 = 0.0
     var t1 = Double.PositiveInfinity
@@ -74,7 +74,7 @@ case class BBox(pMin: Point, pMax: Point) {
       i += 1
     }
 
-    if (valid) Some((t0, t1)) else None
+    if (valid) Some(t0) else None
   }
 
   def union(p: Point): BBox = {
