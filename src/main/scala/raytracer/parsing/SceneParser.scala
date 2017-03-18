@@ -1,7 +1,8 @@
 package raytracer.parsing
 
-import raytracer.{Logger, Spectrum}
+import raytracer.Spectrum
 import raytracer.math.{Mat4, Point, Transform, Vec3}
+import raytracer.utils.Logger
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer

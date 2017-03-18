@@ -1,6 +1,6 @@
 package raytracer.parsing
 
-import raytracer.{Logger, Scene}
+import raytracer.Scene
 import raytracer.cameras.Camera
 import raytracer.films.Film
 import raytracer.integrators.Integrator
@@ -9,6 +9,7 @@ import raytracer.math.{Point, Transform, Vec3}
 import raytracer.primitives.{Aggregate, GeometricPrimitive, GridAccelerator, Primitive}
 import raytracer.renderers.Renderer
 import raytracer.sampling.Sampler
+import raytracer.utils.Logger
 
 /**
   * Created by Basim on 27/01/2017.

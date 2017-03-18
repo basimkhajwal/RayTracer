@@ -1,4 +1,4 @@
-package raytracer
+package raytracer.utils
 
 /**
   * Created by Basim on 15/02/2017.

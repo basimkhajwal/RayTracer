@@ -1,6 +1,6 @@
 package raytracer.sampling
 
-import raytracer.Logger
+import raytracer.utils.Logger
 
 /**
   * Created by Basim on 02/03/2017.

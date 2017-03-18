@@ -1,8 +1,9 @@
 package raytracer.renderers
-import raytracer.{Logger, Scene}
+import raytracer.Scene
 import raytracer.cameras.Camera
 import raytracer.integrators.Integrator
 import raytracer.sampling.Sampler
+import raytracer.utils.Logger
 
 /**
   * Created by Basim on 03/03/2017.

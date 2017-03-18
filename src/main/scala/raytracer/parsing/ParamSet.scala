@@ -1,6 +1,6 @@
 package raytracer.parsing
 
-import raytracer.{Logger}
+import raytracer.utils.Logger
 
 import scala.collection.mutable
 import scala.reflect.ClassTag
