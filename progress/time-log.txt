@@ -1,4 +1,4 @@
 Teapot Scene (20 threads):
-Un-optimised: 13.5s
-Loop optimisation: 9.3s
+Un-optimised: 11.5s
+Scene loop optimisation: 6.5s
 Grid-based renderer: 0.7s
