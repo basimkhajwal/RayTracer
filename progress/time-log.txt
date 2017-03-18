@@ -1,0 +1,3 @@
+Teapot Scene (20 threads):
+Un-optimised: 13.5s
+Loop optimisation: 9.3s
