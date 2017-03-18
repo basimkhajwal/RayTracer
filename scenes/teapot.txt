@@ -5,24 +5,15 @@ Camera "perspective" "float fov" [45.000000 ] "float screenwindow" [-1.000000 1.
 Film "screen" "integer xresolution" [200 ] "integer yresolution" [200 ] "integer width" [800] "integer height" [800]
 
 Integrator "whitted" "integer maxdepth" [3]
-
 Sampler "random" "integer pixelsamples" [1]
-
 Renderer "sampler" "integer taskcount" [20]
+Accelerator "grid"
 
 WorldBegin
 
 TransformBegin
     CoordSysTransform "camera"
     LightSource "point" "rgb I" [1000 1000 1000]
-TransformEnd
-TransformBegin
-    Translate 0 0 3
-    LightSource "point" "rgb I" [10 10 10]
-TransformEnd
-TransformBegin
-    Translate 3 0 -3
-    LightSource "point" "rgb I" [10 10 10]
 TransformEnd
 
 Material "matte" "rgb Kd" [ 1 1 .5 ]
