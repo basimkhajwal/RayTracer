@@ -1,8 +1,9 @@
 package raytracer
 
 import java.nio.file.{Files, Paths}
+
 import raytracer.math.{Point, Vec3}
-import raytracer.parsing.{ParamSet, SceneBuilder}
+import raytracer.parsing.{ParamSet, SceneBuilder, SceneParser}
 
 /**
   * Created by Basim on 18/12/2016.
@@ -19,7 +20,7 @@ object Main {
       "filename" -> List(findFirst(0)), "width" -> List(1600), "height" -> List(1200)))
     camera("perspective", ParamSet.from("fov" -> List(80)))
     integrator("whitted", ParamSet.from("maxdepth" -> List(3)))
-    sampler("random", ParamSet.from("pixelsamples" -> List(2)))
+    sampler("random", ParamSet.from("pixelsamples" -> List(1)))
 
     renderer("sampler", ParamSet.from("taskcount" -> List(20)))
 
@@ -74,8 +75,18 @@ object Main {
     worldEnd()
   }
 
+  val TEAPOT_SCENE = "scenes/teapot.txt"
+
   def main(args: Array[String]) = {
-    sceneBuilder.render
+    //sceneBuilder.render()
+    renderFile(TEAPOT_SCENE)
+  }
+
+  def renderFile(fileName: String): Unit = {
+    new SceneParser(fileName) {
+      parse()
+      render()
+    }
   }
 
   def findFirst(n: Int): String = {
