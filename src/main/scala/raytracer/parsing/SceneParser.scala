@@ -229,6 +229,11 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
           catchError { film(filmType, parseParams()) }
         }
 
+        case "accelerator" => {
+          val acceleratorType = nextToken().getOrElse("Accelerator type must be specified")
+          catchError { accelerator(acceleratorType, parseParams()) }
+        }
+
         case "integrator" => {
           val integratorType = nextToken().getOrElse("Integrator type must be specified")
           catchError { integrator(integratorType, parseParams()) }
