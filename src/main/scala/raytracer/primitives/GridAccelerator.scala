@@ -23,6 +23,8 @@ class GridAccelerator(val primitives: Array[Primitive]) extends Primitive {
   val invWidth = Vec3(1/width(0), 1/width(1), 1/width(2))
   val voxels = new Array[Voxel](nVoxels(0) * nVoxels(1) * nVoxels(2))
 
+  primitives foreach (addPrimitive(_))
+
   private def addPrimitive(p: Primitive): Unit = {
     val bb = p.worldBound
     val vmin = Array(0,1,2) map (a => posToVoxel(bb.pMin, a))
@@ -55,17 +57,19 @@ class GridAccelerator(val primitives: Array[Primitive]) extends Primitive {
 
   private def voxelToPos(p: Int, axis: Int): Double = worldBound.pMin(axis) + p * width(axis)
 
-  val nextCrossing = new Array[Double](3)
-  val deltaT = new Array[Double](3)
-  val step = new Array[Int](3)
-  val out = new Array[Int](3)
-  val pos = new Array[Int](3)
-
   override def intersect(ray: Ray): Option[Intersection] = {
-    val intersectionTime = worldBound.checkIntersect(ray).orNull
-    if (intersectionTime == null) return None
+    val intersectionTime =
+      if (worldBound contains ray.start) 0
+      else worldBound.checkIntersect(ray).getOrElse(Double.NaN)
 
-    val gridIntersect = ray.start + ray.dir * intersectionTime._1
+    if (intersectionTime == Double.NaN) return None
+
+    val gridIntersect = ray.start + ray.dir * intersectionTime
+    val nextCrossing = new Array[Double](3)
+    val deltaT = new Array[Double](3)
+    val step = new Array[Int](3)
+    val out = new Array[Int](3)
+    val pos = new Array[Int](3)
 
     var axis = 0
     while (axis < 3) {
@@ -73,14 +77,14 @@ class GridAccelerator(val primitives: Array[Primitive]) extends Primitive {
 
       if (ray.dir(axis) >= 0) {
         nextCrossing(axis) =
-          intersectionTime._1 +
+          intersectionTime +
           (voxelToPos(pos(axis)+1, axis) - gridIntersect(axis)) / ray.dir(axis)
         deltaT(axis) = width(axis) / ray.dir(axis)
         step(axis) = 1
         out(axis) = nVoxels(axis)
       } else {
         nextCrossing(axis) =
-          intersectionTime._1 +
+          intersectionTime +
             (voxelToPos(pos(axis), axis) - gridIntersect(axis)) / ray.dir(axis)
         deltaT(axis) = -width(axis) / ray.dir(axis)
         step(axis) = -1
@@ -111,7 +115,18 @@ class GridAccelerator(val primitives: Array[Primitive]) extends Primitive {
           if (nextCrossing(1) < nextCrossing(2)) 1 else 2
         }
 
-      // TODO: Finish checking against the limits for voxels
+      if (minT < nextCrossing(stepAxis)) {
+        done = true
+      } else {
+
+        pos(stepAxis) += step(stepAxis)
+
+        if (pos(stepAxis) == out(stepAxis)) {
+          done = true
+        } else {
+          nextCrossing(stepAxis) += deltaT(stepAxis)
+        }
+      }
     }
 
     Option(minIsect)
