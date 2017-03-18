@@ -6,7 +6,7 @@ import raytracer.films.Film
 import raytracer.integrators.Integrator
 import raytracer.lights.Light
 import raytracer.math.{Point, Transform, Vec3}
-import raytracer.primitives.{GeometricPrimitive, Primitive}
+import raytracer.primitives.{Aggregate, GeometricPrimitive, GridAccelerator, Primitive}
 import raytracer.renderers.Renderer
 import raytracer.sampling.Sampler
 
@@ -42,6 +42,9 @@ class SceneBuilder {
   private var rendererName = "sampler"
   private var rendererParams = new ParamSet()
 
+  private var acceleratorName = "grid"
+  private var acceleratorParams = new ParamSet()
+
   private lazy val film: Film = SceneFactory.makeFilm(filmName, filmParams)
 
   private lazy val camera: Camera = SceneFactory.makeCamera(cameraName, cameraToWorld, film, cameraParams)
@@ -49,6 +52,9 @@ class SceneBuilder {
   private lazy val sampler: Sampler = SceneFactory.makeSampler(samplerName, samplerParams, camera)
 
   private lazy val integrator: Integrator = SceneFactory.makeIntegrator(integratorName, integratorParams)
+
+  private lazy val accelerator: Primitive =
+    SceneFactory.makeAccelerator(acceleratorName, primitives.toArray, acceleratorParams)
 
   private lazy val renderer: Renderer =
     SceneFactory.makeRenderer(rendererName, rendererParams, sampler, camera, integrator)
@@ -70,7 +76,7 @@ class SceneBuilder {
   /* --------------------- Public Methods --------------------------- */
 
   final def render(): Unit = {
-    renderer.render(new Scene(lights, primitives))
+    renderer.render(new Scene(lights, accelerator))
   }
 
   final def getRenderer(): Renderer = renderer
@@ -101,6 +107,13 @@ class SceneBuilder {
     rendererName = rendererType
     rendererParams = params
     log(s"Set renderer to type $renderer")
+  }
+
+  final def accelerator(acceleratorType: String, params: ParamSet): Unit = {
+    require(!worldSection, "The accelerator must be defined outside of the world section")
+    acceleratorName = acceleratorType
+    acceleratorParams = params
+    log(s"Set accelerator to type $renderer")
   }
 
   final def sampler(samplerType: String, params: ParamSet): Unit = {
