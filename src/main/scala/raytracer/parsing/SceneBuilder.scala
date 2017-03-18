@@ -76,7 +76,7 @@ class SceneBuilder {
   /* --------------------- Public Methods --------------------------- */
 
   final def render(): Unit = {
-    renderer.render(new Scene(lights, accelerator))
+    renderer.render(new Scene(lights.toArray, accelerator))
   }
 
   final def getRenderer(): Renderer = renderer
