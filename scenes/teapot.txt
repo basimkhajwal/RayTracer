@@ -7,7 +7,7 @@ Film "screen" "integer xresolution" [200 ] "integer yresolution" [200 ] "integer
 Integrator "whitted" "integer maxdepth" [3]
 Sampler "random" "integer pixelsamples" [1]
 Renderer "sampler" "integer taskcount" [20]
-Accelerator "grid"
+Accelerator "none"
 
 WorldBegin
 
