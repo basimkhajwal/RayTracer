@@ -10,28 +10,30 @@ import raytracer.primitives.Intersection
 class Whitted(maxRayDepth: Int) extends Integrator{
 
   override def traceRay(scene: Scene, ray: Ray): Spectrum = {
-    scene intersect ray match {
-      case None => Spectrum.BLACK
-      case Some(isect @ Intersection(dg, _, _)) => {
 
-        val p = dg.p
-        val bsdf = isect.getBSDF
+    val isect = scene.intersect(ray).orNull
+    if (isect == null) return Spectrum.BLACK
 
-        val directLight = scene.lights
-          .map(l => {
-            val (lightIntensity, wi, lightDist) = l.sample(p)
-            val lightValue = lightIntensity * wi.dot(dg.nn) * bsdf(ray.dir, wi, BSDF.ALL_REFLECTION)
+    val dg = isect.dg
+    val p = dg.p
+    val bsdf = isect.getBSDF()
 
-            scene intersect Ray(p, wi, 0) match {
-              case Some(i) if i.time < lightDist => Spectrum.BLACK
-              case _ => lightValue
-            }
-          })
-          .foldLeft(Spectrum.BLACK)(_ + _)
+    var directLight = Spectrum.BLACK
+    var i = 0
 
-        if (ray.depth >= maxRayDepth) directLight
-        else directLight + Integrator.specularReflect(scene, ray, isect, this)
+    while (i < scene.lights.length) {
+      val (lightIntensity, wi, lightDist) = scene.lights(i).sample(p)
+      val lightValue = lightIntensity * wi.dot(dg.nn) * bsdf(ray.dir, wi, BSDF.ALL_REFLECTION)
+
+      val lightCheck = scene.intersect(Ray(p, wi, 0)).orNull
+      if (lightCheck == null || lightCheck.time >= lightDist) {
+        directLight += lightValue
       }
+
+      i += 1
     }
+
+    if (ray.depth >= maxRayDepth) directLight
+    else directLight + Integrator.specularReflect(scene, ray, isect, this)
   }
 }
