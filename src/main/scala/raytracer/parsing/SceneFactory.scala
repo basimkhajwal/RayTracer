@@ -7,6 +7,7 @@ import raytracer.integrators.{Integrator, Whitted}
 import raytracer.lights.{Light, PointLight}
 import raytracer.materials.{Material, MatteMaterial}
 import raytracer.math.{Point, Transform}
+import raytracer.primitives.{Aggregate, GridAccelerator, Primitive}
 import raytracer.renderers.{Renderer, SamplerRenderer}
 import raytracer.sampling.{RandomSampler, Sampler}
 import raytracer.shapes.{Shape, Sphere, Triangle, TriangleMesh}
@@ -27,6 +28,18 @@ object SceneFactory {
     val returnValue = b
     ps.reportUnused
     returnValue
+  }
+
+  def makeAccelerator(accelType: String, primitives: Array[Primitive], params: ParamSet): Primitive = reportUnused(params) {
+
+    accelType match {
+
+      case "none" => new Aggregate(primitives)
+
+      case "grid" => new GridAccelerator(primitives)
+
+      case _ => throw new IllegalArgumentException(s"Un-implemented accelerator type $accelType")
+    }
   }
 
   def makeIntegrator(integratorType: String, params: ParamSet): Integrator = reportUnused(params) {
