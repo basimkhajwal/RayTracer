@@ -4,6 +4,7 @@ import java.nio.file.{Files, Paths}
 
 import raytracer.math.{Point, Vec3}
 import raytracer.parsing.{ParamSet, SceneBuilder, SceneParser}
+import raytracer.utils.Reporter
 
 /**
   * Created by Basim on 18/12/2016.
@@ -82,6 +83,8 @@ object Main {
   def main(args: Array[String]) = {
     //sceneBuilder.render()
     renderFile(TEAPOT_SCENE)
+
+    Reporter.outputReport()
   }
 
   def renderFile(fileName: String): Unit = {
