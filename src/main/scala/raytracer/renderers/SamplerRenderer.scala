@@ -3,7 +3,7 @@ import raytracer.Scene
 import raytracer.cameras.Camera
 import raytracer.integrators.Integrator
 import raytracer.sampling.Sampler
-import raytracer.utils.Logger
+import raytracer.utils.Reporter
 
 /**
   * Created by Basim on 03/03/2017.
@@ -17,7 +17,8 @@ class SamplerRenderer(
 
   override def render(scene: Scene): Unit = {
 
-    val before = System.currentTimeMillis()
+    Reporter.render.start()
+
     val subTasks = new Array[Thread](taskCount)
     var i = 0
     while (i < taskCount) {
@@ -32,7 +33,7 @@ class SamplerRenderer(
       i += 1
     }
 
-    Logger.info.log("Renderer", "Finish in " + (System.currentTimeMillis()-before) + "ms")
+    Reporter.render.stop()
 
     camera.film.saveImage()
   }
