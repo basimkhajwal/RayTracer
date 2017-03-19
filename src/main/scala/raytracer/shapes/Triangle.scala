@@ -1,12 +1,13 @@
 package raytracer.shapes
 
 import raytracer.math._
-import raytracer.Constants._
 
 /**
   * Created by Basim on 14/01/2017.
   */
 case class Triangle(p1: Point, p2: Point, p3: Point, o2w: Transform) extends Shape {
+
+  val EPSILON = 1e-9
 
   override val objectToWorld: Transform = o2w
   override val worldToObject: Transform = o2w.inverse

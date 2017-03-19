@@ -1,12 +1,13 @@
 package raytracer.shapes
 
 import raytracer.math._
-import raytracer.Constants.EPSILON
 
 /**
   * Created by Basim on 05/01/2017.
   */
 case class Sphere(r: Double, o2w: Transform) extends Shape {
+
+  val EPSILON = 1e-9
 
   override val objectToWorld: Transform = o2w
   override val worldToObject: Transform = o2w.inverse
