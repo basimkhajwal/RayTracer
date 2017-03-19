@@ -14,7 +14,7 @@ import scala.util.{Success, Try}
   */
 class SceneParser(sceneFile: String) extends SceneBuilder {
 
-  private val validParameters = List("float", "integer", "string", "bool", "vector", "point", "rgb")
+  private val validParameters = List("float", "integer", "string", "bool", "vector", "point", "rgb", "color", "texture")
 
   private var lexerStack: List[Lexer] = new Lexer(sceneFile) :: Nil
 
@@ -100,10 +100,10 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
   }
 
   private def catchError(f: => Unit): Unit = {
-    try(f) catch {
+    try f catch {
       case e: AssertionError => throwError("Assertion failed:\t" + e.getMessage)
       case e: IllegalArgumentException => throwError("Invalid argument:\t" + e.getMessage)
-      case e => throw e
+      case e: Throwable => throw e
     }
   }
 
@@ -129,13 +129,13 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
     }
 
     def mapAndAdd[T:ClassTag](err: String => String, f: String => T): Unit = {
-      params.add(paramName, checkedMap(err, f))
+      params.add[T](paramName, checkedMap(err, f))
     }
 
     paramType match {
       case "float" => mapAndAdd(_ + " is not a valid float", _.toDouble)
       case "integer" => mapAndAdd(_ + " is not a valid integer", _.toDouble.toInt)
-      case "string" => mapAndAdd[String](_, _)
+      case "string" => mapAndAdd[String](_.toString, _.toString)
 
       case "bool" => mapAndAdd(_ + " is not a valid boolean", _ match {
         case "true" => true
@@ -155,7 +155,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
         params.add(paramName, elements.grouped(3).map(p => Point(p(0), p(1), p(2))).toSeq)
       }
 
-      case "texture" => mapAndAdd[String](_, _)
+      case "texture" => mapAndAdd[String](_.toString, _.toString)
 
       case "rgb" | "color" => {
         val parts = checkedMap(_ + "is not a valid RGB value", _.toDouble)
