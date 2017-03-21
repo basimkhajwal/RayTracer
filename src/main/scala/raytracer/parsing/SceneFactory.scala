@@ -6,7 +6,7 @@ import raytracer.films.{Film, ImageFilm, ScreenFilm}
 import raytracer.integrators.{Integrator, Whitted}
 import raytracer.lights.{Light, PointLight}
 import raytracer.materials.{Material, MatteMaterial}
-import raytracer.math.{Point, Transform}
+import raytracer.math.{Point, Transform, Vec3}
 import raytracer.primitives.{Aggregate, GridAccelerator, Primitive}
 import raytracer.renderers.{Renderer, SamplerRenderer}
 import raytracer.sampling.{RandomSampler, Sampler}
@@ -195,7 +195,12 @@ object SceneFactory {
 
         require(indices.length % 3 == 0, "Indices must specify 3 points for each triangle")
 
-        TriangleMesh(indices.toArray, points.toArray, objToWorld)
+        val normals = params.get[Vec3]("N").map(_.toArray).orNull
+        val uvs = params.get[Double]("uv").map(_.toArray).orNull
+
+        require(normals.length == indices.length, s"Incorrect number of normals ${normals.length}")
+
+        new TriangleMesh(indices.toArray, points.toArray, objToWorld, normals, uvs)
       }
 
       case _ => throw new IllegalArgumentException(s"Unimplemented shape type $name")
