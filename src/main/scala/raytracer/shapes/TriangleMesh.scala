@@ -1,31 +1,44 @@
 package raytracer.shapes
-import raytracer.math.{BBox, Point, Ray, Transform}
+import raytracer.math._
 
 /**
   * Created by Basim on 12/02/2017.
   */
-case class TriangleMesh(
-  indices: Array[Int],
-  points: Array[Point],
-  o2w: Transform
+class TriangleMesh(
+  val indices: Array[Int],
+  val points: Array[Point],
+  val o2w: Transform,
+  val normals: Array[Vec3],
+  val uvs: Array[Double]
 ) extends Shape {
+
+  def this(indices: Array[Int], points: Array[Point], o2w: Transform) = this(indices, points, o2w, null, null)
+
+  val hasNormals = normals != null
+  val hasUVS = uvs != null
 
   override val objectToWorld: Transform = o2w
   override val worldToObject: Transform = objectToWorld.inverse
 
-  val triangles = indices grouped(3) map { t =>
-    Triangle(points(t(0)), points(t(1)), points(t(2)), objectToWorld)
-  } toArray
+  val triangles = (0 until (indices.length/3)) map (Triangle(this, _)) toArray
 
-  override val objectBounds: BBox = triangles.map(_.objectBounds).reduce(_.union(_))
+  override val objectBounds: BBox = triangles.foldLeft(BBox.empty)((a,b) => a.union(b.objectBounds))
 
   override def intersect(ray: Ray): Option[(DifferentialGeometry, Double)] = {
 
-    val intersections = triangles
-      .map(_.intersect(ray))
-      .filter(_.isDefined)
+    var minT = Double.PositiveInfinity
+    var minIsect: (DifferentialGeometry, Double) = null
 
-    if (intersections.isEmpty) None
-    else intersections.minBy(_.get._2)
+    var i = 0
+    while (i < triangles.length) {
+      val isect = triangles(i).intersect(ray).orNull
+      if (isect != null && isect._2 < minT) {
+        minT = isect._2
+        minIsect = isect
+      }
+      i += 1
+    }
+
+    Option(minIsect)
   }
 }
