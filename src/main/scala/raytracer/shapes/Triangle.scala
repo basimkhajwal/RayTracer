@@ -5,24 +5,40 @@ import raytracer.math._
 /**
   * Created by Basim on 14/01/2017.
   */
-case class Triangle(p1: Point, p2: Point, p3: Point, o2w: Transform) extends Shape {
+case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
 
   val EPSILON = 1e-9
 
-  override val objectToWorld: Transform = o2w
-  override val worldToObject: Transform = o2w.inverse
+  val v0 = mesh.indices(3*idx)
+  val v1 = mesh.indices(3*idx+1)
+  val v2 = mesh.indices(3*idx+2)
+
+  val p1 = mesh.points(v0)
+  val p2 = mesh.points(v1)
+  val p3 = mesh.points(v2)
+
+  val uvs: Array[Double] = if (mesh.hasUVS) {
+    Array(
+      mesh.uvs(2*v0), mesh.uvs(2*v0+1),
+      mesh.uvs(2*v1), mesh.uvs(2*v1+1),
+      mesh.uvs(2*v2), mesh.uvs(2*v2+1)
+    )
+  } else {
+    Array(
+      0, 0,
+      1, 0,
+      1, 1
+    )
+  }
+
+  override val objectToWorld: Transform = mesh.objectToWorld
+  override val worldToObject: Transform = mesh.worldToObject
 
   override val objectBounds: BBox = BBox.fromPoints(p1, p2, p3)
 
   private val e1: Vec3 = p2-p1
   private val e2: Vec3 = p3-p1
   private val nor = e1.cross(e2)
-
-  private val uvs = Array[Double](
-    0, 0,
-    1, 0,
-    1, 1
-  )
 
   override def intersect(worldRay: Ray): Option[(DifferentialGeometry, Double)] = {
 
@@ -65,7 +81,33 @@ case class Triangle(p1: Point, p2: Point, p3: Point, o2w: Transform) extends Sha
     val dpdu = (dv2 * dp1 - dv1 * dp2) * invDet
     val dpdv = (-du2 * dp1 + du1 * dp2) * invDet
 
-    val dg = DifferentialGeometry(objectToWorld(surfacePoint), n, u, v, dpdu, dpdv, this)
+    val dg = DifferentialGeometry(objectToWorld(surfacePoint), objectToWorld(n), u, v, objectToWorld(dpdu), objectToWorld(dpdv), this)
     Some((dg, t))
+  }
+
+  val shadingMat = Array(
+    uvs(2)-uvs(0), uvs(4)-uvs(0),
+    uvs(3)-uvs(1), uvs(5)-uvs(1)
+  )
+
+  override def getShadingGeometry(dg: DifferentialGeometry): DifferentialGeometry = {
+    if (!mesh.hasNormals) return dg
+
+    val c0 = dg.u - uvs(0)
+    val c1 = dg.v - uvs(1)
+    val solution = Solver.linearEquation(shadingMat, c0, c1).orNull
+
+    val b =
+      if (solution == null) Array(1/3.0, 1/3.0, 1/3.0)
+      else Array(1 - solution._1 - solution._2, solution._1, solution._2)
+
+    val nn =
+      objectToWorld(
+        b(0)*mesh.normals(v0) +
+        b(1)*mesh.normals(v1) +
+        b(2)*mesh.normals(v2)
+      ).nor
+
+    DifferentialGeometry(dg.p, nn, dg.u, dg.v, dg.dpdu, dg.dpdv, this)
   }
 }
