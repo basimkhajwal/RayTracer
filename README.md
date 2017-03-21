@@ -14,8 +14,7 @@ In contrast, rasterization provides a faster approach by dealing directly with p
 
 As a result, rasterization is mainly used for real-time applications such as games and interactive animations where the speed of rasterization pays off, but ray tracing is the go-to method for pre-rendered material such as films, packaging and anything relying on realistic CGI  . In this project, I plan on making a ray tracer because I am interested in investigating how and to what degree physically based models can produce accurate photo-realistic images and a real-time application isn't necessary. In addition, at the moment it is difficult to apply the same kind of optimisation for ray tracing due to hardware limitations but this is a field of active research with some very promising results <sup>[[7](#7)]</sup>. Therefore, with the advent of ever more powerful technology there is a high possibility that ray tracing could be made efficient enough for real-time purposes.
 
-TODO
-- Describe how I plan to evaluate the project at the end
+For my project, I cannot hope to achieve as realistic results as are available in large team based projects but I aim to achieve atleast a good enough level of realism that can illustrate the ability of current models to be able to model realistic light processes. In order to access how well my renderer can do this, I plan on comparing the output of my renderer and that of an existing implementation on similar models. In addition, I could also compare photographs of light behavior (refraction, caustics and soft shadows) and evaluate on how well the output images from my renderer simulate those effects. 
 
 Note: Throughout the project I will be making references and comparisons to an existing rendering system from a book called 'Physically Based Rendering Techniques'[[1](#1)] for which I will use the abbreviation PBRT (which is also the name given to the official renderer created based on the book).
 
@@ -26,6 +25,25 @@ In order to build the application, I need to first decide which programming lang
 An experimental ray tracer <sup>[[6](#6)]</sup> was run as a benchmark to compare the performances of languages. It showed that Scala is roughly 3 times slower than the same algorithm written in C++, but it used less than half the number of lines of code. For a large project with many developers C++ is a good choice, but in my case Scala's conciseness outweighs the relatively small performance loss. In addition, Scala is easier to maintain and debug therefore even more time would be saved in development when reasoning about the algorithms.
 
 ## Project Development
+
+### Camera Simulation
+
+An integral part of the ray tracing process is to be able to actually generate the rays that will eventually be traced against the scene for incoming light sources. In my ray tracer, the generation of these light rays is abstracted by the a 'Camera' interface.  For each ray, two main things are required: the start position and it's direction. 
+
+- Describe the function of a orthographic camera vs that of a perspective camera.
+- Give an illustration of how thr rays are generated and an illustration of how it affects the output image
+
+### Effective Sampling Strategies
+
+- Describe why an effective sampling strategy is required
+- Compare and constrast the difference between using a random sampler and a more effective sampler (e.g. Stratified with jittering)
+
+### Optimisation Strategies
+
+- First describe why optimisation is neccessary
+- Then describe low level specific optimisations i.e. a 30% improvement
+- Then describe the need for an acceleration data structure
+- Describe how I used profiling and techniques learnt from online sources to debug the sources of slowness in my code
 
 ### Parsing Existing Scene Formats
 
