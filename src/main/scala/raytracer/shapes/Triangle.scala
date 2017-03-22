@@ -108,6 +108,6 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
         b(2)*mesh.normals(v2)
       ).nor
 
-    DifferentialGeometry(dg.p, nn, dg.u, dg.v, dg.dpdu, dg.dpdv, this)
+    DifferentialGeometry(dg.p, -nn, dg.u, dg.v, dg.dpdu, dg.dpdv, this)
   }
 }
