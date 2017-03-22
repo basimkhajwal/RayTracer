@@ -12,8 +12,6 @@ class TriangleMesh(
   val uvs: Array[Double]
 ) extends Shape {
 
-  def this(indices: Array[Int], points: Array[Point], o2w: Transform) = this(indices, points, o2w, null, null)
-
   val hasNormals = normals != null
   val hasUVS = uvs != null
 
