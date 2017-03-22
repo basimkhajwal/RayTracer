@@ -8,15 +8,15 @@ import raytracer.shapes.DifferentialGeometry
   * Created by Basim on 31/01/2017.
   */
 final class BSDF (
-  val dg: DifferentialGeometry,
+  val dgShading: DifferentialGeometry,
   val ng: Vec3
 ) {
 
   private var bxdfs: List[BxDF] = Nil
   def add(b: BxDF) = bxdfs ::= b
 
-  private val nn: Vec3 = dg.nn
-  private val sn: Vec3 = dg.dpdu.nor
+  private val nn: Vec3 = dgShading.nn
+  private val sn: Vec3 = dgShading.dpdu.nor
   private val tn: Vec3 = nn cross sn
 
   private val transformMat: Mat4 = new Mat4(Array(
