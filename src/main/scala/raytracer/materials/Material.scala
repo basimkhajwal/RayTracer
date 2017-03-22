@@ -19,7 +19,7 @@ class MatteMaterial (
 ) extends Material {
 
   override def getBSDF(dgGeom: DifferentialGeometry, dgShading: DifferentialGeometry): BSDF = {
-    val bsdf = new BSDF(dgShading, dgShading.nn)
+    val bsdf = new BSDF(dgShading, dgGeom.nn)
     bsdf.add(new Lambertian(kd(dgGeom)))
     bsdf
   }
