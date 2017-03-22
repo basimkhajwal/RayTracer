@@ -26,6 +26,10 @@ An experimental ray tracer <sup>[[6](#6)]</sup> was run as a benchmark to compar
 
 ## Project Development
 
+### Ray Tracing Algorithm
+
+
+
 ### Camera Simulation
 
 An integral part of the ray tracing process is to be able to actually generate the rays that will eventually be traced against the scene for incoming light sources. In my ray tracer, the generation of these light rays is abstracted by the a 'Camera' interface.  For each ray, two main things are required: the start position and it's direction. 
@@ -47,7 +51,7 @@ An integral part of the ray tracing process is to be able to actually generate t
 
 ### Parsing Existing Scene Formats
 
-In order to be able to properly compare the output of my ray tracer with existing realistic implementations would be to render the exact same images which I could then use to evaluate the effectiveness of my ray tracer. For this purpose, I chose to write a scene parser that would read in a text file in the format specified by PBRT [INSERT CITATION HERE] and then use that to load the scene which would then be rendered using the ray tracer. The main difficulty in this was that I needed to follow the exact specification of the scene format in order to be able to read everything without coming across errors. In other parts of the project I was free to make modifications that would simplify the code and make it more efficient to do in Scala (since most existing implementations are in C++), however for the parsing I would have to implement all the details but I would still be free as to _how_ I would parse the details.
+In order to be able to properly compare the output of my ray tracer with existing realistic implementations would be to render the exact same images which I could then use to evaluate the effectiveness of my ray tracer. For this purpose, I chose to write a scene parser that would read in a text file in the format specified by PBRT <sup>[[8](#8)]</sup> and then use that to load the scene which would then be rendered using the ray tracer. The main difficulty in this was that I needed to follow the exact specification of the scene format in order to be able to read everything without coming across errors. In other parts of the project I was free to make modifications that would simplify the code and make it more efficient to do in Scala (since most existing implementations are in C++), however for the parsing I would have to implement all the details but I would still be free as to _how_ I would parse the details.
 
 The parsing process itself is composed of a series of well-defined steps each which process the input file further in order to be used for the next stage. This process is very general and is commonly used in most parsing systems however, since the PBRT file format is quite simple the parsing that I will need to do will be relatively simple compared more complex parsing systems that are designed to operate on much more intricate language definitions. The diagram below illustrates the simplified pipeline that I have used in my own parsing system from the input file to the final image output.
 
@@ -83,4 +87,7 @@ Eventually, each rendering command would then be passed onto the rendering pipel
 
 ##### 7
 ###### Altman, R. (2016) Raytracing today and in the future - Randi Altman’s postPerspective. Available at: http://postperspective.com/ray-tracing-today-and-in-the-future/ (Accessed: 25 January 2017).
+
+##### 8
+###### Pharr, M. (2014). pbrt-v2 Input File Format. [online] Pbrt.org. Available at: http://www.pbrt.org/fileformat.html [Accessed 22 Mar. 2017].
 
