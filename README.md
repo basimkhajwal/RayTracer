@@ -26,36 +26,16 @@ A useful tool in helping my decision was an experimental ray tracer <sup>[[6](#6
 
 ## Project Development
 
-### Ray Tracing Algorithm
+### Overview of the Ray Tracing algorithm
 
 The overall rendering algorithm I will use throughout the rest of my project, as mentioned earlier, will be the ray tracing algorithm. Within my code, I have gone deeper into breaking down each stage of the rendering process into separate into sections which can then be developed separately and linked together to form the final product. A major benefit of separating the sections is that it will make the code much simpler to maintain and test for bugs. For example, if I notice that the image is actually upside down then I could quickly trace that there is an error in the implementation of my file saving code. However, each time I separate out the code it will create more latency and waste time communicating between each section of the program so a balance needs to be made to decide how many sections I will create.
 
-My final decision for sections was mainly influenced by reading the code of the implementations of the code of the PBRT render<sup>[[9](#9)]</sup> and from the Minilight<sup>[[6](#6)]</sup> renderer. 
+My final decision for sections was mainly influenced by reading the code of the implementations of the code of the PBRT render<sup>[[9](#9)]</sup> and from the Minilight<sup>[[6](#6)]</sup> renderer. Below is an illustration of the each separate section and a brief explanation of how they link together.
 
-Create diagram showing:
-PARSER -> RENDERER -> SAMPLER -> CAMERA -> INTEGRATOR -> 
+TODO: Create diagram showing:
+PARSER -> RENDERER -> SAMPLER -> CAMERA -> SCENE -> INTEGRATOR -> SHADING -> FILM
 
-Describe the uses of:
-SHAPE, PRIMITIVE, SCATTERING-FUNCTION, LIGHT, MATERIAL
-
-### Camera Simulation
-
-An integral part of the ray tracing process is to be able to actually generate the rays that will eventually be traced against the scene for incoming light sources. In my ray tracer, the generation of these light rays is abstracted by the a 'Camera' interface.  For each ray, two main things are required: the start position and it's direction. 
-
-- Describe the function of a orthographic camera vs that of a perspective camera.
-- Give an illustration of how thr rays are generated and an illustration of how it affects the output image
-
-### Effective Sampling Strategies
-
-- Describe why an effective sampling strategy is required
-- Compare and constrast the difference between using a random sampler and a more effective sampler (e.g. Stratified with jittering)
-
-### Optimisation Strategies
-
-- First describe why optimisation is neccessary
-- Then describe low level specific optimisations i.e. a 30% improvement
-- Then describe the need for an acceleration data structure
-- Describe how I used profiling and techniques learnt from online sources to debug the sources of slowness in my code
+Each of the above sections will have a more in-depth section describing my choices for each one and how they function in order to simulate the passage of light.
 
 ### Parsing Existing Scene Formats
 
@@ -72,6 +52,29 @@ The first stage involves reading the stream of characters from the input file gi
 Consequently, the second stage reads in these tokens and builds a sequence of rendering commands out of them. This was one of the more complex tasks since it was specific to the PBRT file format and I needed to match the specification exactly doing this process. Each rendering command would require multiple tokens and I built a whole set of parsing functions in order to be handle each type. In order to do this, I consulted the specification<sup>[[8](#8)]</sup> as mentioned but also the existing source code<sup>[[9](#9)]</sup> which allowed me to double check to make sure that the logic I used was correct in my own code and also as a guideline to structure my own code. For example, when reading the input file it could end up referencing another file to read input out of, as a result the second stage would have to call the first stage again to ask for more tokens from a different file. This process could have been quite complex to implement but, using the existing implementation, I saw the original creators had the idea to use a data structure called a stack which helped me to simplify my code. 
 
 Eventually, each rendering command would then be passed onto the rendering pipeline, the details of which have been the topic of discussion of the rest of the report. From there the final image would then be generated using all the various rendering techniques and options set by the image file. In the end, I am quite happy with the results of my parser and I managed to read the vast majority of the file format (some parts were omitted for simplicity) using just under 1100 lines of code - compared to the C++ Parser used within the actual PBRT implementation which uses about 4500 lines of code. This further highlights how using Scala has been a good tool to increase productivity and reduce how much code will be needed. 
+
+### Image Sampling Strategies
+
+The process of sampling determines from which parts of screen the 
+
+- Describe why an effective sampling strategy is required
+- Compare and constrast the difference between using a random sampler and a more effective sampler (e.g. Stratified with jittering)
+
+### Camera Simulation
+
+An integral part of the ray tracing process is to be able to actually generate the rays that will eventually be traced against the scene for incoming light sources. In my ray tracer, the generation of these light rays is abstracted by the a 'Camera' interface.  For each ray, two main things are required: the start position and it's direction. 
+
+- Describe the function of a orthographic camera vs that of a perspective camera.
+- Give an illustration of how thr rays are generated and an illustration of how it affects the output image
+
+
+### Optimisation Strategies
+
+- First describe why optimisation is neccessary
+- Then describe low level specific optimisations i.e. a 30% improvement
+- Then describe the need for an acceleration data structure
+- Describe how I used profiling and techniques learnt from online sources to debug the sources of slowness in my code
+
 
 ## References
 
