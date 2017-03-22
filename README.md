@@ -20,15 +20,23 @@ Note: Throughout the project I will be making references and comparisons to an e
 
 ### Choice of Technology
 
-In order to build the application, I need to first decide which programming language to use to build it in. The industry standard for rendering systems is using C++ since it provides a high degree of low level support which allows you to optimise efficient code, also C++ provides very little overhead meaning its memory usage is often far lower as well. However, for this project I have decided to use a different programming language called Scala. This language is more expressive and higher level meaning it would require less program code to be written than the equivalent in C++, so would require less development time. Another advantage is that it runs on the Java Virtual Machine (JVM), as a result the program, once compiled, can be run on any system supporting Java and the JVM is a highly optimised system which will provide a fast runtime (although not as fast as C++). 
+In order to build the application, I had to first decide which programming language to use to build it in. The industry standard for rendering systems is using C++ since it provides a high degree of low level support which allows you to optimise efficient code, also C++ provides very little overhead meaning its memory usage is often far lower than others. However, for this project I have decided to use a different programming language called Scala. This language is more expressive and higher level meaning it would require less program code to be written than the equivalent in C++, so would require less development time. Another advantage is that it runs on the Java Virtual Machine (JVM), as a result the program, once compiled, can be run on any system supporting Java and the JVM is a highly optimised system which will provide a fast runtime (although not as fast as C++). 
 
-An experimental ray tracer <sup>[[6](#6)]</sup> was run as a benchmark to compare the performances of languages. It showed that Scala is roughly 3 times slower than the same algorithm written in C++, but it used less than half the number of lines of code. For a large project with many developers C++ is a good choice, but in my case Scala's conciseness outweighs the relatively small performance loss. In addition, Scala is easier to maintain and debug therefore even more time would be saved in development when reasoning about the algorithms.
+A useful tool in helping my decision was an experimental ray tracer <sup>[[6](#6)]</sup> which was run as a benchmark to compare the performances of languages. It showed that Scala is roughly 3 times slower than the same algorithm written in C++, but it used less than half the number of lines of code. For a large project with many developers C++ is a good choice, but in my case Scala's conciseness outweighs the relatively small performance loss. In addition, Scala is easier to maintain and debug therefore even more time would be saved in development when reasoning about the algorithms.
 
 ## Project Development
 
 ### Ray Tracing Algorithm
 
+The overall rendering algorithm I will use throughout the rest of my project, as mentioned earlier, will be the ray tracing algorithm. Within my code, I have gone deeper into breaking down each stage of the rendering process into separate into sections which can then be developed separately and linked together to form the final product. A major benefit of separating the sections is that it will make the code much simpler to maintain and test for bugs. For example, if I notice that the image is actually upside down then I could quickly trace that there is an error in the implementation of my file saving code. However, each time I separate out the code it will create more latency and waste time communicating between each section of the program so a balance needs to be made to decide how many sections I will create.
 
+My final decision for sections was mainly influenced by reading the code of the implementations of the code of the PBRT render<sup>[[9](#9)]</sup> and from the Minilight<sup>[[6](#6)]</sup> renderer. 
+
+Create diagram showing:
+PARSER -> RENDERER -> SAMPLER -> CAMERA -> INTEGRATOR -> 
+
+Describe the uses of:
+SHAPE, PRIMITIVE, SCATTERING-FUNCTION, LIGHT, MATERIAL
 
 ### Camera Simulation
 
@@ -59,9 +67,9 @@ The parsing process itself is composed of a series of well-defined steps each wh
   <img src="progress/process.png" alt="Parsing Process" />
 </p>
 
-The first stage involves reading the stream of characters from the input file given to the program, then a process called _tokenising_ is performed. This heavily simplifies the input by removing comments, whitespace and sectionining groups of characters into entities known as _tokens_. Luckily for me, tokenising is a very common procedure and there was a builtin class in the Scala libraries called StreamTokeniser which handled most of heavy duty work and all I had to implement was a thin wrapper or it so it would function according to my needs. Now, the input file has been transformed from a stream of characters into a stream of tokens.
+The first stage involves reading the stream of characters from the input file given to the program, then a process called _tokenising_ is performed. This heavily simplifies the input by removing comments, whitespace and sectionining groups of characters into entities known as _tokens_. Luckily for me, tokenising is a very common procedure and there was a builtin class in the Scala libraries called StreamTokeniser which handled most of heavy duty work and all I had to implement was a thin wrapper over it so it would function according to my needs. Now, the input file has been transformed from a stream of characters into a stream of tokens.
 
-Consequently, the second stage reads in these tokens and builds a sequence of rendering commands out of them. This was one of the more complex tasks since it was specific to the PBRT file format and I needed to match the specification exactly doing this process. Each rendering command would require multiple tokens and I built a whole set of parsing functions in order to be handle each type.
+Consequently, the second stage reads in these tokens and builds a sequence of rendering commands out of them. This was one of the more complex tasks since it was specific to the PBRT file format and I needed to match the specification exactly doing this process. Each rendering command would require multiple tokens and I built a whole set of parsing functions in order to be handle each type. In order to do this, I consulted the specification<sup>[[8](#8)]</sup> as mentioned but also the existing source code<sup>[[9](#9)]</sup> which allowed me to double check to make sure that the logic I used was correct in my own code and also as a guideline to structure my own code. For example, when reading the input file it could end up referencing another file to read input out of, as a result the second stage would have to call the first stage again to ask for more tokens from a different file. This process could have been quite complex to implement but, using the existing implementation, I saw the original creators had the idea to use a data structure called a stack which helped me to simplify my code. 
 
 Eventually, each rendering command would then be passed onto the rendering pipeline, the details of which have been the topic of discussion of the rest of the report. From there the final image would then be generated using all the various rendering techniques and options set by the image file. In the end, I am quite happy with the results of my parser and I managed to read the vast majority of the file format (some parts were omitted for simplicity) using just under 1100 lines of code - compared to the C++ Parser used within the actual PBRT implementation which uses about 4500 lines of code. This further highlights how using Scala has been a good tool to increase productivity and reduce how much code will be needed. 
 
@@ -90,4 +98,7 @@ Eventually, each rendering command would then be passed onto the rendering pipel
 
 ##### 8
 ###### Pharr, M. (2014). pbrt-v2 Input File Format. [online] Pbrt.org. Available at: http://www.pbrt.org/fileformat.html [Accessed 22 Mar. 2017].
+
+##### 9
+###### Pharr, M. (2017). mmp/pbrt-v2. [online] GitHub. Available at: https://github.com/mmp/pbrt-v2 [Accessed 22 Mar. 2017].
 
