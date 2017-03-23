@@ -6,7 +6,7 @@ Film "screen" "integer xresolution" 400 "integer yresolution" 400 "integer width
 
 Integrator "whitted" "integer maxdepth" [3]
 Sampler "random" "integer pixelsamples" [4]
-Renderer "sampler" "integer taskcount" [20]
+Renderer "sampler" "integer taskcount" [10]
 Accelerator "grid"
 
 WorldBegin
@@ -22,7 +22,7 @@ TransformBegin
     LightSource "point" "rgb I" [500 500 500]
 TransformEnd
 
-Material "matte" "rgb Kd" [ 0.5 0.5 .25 ]
+Material "matte" "rgb Kd" [ 0.5 0.5 0.25 ]
 
 Shape "trianglemesh"  "integer indices" [0 2 1 ] "point P" [1.332760 -0.370922 2.454690 1.350740 -0.375926 2.400000 1.400000 0.000000 2.400000 ] "vector N" [0.953562 -0.257047 0.156989 0.871509 -0.234929 0.430442 0.902861 0.000000 0.429934 ]
 Shape "trianglemesh"  "integer indices" [0 2 1 ] "point P" [1.400000 0.000000 2.400000 1.381370 0.000000 2.454690 1.332760 -0.370922 2.454690 ] "vector N" [0.902861 0.000000 0.429934 0.987636 0.000000 0.156768 0.953562 -0.257047 0.156989 ]

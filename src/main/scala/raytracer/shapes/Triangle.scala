@@ -7,7 +7,7 @@ import raytracer.math._
   */
 case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
 
-  val EPSILON = 1e-9
+  val EPSILON = 1e-10
 
   val v0 = mesh.indices(3*idx)
   val v1 = mesh.indices(3*idx+1)
@@ -108,6 +108,6 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
         b(2)*mesh.normals(v2)
       ).nor
 
-    DifferentialGeometry(dg.p, -nn, dg.u, dg.v, dg.dpdu, dg.dpdv, this)
+    DifferentialGeometry(dg.p, nn, dg.u, dg.v, dg.dpdu, dg.dpdv, this)
   }
 }

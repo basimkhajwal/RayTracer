@@ -31,7 +31,15 @@ final class BSDF (
   def apply(woW: Vec3, wiW: Vec3, flags: Int): Spectrum = {
     val wo = worldToLocal(woW)
     val wi = worldToLocal(wiW)
-    bxdfs.withFilter(_ matches flags).map(_(wo, wi)).foldLeft(Spectrum.BLACK)(_ + _)
+    var total = Spectrum.BLACK
+    var bxdf = bxdfs
+    while (bxdf.nonEmpty) {
+      if (bxdf.head matches flags) {
+        total += bxdf.head(wo, wi)
+      }
+      bxdf = bxdf.tail
+    }
+    total
   }
 
   def sample(woW: Vec3, u1: Double, u2: Double, flags: Int): (Spectrum, Vec3) = {
