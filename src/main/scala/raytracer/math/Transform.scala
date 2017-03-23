@@ -7,6 +7,8 @@ case class Transform(mat: Mat4, matInv: Mat4) {
 
   lazy val inverse = Transform(matInv, mat)
 
+  lazy val swapsHandedness: Boolean = mat.swapsHandedness
+
   def apply(vec: Vec3): Vec3 = mat * vec
 
   def apply(point: Point): Point = mat * point
@@ -16,6 +18,7 @@ case class Transform(mat: Mat4, matInv: Mat4) {
   def apply(bbox: BBox): BBox = (0 to 7).map(p => this(bbox(p))).foldLeft(bbox)(_.union(_))
 
   def *(that: Transform): Transform = Transform(mat * that.mat, that.matInv * matInv)
+
 }
 
 object Transform {

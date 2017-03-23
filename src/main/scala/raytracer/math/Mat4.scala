@@ -3,7 +3,7 @@ package raytracer.math
 /**
   * Created by Basim on 08/01/2017.
   */
-case class Mat4(val data: Array[Double]) {
+case class Mat4(data: Array[Double]) {
   require(data.length == 16, "All 16 elements must be specified")
 
   lazy val inv: Mat4 = {
@@ -130,6 +130,8 @@ case class Mat4(val data: Array[Double]) {
 
   def *(sf: Double): Mat4 = Mat4(data map (_ * sf))
   def /(sf: Double): Mat4 = Mat4(data map (_ / sf))
+
+  lazy val swapsHandedness = det < 0
 }
 
 object Mat4 {
