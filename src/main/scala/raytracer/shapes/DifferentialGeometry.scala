@@ -24,7 +24,7 @@ object DifferentialGeometry {
     if (shape.objectToWorld.swapsHandedness) {
       new DifferentialGeometry(p, -nn, u, v, dpdu, dpdv, shape)
     } else {
-      new DifferentialGeometry(p, -nn, u, v, dpdu, dpdv, shape)
+      new DifferentialGeometry(p, nn, u, v, dpdu, dpdv, shape)
     }
   }
 }
