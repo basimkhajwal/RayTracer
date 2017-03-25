@@ -9,7 +9,7 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
 
   val EPSILON = 1e-10
 
-  val v0 = mesh.indices(3*idx)
+  val v0 = mesh.indices(3*idx+0)
   val v1 = mesh.indices(3*idx+1)
   val v2 = mesh.indices(3*idx+2)
 
@@ -38,7 +38,7 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
 
   private val e1: Vec3 = p2-p1
   private val e2: Vec3 = p3-p1
-  private val nor = e1.cross(e2)
+  private val nor = e1.cross(e2).nor
 
   override def intersect(worldRay: Ray): Option[(DifferentialGeometry, Double)] = {
 
@@ -91,7 +91,7 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
   )
 
   override def getShadingGeometry(dg: DifferentialGeometry): DifferentialGeometry = {
-    if (!mesh.hasNormals) return dg
+    if (mesh.hasNormals) return dg
 
     val c0 = dg.u - uvs(0)
     val c1 = dg.v - uvs(1)
@@ -101,13 +101,25 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
       if (solution == null) Array(1/3.0, 1/3.0, 1/3.0)
       else Array(1 - solution._1 - solution._2, solution._1, solution._2)
 
-    val nn =
+    val ns =
       objectToWorld(
         b(0)*mesh.normals(v0) +
         b(1)*mesh.normals(v1) +
         b(2)*mesh.normals(v2)
       ).nor
 
-    DifferentialGeometry(dg.p, nn, dg.u, dg.v, dg.dpdu, dg.dpdv, this)
+    var ss = dg.dpdu.nor
+    var ts = ss cross ns
+
+    if (ts.mag2 < 0) {
+      ts = ts.nor
+      ss = ts.cross(ns)
+    } else {
+      val coordSystem = Vec3.createCoordinateSystem(ns)
+      ss = coordSystem._1
+      ts = coordSystem._2
+    }
+
+    DifferentialGeometry(dg.p, ns, dg.u, dg.v, ss, ts, this)
   }
 }
