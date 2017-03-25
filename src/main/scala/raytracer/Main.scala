@@ -79,9 +79,10 @@ object Main {
   }
 
   val TEAPOT_SCENE = "scenes/teapot.txt"
+  val TRIANGLE_SCENE = "scenes/triangletest.txt"
 
   def main(args: Array[String]) = {
-    //sceneBuilder.render()
+    //getTestScene().render()
     renderFile(TEAPOT_SCENE)
 
     Reporter.outputReport()
