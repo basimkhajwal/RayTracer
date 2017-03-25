@@ -2,7 +2,7 @@ ConcatTransform 0.828849 -0.295370 -0.475149 0.000000 -0.559473 -0.437585 -0.703
 Translate -4.860000 -7.200000 -5.400000
 
 Camera "perspective" "float fov" [45.000000 ] "float screenwindow" [-1.000000 1.000000 -1.000000 1.000000]
-Film "screen" "integer xresolution" 400 "integer yresolution" 400 "integer width" 800 "string filename" "progress/15.png" "integer height" 800
+Film "screen" "integer xresolution" 400 "integer yresolution" 400 "integer width" 800 "string filename" "progress/19.png" "integer height" 800
 
 Integrator "whitted" "integer maxdepth" [3]
 Sampler "random" "integer pixelsamples" [4]
@@ -13,13 +13,13 @@ WorldBegin
 
 TransformBegin
     CoordSysTransform "camera"
-    LightSource "point" "rgb I" [500 500 500]
+    LightSource "point" "rgb I" [300 300 300]
 TransformEnd
 
 TransformBegin
     CoordSysTransform "camera"
     Translate 4.860000 7.200000 5.400000
-    LightSource "point" "rgb I" [500 500 500]
+    LightSource "point" "rgb I" [300 300 300]
 TransformEnd
 
 Material "matte" "rgb Kd" [ 0.5 0.5 0.25 ]
