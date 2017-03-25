@@ -23,7 +23,7 @@ class Whitted(maxRayDepth: Int) extends Integrator{
 
     while (i < scene.lights.length) {
       val (lightIntensity, wi, lightDist) = scene.lights(i).sample(p)
-      val lightValue = lightIntensity * wi.dot(n) * bsdf(-ray.dir, wi, BSDF.ALL_REFLECTION)
+      val lightValue = lightIntensity * Math.abs(wi.dot(n)) * bsdf(-ray.dir, wi, BSDF.ALL_REFLECTION)
 
       val lightCheck = scene.intersect(Ray(p, wi, 0)).orNull
       if (lightCheck == null || lightCheck.time >= lightDist) {
