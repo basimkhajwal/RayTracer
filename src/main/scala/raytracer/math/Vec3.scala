@@ -9,6 +9,20 @@ object Vec3 {
 
   trait Scalable { def *(that: Vec3): Vec3 }
   implicit def doubleToScalable(x: Double): Scalable = _ * x
+
+  def createCoordinateSystem(v1: Vec3): (Vec3, Vec3) = {
+    val v2 = if (Math.abs(v1.x) > Math.abs(v1.y)) {
+      val invLen = 1.0 / Math.sqrt(v1.x*v1.x + v1.z*v1.z)
+      Vec3(-v1.z * invLen, 0, v1.x * invLen)
+    }
+    else {
+      val invLen = 1.0 / Math.sqrt(v1.y*v1.y + v1.z*v1.z)
+      Vec3(0, v1.z * invLen, -v1.y * invLen)
+    }
+    val v3 = v1 cross v2
+
+    (v2, v3)
+  }
 }
 
 case class Vec3(x: Double, y: Double, z: Double) {
