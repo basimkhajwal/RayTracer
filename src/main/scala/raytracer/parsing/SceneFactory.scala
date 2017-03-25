@@ -198,7 +198,8 @@ object SceneFactory {
         val normals = params.get[Vec3]("N").map(_.toArray).orNull
         val uvs = params.get[Double]("uv").map(_.toArray).orNull
 
-        require(normals.length == indices.length, s"Incorrect number of normals ${normals.length}")
+        if (normals != null)
+          require(normals.length == indices.length, s"Incorrect number of normals ${normals.length}")
 
         new TriangleMesh(indices.toArray, points.toArray, objToWorld, normals, uvs)
       }
