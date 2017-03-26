@@ -33,7 +33,7 @@ abstract class ProjectiveCamera(
     val focalTime = focalDistance / dir.z
     val focalPoint = start + dir * focalTime
 
-    val (lensU, lensV) = SamplingTransform.uniformSampleDisk(sample.lensU, sample.lensV)
+    val (lensU, lensV) = SamplingTransform.concentricSampleDisk(sample.lensU, sample.lensV)
 
     cameraToWorld(
       Ray(Point(lensU * lensRadius, lensV * lensRadius, 0), (focalPoint - start).nor, 0)
