@@ -8,14 +8,14 @@ import raytracer.sampling.{CameraSample, Sample}
   * Created by Basim on 25/01/2017.
   */
 class OrthographicCamera(
-  camToWorld: Transform,
-  screenWindow: (Double, Double, Double, Double),
-  film: Film
-) extends ProjectiveCamera(camToWorld, Projection.orthographic(0, 1), screenWindow, film) {
+  camToWorld: Transform, screenWindow: (Double, Double, Double, Double),
+  lenR: Double, fd: Double, film: Film
+) extends ProjectiveCamera(camToWorld, Projection.orthographic(0, 1), screenWindow, lenR, fd, film) {
 
-  val zdir = Vec3(0, 0, 1)
+  val zDir = Vec3(0, 0, 1)
 
   override def generateRay(sample: CameraSample): Ray = {
-    cameraToWorld(Ray(rasterToCamera(Point(sample.imageX, sample.imageY, 0)), zdir, 0))
+    val start = rasterToCamera(Point(sample.imageX, sample.imageY, 0))
+    applyDepthOfField(start, zDir, sample)
   }
 }

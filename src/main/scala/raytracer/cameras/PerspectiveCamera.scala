@@ -10,13 +10,14 @@ import raytracer.sampling.CameraSample
 class PerspectiveCamera(
   camToWorld: Transform,
   screenWindow: (Double, Double, Double, Double),
-  fov: Double, film: Film
+  fov: Double, lenR: Double, fd: Double,
+  film: Film
 ) extends ProjectiveCamera(
-  camToWorld, Projection.perspective(fov, 1e-2f, 1000), screenWindow, film) {
+  camToWorld, Projection.perspective(fov, 1e-2f, 1000), screenWindow, lenR, fd, film) {
 
   override def generateRay(sample: CameraSample): Ray = {
     val pCamera = rasterToCamera(Point(sample.imageX, sample.imageY, 0))
-    cameraToWorld(Ray(Point.ZERO, (pCamera-Point.ZERO).nor, 0))
+    applyDepthOfField(Point.ZERO, (pCamera-Point.ZERO).nor, sample)
   }
 }
 
