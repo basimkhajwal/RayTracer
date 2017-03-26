@@ -1,11 +1,11 @@
 ConcatTransform 0.828849 -0.295370 -0.475149 0.000000 -0.559473 -0.437585 -0.703924 0.000000 -0.000000 0.849280 -0.527943 0.000000 0.000000 0.000000 0.000000 1.000000
 Translate -4.860000 -7.200000 -5.400000
 
-Camera "perspective" "float fov" [45.000000 ] "float screenwindow" [-1.000000 1.000000 -1.000000 1.000000]
+Camera "perspective" "float fov" [45.000000 ] "float screenwindow" [-1.000000 1.000000 -1.000000 1.000000] "float lensradius" [0.08] "float focaldistance" [10]
 Film "screen" "integer xresolution" 400 "integer yresolution" 400 "integer width" 800 "string filename" "progress/20.png" "integer height" 800
 
 Integrator "whitted" "integer maxdepth" [3]
-Sampler "random" "integer pixelsamples" [4]
+Sampler "random" "integer pixelsamples" [1]
 Renderer "sampler" "integer taskcount" [10]
 Accelerator "grid"
 
