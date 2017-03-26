@@ -114,17 +114,20 @@ object SceneFactory {
       if (aspRatio > 1) Array(-aspRatio, aspRatio, -1, 1) else Array(-1, 1, -1/aspRatio, 1/aspRatio))
       .toArray
 
+    val lensRadius = params.getOneOr[Double]("lensradius", 0)
+    val focalDistance = params.getOneOr[Double]("focaldistance", 1e30)
+
     camType match {
 
       case "perspective" => {
 
         val fov: Double = params.getOneOr[Double]("fov", params.getOneOr[Int]("fov", 90))
 
-        new PerspectiveCamera(camToWorld, (sw(0), sw(1), sw(2), sw(3)), fov, film)
+        new PerspectiveCamera(camToWorld, (sw(0), sw(1), sw(2), sw(3)), fov, lensRadius, focalDistance, film)
       }
 
       case "orthographic" => {
-        new OrthographicCamera(camToWorld, (sw(0), sw(1), sw(2), sw(3)), film)
+        new OrthographicCamera(camToWorld, (sw(0), sw(1), sw(2), sw(3)), lensRadius, focalDistance, film)
       }
 
       case _ => throw new IllegalArgumentException(s"Un-implemented camera type $camType")
