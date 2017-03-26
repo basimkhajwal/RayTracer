@@ -10,7 +10,7 @@ abstract class Sampler(
   val yStart: Int, val yEnd: Int,
   val samplesPerPixel: Int
 ) {
-  Logger.info.log("Sampler", s"Created sampler $xStart $xEnd $yStart $yEnd")
+  Logger.info.log("Sampler", s"Created sampler $xStart $xEnd $yStart $yEnd - $samplesPerPixel")
 
   def getSubSampler(idx: Int, count: Int): Sampler
 
