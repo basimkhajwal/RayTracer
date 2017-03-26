@@ -81,7 +81,10 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
     val dpdu = (dv2 * dp1 - dv1 * dp2) * invDet
     val dpdv = (-du2 * dp1 + du1 * dp2) * invDet
 
-    val dg = DifferentialGeometry(objectToWorld(surfacePoint), objectToWorld(n), u, v, objectToWorld(dpdu), objectToWorld(dpdv), this)
+    val tu = (1-u-v)*uvs(0) + u*uvs(2) + v*uvs(4)
+    val tv = (1-u-v)*uvs(1) + u*uvs(3) + v*uvs(5)
+
+    val dg = DifferentialGeometry(objectToWorld(surfacePoint), objectToWorld(n), tu, tv, objectToWorld(dpdu), objectToWorld(dpdv), this)
     Some((dg, t))
   }
 
@@ -91,7 +94,7 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
   )
 
   override def getShadingGeometry(dg: DifferentialGeometry): DifferentialGeometry = {
-    if (mesh.hasNormals) return dg
+    if (!mesh.hasNormals) return dg
 
     val c0 = dg.u - uvs(0)
     val c1 = dg.v - uvs(1)
@@ -111,7 +114,7 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
     var ss = dg.dpdu.nor
     var ts = ss cross ns
 
-    if (ts.mag2 < 0) {
+    if (ts.mag2 > 0) {
       ts = ts.nor
       ss = ts.cross(ns)
     } else {
