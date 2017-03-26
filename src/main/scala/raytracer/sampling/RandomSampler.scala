@@ -31,6 +31,8 @@ class RandomSampler(
 
     val imageX: Double = xPos + rand.nextDouble()
     val imageY: Double = yPos + rand.nextDouble()
+    val lensX: Double = rand.nextDouble()
+    val lensY: Double = rand.nextDouble()
     val oneD = if (nOneD == 0) Array.emptyDoubleArray else new Array[Double](nOneD)
     val twoD = if (nTwoD == 0) Array.emptyDoubleArray else new Array[Double](nOneD)
 
@@ -42,7 +44,7 @@ class RandomSampler(
     }
 
     samplePos += 1
-    Sample(imageX, imageY, oneD, twoD)
+    Sample(imageX, imageY, lensX, lensY, oneD, twoD)
   }
 
   override def getSubSampler(idx: Int, count: Int): Sampler = {
