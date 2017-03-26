@@ -1,7 +1,8 @@
 package raytracer.cameras
 
 import raytracer.films.Film
-import raytracer.math.Transform
+import raytracer.math.{Point, Ray, Transform, Vec3}
+import raytracer.sampling.{CameraSample, Sample, SamplingTransform}
 
 /**
   * Created by Basim on 24/01/2017.
@@ -9,6 +10,8 @@ import raytracer.math.Transform
 abstract class ProjectiveCamera(
   val cameraToWorld: Transform, val cameraToScreen: Transform,
   val screenWindow: (Double, Double, Double, Double),
+  val lensRadius: Double,
+  val focalDistance: Double,
   film: Film
   ) extends Camera(film) {
 
@@ -22,4 +25,18 @@ abstract class ProjectiveCamera(
   val rasterToScreen: Transform = screenToRaster.inverse
   val rasterToCamera: Transform = cameraToScreen.inverse * rasterToScreen
   val rasterToWorld: Transform = cameraToWorld * rasterToCamera
+
+  def applyDepthOfField(start: Point, dir: Vec3, sample: CameraSample): Ray = {
+
+    if (lensRadius == 0) return cameraToWorld(Ray(start, dir, 0))
+
+    val focalTime = focalDistance / dir.z
+    val focalPoint = start + dir * focalTime
+
+    val (lensU, lensV) = SamplingTransform.uniformSampleDisk(sample.lensU, sample.lensV)
+
+    cameraToWorld(
+      Ray(Point(lensU * lensRadius, lensV * lensRadius, 0), (focalPoint - start).nor, 0)
+    )
+  }
 }
