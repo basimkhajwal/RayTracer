@@ -11,4 +11,5 @@ object SamplingTransform {
     (r * Math.cos(theta), r * Math.sin(theta))
   }
 
+  // TODO: Create ConcentricSampleDisk (pg 667)
 }
