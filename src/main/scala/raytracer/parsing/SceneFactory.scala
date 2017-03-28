@@ -3,7 +3,7 @@ package raytracer.parsing
 import raytracer._
 import raytracer.cameras.{Camera, OrthographicCamera, PerspectiveCamera}
 import raytracer.films.{Film, ImageFilm, ScreenFilm}
-import raytracer.filters.{BoxFilter, Filter, GaussianFilter, TriangleFilter}
+import raytracer.filters._
 import raytracer.integrators.{Integrator, Whitted}
 import raytracer.lights.{Light, PointLight}
 import raytracer.materials.{Material, MatteMaterial}
@@ -95,6 +95,13 @@ object SceneFactory {
       case "box" => new BoxFilter(xWidth, yWidth)
 
       case "triangle" => new TriangleFilter(xWidth, yWidth)
+
+      case "mitchell" => {
+        val B = params.getOneOr[Double]("B", 1/3.0)
+        val C = params.getOneOr[Double]("C", 1/3.0)
+
+        new MitchellFilter(xWidth, yWidth, B, C)
+      }
 
       case "gaussian" => {
         val alpha = params.getOneOr[Double]("alpha", 2)
