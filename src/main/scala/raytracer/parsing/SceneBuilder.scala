@@ -3,13 +3,14 @@ package raytracer.parsing
 import raytracer.Scene
 import raytracer.cameras.Camera
 import raytracer.films.Film
+import raytracer.filters.Filter
 import raytracer.integrators.Integrator
 import raytracer.lights.Light
 import raytracer.math.{Point, Transform, Vec3}
 import raytracer.primitives.{Aggregate, GeometricPrimitive, GridAccelerator, Primitive}
 import raytracer.renderers.Renderer
 import raytracer.sampling.Sampler
-import raytracer.utils.Logger
+import raytracer.utils.{Logger, Reporter}
 
 /**
   * Created by Basim on 27/01/2017.
@@ -34,6 +35,9 @@ class SceneBuilder {
   private var filmName = "screen"
   private var filmParams = new ParamSet()
 
+  private var filterName = "box"
+  private var filterParams = new ParamSet()
+
   private var samplerName = "random"
   private var samplerParams = new ParamSet()
 
@@ -46,7 +50,9 @@ class SceneBuilder {
   private var acceleratorName = "grid"
   private var acceleratorParams = new ParamSet()
 
-  private lazy val film: Film = SceneFactory.makeFilm(filmName, filmParams)
+  private lazy val film: Film = SceneFactory.makeFilm(filmName, filter, filmParams)
+
+  private lazy val filter: Filter = SceneFactory.makeFilter(filterName, filterParams)
 
   private lazy val camera: Camera = SceneFactory.makeCamera(cameraName, cameraToWorld, film, cameraParams)
 
@@ -92,6 +98,8 @@ class SceneBuilder {
 
   final def getSampler(): Sampler = sampler
 
+  final def getFilter(): Filter = filter
+
   final def worldBegin(): Unit = {
     require(!worldSection, "World begin cannot be nested")
     identityTransform()
@@ -101,6 +109,13 @@ class SceneBuilder {
   final def worldEnd(): Unit = {
     require(worldSection, "Un-matched world end")
     worldSection = false
+  }
+
+  final def filter(filterType: String, params: ParamSet): Unit = {
+    require(!worldSection, "The filter must be defined outside of the world section")
+    filterName = filterType
+    filterParams = params
+    log(s"Set filter to type $renderer")
   }
 
   final def renderer(rendererType: String, params: ParamSet): Unit = {
@@ -228,7 +243,7 @@ class SceneBuilder {
     val mat = graphicsState.createMaterial(params)
     primitives ::= new GeometricPrimitive(shape, mat)
 
-    log(s"Added primitive of shape type $name")
+    Reporter.primitive.report()
   }
 
   final def texture(name: String, textureType: String, textureClass: String, params: ParamSet): Unit = {

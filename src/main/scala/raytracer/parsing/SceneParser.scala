@@ -210,6 +210,11 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
     infoMsg("Began parsing scene definition")
 
+    def runTypedCommand(name: String, command: (String, ParamSet) => Unit): Unit = {
+      val cmdType = nextToken().getOrElse(s"$name type must be specified")
+      catchError { command(cmdType, parseParams()) }
+    }
+
     var t: Option[String] = None
     while ({
       t = nextToken()
@@ -228,6 +233,11 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
         case "film" => {
           val filmType = nextToken().getOrElse("Film type must be specified")
           catchError { film(filmType, parseParams()) }
+        }
+
+        case "filter" => {
+          val filterType = nextToken().getOrElse("Filter type must be specified")
+          catchError { film(filterType, parseParams()) }
         }
 
         case "accelerator" => {
