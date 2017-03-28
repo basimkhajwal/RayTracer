@@ -3,6 +3,7 @@ package raytracer.parsing
 import raytracer._
 import raytracer.cameras.{Camera, OrthographicCamera, PerspectiveCamera}
 import raytracer.films.{Film, ImageFilm, ScreenFilm}
+import raytracer.filters.{BoxFilter, Filter, GaussianFilter, TriangleFilter}
 import raytracer.integrators.{Integrator, Whitted}
 import raytracer.lights.{Light, PointLight}
 import raytracer.materials.{Material, MatteMaterial}
@@ -59,7 +60,7 @@ object SceneFactory {
 
       case "random" => {
         val samplesPerPixel = params.getOneOr[Int]("pixelsamples", 4)
-        val (xs, xe, ys, ye) = camera.film.getSampleExtent()
+        val (xs, xe, ys, ye) = camera.film.sampleExtent
 
         new RandomSampler(xs, xe, ys, ye, samplesPerPixel)
       }
@@ -80,6 +81,27 @@ object SceneFactory {
       }
 
       case _ => throw new IllegalArgumentException(s"Un-implemented renderer type $rendererType")
+    }
+  }
+
+  def makeFilter(filterType: String, params: ParamSet): Filter = reportUnused(params) {
+
+    val defaultWidth = if (filterType == "box") 0.5 else 2
+    val xWidth = params.getOneOr[Double]("xwidth", defaultWidth)
+    val yWidth = params.getOneOr[Double]("ywidth", defaultWidth)
+
+    filterType match {
+
+      case "box" => new BoxFilter(xWidth, yWidth)
+
+      case "triangle" => new TriangleFilter(xWidth, yWidth)
+
+      case "gaussian" => {
+        val alpha = params.getOneOr[Double]("alpha", 2)
+        new GaussianFilter(xWidth, yWidth, alpha)
+      }
+
+      case _ => throw new IllegalArgumentException(s"Un-implemented filter type $filterType")
     }
   }
 
