@@ -105,23 +105,32 @@ object SceneFactory {
     }
   }
 
-  def makeFilm(filmType: String, params: ParamSet): Film = reportUnused(params) {
+  def makeFilm(filmType: String, filter: Filter, params: ParamSet): Film = reportUnused(params) {
     val xRes = params.getOneOr[Double]("xresolution", params.getOneOr[Int]("xresolution", 640)).toInt
     val yRes = params.getOneOr[Double]("yresolution", params.getOneOr[Int]("yresolution", 480)).toInt
+
+    val cropWindowArr = params.get[Double]("cropwindow").map(_.toArray).orNull
+
+    val cropWindow: (Double, Double, Double, Double) =
+      if (cropWindowArr == null) (0, 1, 0, 1)
+      else {
+        assert(cropWindowArr.size == 4, "Four values needed for crop window!")
+        (cropWindowArr(0), cropWindowArr(1), cropWindowArr(2), cropWindowArr(3))
+      }
 
     filmType match {
 
       case "image" => {
         val fName = params.getOneOr[String]("filename", "default.png")
 
-        new ImageFilm(fName, xRes, yRes)
+        new ImageFilm(filter, xRes, yRes, cropWindow, fName)
       }
 
       case "screen" => {
         val width = params.getOneOr[Double]("width", params.getOneOr[Int]("width", xRes)).toInt
         val height = params.getOneOr[Double]("height", params.getOneOr[Int]("height", yRes)).toInt
 
-        new ScreenFilm(xRes, yRes, width, height)
+        new ScreenFilm(filter, xRes, yRes, cropWindow, width, height)
       }
 
       case _ => throw new IllegalArgumentException(s"Un-implemented film type $filmType")
