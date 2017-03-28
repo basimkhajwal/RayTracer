@@ -3,25 +3,22 @@ import java.awt.{Dimension, Graphics}
 import java.awt.image.BufferedImage
 import javax.swing.{JFrame, JPanel}
 
-import raytracer.Spectrum
-import raytracer.sampling.{CameraSample, Sample}
+import raytracer.filters.Filter
 
 /**
   * Created by Basim on 20/02/2017.
   */
-class ScreenFilm(xRes: Int, yRes: Int, val width: Int, val height: Int) extends Film(xRes, yRes) {
+class ScreenFilm(
+  filter: Filter, xRes: Int, yRes: Int,
+  cw: (Double, Double, Double, Double),
+  val width: Int, val height: Int)
+  extends Film(filter, xRes, yRes, cw) {
 
-  val image: BufferedImage = new BufferedImage(xRes, yRes, BufferedImage.TYPE_INT_RGB)
-
-  override def applySample(sample: CameraSample, l: Spectrum): Unit = {
-    image.setRGB(sample.imageX.toInt, sample.imageY.toInt, l.toRGBInt)
-  }
-
-  override def saveImage: Unit = {
+  override def saveImage(): Unit = {
     val frame = new JFrame("Sphere Render Test")
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
     frame.setResizable(false)
-    frame.add(new CustomRenderer(image, new Dimension(width, height)))
+    frame.add(new CustomRenderer(getBufferedImage(), new Dimension(width, height)))
     frame.pack
     frame.setVisible(true)
   }
