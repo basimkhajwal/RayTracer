@@ -109,27 +109,28 @@ class SceneBuilder {
   final def worldEnd(): Unit = {
     require(worldSection, "Un-matched world end")
     worldSection = false
+    log(s"$renderer")
   }
 
   final def filter(filterType: String, params: ParamSet): Unit = {
     require(!worldSection, "The filter must be defined outside of the world section")
     filterName = filterType
     filterParams = params
-    log(s"Set filter to type $renderer")
+    log(s"Set filter to type $filterType")
   }
 
   final def renderer(rendererType: String, params: ParamSet): Unit = {
     require(!worldSection, "The renderer must be defined outside of the world section")
     rendererName = rendererType
     rendererParams = params
-    log(s"Set renderer to type $renderer")
+    log(s"Set renderer to type $rendererName")
   }
 
   final def accelerator(acceleratorType: String, params: ParamSet): Unit = {
     require(!worldSection, "The accelerator must be defined outside of the world section")
     acceleratorName = acceleratorType
     acceleratorParams = params
-    log(s"Set accelerator to type $renderer")
+    log(s"Set accelerator to type $rendererName")
   }
 
   final def sampler(samplerType: String, params: ParamSet): Unit = {

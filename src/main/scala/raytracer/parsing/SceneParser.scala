@@ -16,7 +16,8 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
   private val validParameters = List("float", "integer", "string", "bool", "vector", "point", "rgb", "color", "texture")
 
-  private var lexerStack: List[Lexer] = new Lexer(sceneFile) :: Nil
+  private val firstLexer = new Lexer(sceneFile)
+  private var lexerStack: List[Lexer] = firstLexer :: Nil
 
   private val warningLogger = new Logger {
     override def log(caller: String, msg: String) = warningMsg(msg)
@@ -40,7 +41,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
   }
 
   @inline
-  private def currentLexer(): Lexer = lexerStack head
+  private def currentLexer(): Lexer = if (lexerStack.isEmpty) firstLexer else lexerStack.head
 
   private def getTokens(n: Int): List[String] = {
     var i = 0
@@ -119,7 +120,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
     }
   }
 
-  private def parseParameter(params: ParamSet, paramName: String, paramType: String, paramValues: ListBuffer[String]): Unit = {
+  private def parseParameter(params: ParamSet, paramName: String, paramType: String, paramValues: Array[String]): Unit = {
 
     def checkedMap[T:ClassTag](err: String => String, f: String => T): Seq[T] = {
       paramValues.map(value => Try(f(value)) match {
@@ -167,10 +168,10 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
     }
   }
 
-  private def getParamValues: ListBuffer[String] = {
+  private def getParamValues(): Array[String] = {
     nextToken() match {
-      case Some("[") => getParamValues(ListBuffer())
-      case Some(single) => ListBuffer(single)
+      case Some("[") => getParamValues(ListBuffer()).toArray
+      case Some(single) => Array(single)
       case _ => throwError("Parameter list must begin with [")
     }
   }
@@ -199,7 +200,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
       } {
         nextToken()
         done = false
-        parseParameter(params, pName, pType, getParamValues)
+        parseParameter(params, pName, pType, getParamValues())
       }
     }
 
@@ -237,7 +238,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
         case "filter" => {
           val filterType = nextToken().getOrElse("Filter type must be specified")
-          catchError { film(filterType, parseParams()) }
+          catchError { filter(filterType, parseParams()) }
         }
 
         case "accelerator" => {
