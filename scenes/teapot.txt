@@ -5,7 +5,7 @@ Camera "perspective" "float fov" [45.000000 ] "float screenwindow" [-1.000000 1.
 Film "screen" "integer xresolution" 400 "integer yresolution" 400 "integer width" 800 "string filename" "progress/20.png" "integer height" 800
 
 Integrator "whitted" "integer maxdepth" [3]
-Sampler "random" "integer pixelsamples" [10]
+Sampler "random" "integer pixelsamples" [1]
 Renderer "sampler" "integer taskcount" [10]
 Accelerator "grid"
 Filter "box"
@@ -22,6 +22,13 @@ TransformBegin
     Translate 4.860000 7.200000 5.400000
     LightSource "point" "rgb I" [300 300 300]
 TransformEnd
+
+#Material "mirror"
+#
+#AttributeBegin
+#    Translate 2 -1.5 3
+#    Shape "sphere" "float radius" [1.4]
+#AttributeEnd
 
 Material "matte" "rgb Kd" [ 0.5 0.5 0.25 ]
 

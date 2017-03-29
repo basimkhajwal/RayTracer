@@ -44,10 +44,11 @@ object Main {
       lightSource("point", ParamSet.from("I" -> List(Spectrum(intensity, intensity, intensity))))
       transformEnd()
 
-      transformBegin()
+      attributeBegin()
       translateTransform(2.1, -6, 0)
-      shape("sphere", ParamSet.from("radius" -> List(2.0), "kd" -> List(Spectrum(1,0,0))))
-      transformEnd()
+      material("mirror", ParamSet.from("r" -> List(Spectrum.WHITE)))
+      shape("sphere", ParamSet.from("radius" -> List(2.0)))
+      attributeEnd()
 
       transformBegin()
       translateTransform(2.1, -6-spacing-6, 0)
