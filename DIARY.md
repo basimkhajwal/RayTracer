@@ -7,6 +7,7 @@ I have begun working on a prototype for my Ray Tracer, in order to test if the p
 So far, development on the prototype has been going well I've been able to accurately render basic spheres with reflections and corrrect calculations of the geometry and intersections. This gives me confidence that my project will be feasible and has given me a better insight into which tasks will require the most effort to complete. Specifically, I've now realised that there is a lot of material available of this topic, much of it is very advanced and only for rendering specific types of scenes so I will need to filter out important information when doing research which will also require more time than I had intially thought it would. Also, before starting I thought the transformations involving maths would take a lot more time but they all seem to be working correctly now.
 
 <img src="progress/ganttchart.png" alt="Gantt Chart" height="450" align="right"/>
+
 ##### 02/01/17
 Using information gained from the prototype, I have begun to think about dividing the project into separate manageable tasks which will all contribute to the final product. In order to manage my workflow, I used the website GanttPro to generate a Gantt chart which I can use to work against the final report deadline and measure how well I am keeping up with progress. For smaller tasks, I intend to maintain a TODO-list on the website Trello which I will use to structure the tasks from the Gantt chart.
 
@@ -35,5 +36,14 @@ I have completed most of the base work required for parsing the existing scene f
 
 Below is my current status of my Trello chart showing which tasks I have compeleted and those which I plan on doing:
 <p align="center">
-<img src="progress/trello1.png" alt="Trello Progress" height="450" />
+<img src="progress/trello1.png" alt="Trello Progress" height="350" />
 </p>
+
+##### 06/03/17
+Recently, I have been working on creating a more generic interface for the renderer and sampler. This has largely been successful and there wasn't much difficulty in terms of bugs or errors whilst I was developing this part. In addition, the main outcome from this is parallelism. Previously, only one thread would do all the computation but now, using multi-threading, the work load can be shared across multiple processors which I have already measured to have a 4-5x speedup.
+
+##### 18/03/17
+I have made a lot of progress since having completed the previous section. The main work I have been doing is creating an accelerator to speed up the time taken to intersect light rays with the scene geometry, using a grid system to avoid un-necessary calculations. This has meant I first needed to modify the existing intersection testing code so it would return some partial derivatives and other extra information needed by the accelerator. Then the actual accelerator had to be created which was in fact quite simple but the gain in performance has been huge. For example in complex scenes such as the teapot, the new program outputs the same image in less than a tenth of the time.
+
+##### 27/03/17
+Over the last two weeks I have begun to write more for my report since I have realised that the actual project development won't be completed in March so I will have to develop my original deadlines that I had set in my original Gantt chart to take into account how much work I estimate is still required to be completed. So far, I have completed the introductory section and a section on the parsing process which has given me a total word count of around 2500 words. In addition, I have also done more work on the project by smoothing out normals, this has made a noticeable change to the teapot which now looks much more realistic.
