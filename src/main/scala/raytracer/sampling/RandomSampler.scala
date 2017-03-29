@@ -15,7 +15,7 @@ class RandomSampler(
   val rand = new Random()
 
   override def isFinished(): Boolean = {
-    xPos == xe && yPos == yEnd && samplePos == samplesPerPixel
+    xPos == xEnd-1 && yPos == yEnd-1 && samplePos == samplesPerPixel
   }
 
   override def getNextSample(nOneD: Int, nTwoD: Int): Sample = {
@@ -23,7 +23,7 @@ class RandomSampler(
       samplePos = 0
       xPos += 1
 
-      if (xPos > xEnd) {
+      if (xPos == xEnd) {
         xPos = xStart
         yPos += 1
       }
