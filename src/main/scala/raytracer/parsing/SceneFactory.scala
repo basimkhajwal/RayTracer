@@ -6,7 +6,7 @@ import raytracer.films.{Film, ImageFilm, ScreenFilm}
 import raytracer.filters._
 import raytracer.integrators.{Integrator, Whitted}
 import raytracer.lights.{Light, PointLight}
-import raytracer.materials.{Material, MatteMaterial}
+import raytracer.materials.{Material, MatteMaterial, MirrorMaterial}
 import raytracer.math.{Point, Transform, Vec3}
 import raytracer.primitives.{Aggregate, GridAccelerator, Primitive}
 import raytracer.renderers.{Renderer, SamplerRenderer}
@@ -193,6 +193,10 @@ object SceneFactory {
 
       case "matte" => {
         new MatteMaterial(textureParams.getSpectrumTexture("kd", Spectrum(0.5, 0.5, 0.5)))
+      }
+
+      case "mirror" => {
+        new MirrorMaterial(textureParams.getSpectrumTexture("r", Spectrum.WHITE))
       }
 
       case _ => throw new IllegalArgumentException(s"Un-implemented material type $matType")
