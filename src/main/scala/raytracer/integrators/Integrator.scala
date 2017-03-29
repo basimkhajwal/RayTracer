@@ -19,8 +19,7 @@ object Integrator {
     val bsdf = isect.getBSDF()
     val (col, wi) = bsdf.sample(-ray.dir, 0, 0, BSDF.REFLECTION | BSDF.SPECULAR)
 
-    Spectrum.BLACK
-    //if (col.isBlack()) col
-    //else col * integrator.traceRay(scene, Ray(dg.p, wi.nor, ray.depth+1)) * wi.dot(dg.nn).abs
+    if (col.isBlack()) col
+    else col * integrator.traceRay(scene, Ray(dg.p, wi.nor, ray.depth+1)) * wi.dot(dg.nn).abs
   }
 }
