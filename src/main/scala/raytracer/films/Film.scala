@@ -41,7 +41,7 @@ abstract class Film(
 
   val sampleExtent =
     ((xStart + 0.5 - filter.xWidth).toInt, math.ceil(xStart+xCount-0.5+filter.xWidth).toInt,
-     (yStart + 0.5 - filter.yWidth).toInt, math.ceil(xStart+xCount-0.5+filter.yWidth).toInt)
+     (yStart + 0.5 - filter.yWidth).toInt, math.ceil(yStart+yCount-0.5+filter.yWidth).toInt)
 
   final def applySample(sample: CameraSample, l: Spectrum): Unit = {
 
@@ -49,10 +49,11 @@ abstract class Film(
 
     val imageX = sample.imageX - 0.5
     val imageY = sample.imageY - 0.5
-    val x0 = math.ceil(math.max(xStart, imageX - filter.xWidth)).toInt
-    val y0 = math.ceil(math.max(yStart, imageY - filter.yWidth)).toInt
-    val x1 = math.min(xStart + xCount - 1, imageX + filter.xWidth).toInt
-    val y1 = math.min(yStart + yCount - 1, imageY + filter.yWidth).toInt
+    val x0 = math.max(xStart, math.ceil(imageX - filter.xWidth).toInt)
+    val y0 = math.max(yStart, math.ceil(imageY - filter.yWidth).toInt)
+
+    val x1 = math.min(xStart + xCount - 1, (imageX + filter.xWidth).toInt)
+    val y1 = math.min(yStart + yCount - 1, (imageY + filter.yWidth).toInt)
 
     assert((x1 - x0) >= 0 && (y1 - y0) >= 0, "Sample extent exceeded!")
 
