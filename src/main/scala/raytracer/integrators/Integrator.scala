@@ -20,6 +20,6 @@ object Integrator {
     val (col, wi) = bsdf.sample(-ray.dir, 0, 0, BSDF.REFLECTION | BSDF.SPECULAR)
 
     if (col.isBlack()) col
-    else col * integrator.traceRay(scene, Ray(dg.p, wi.nor, ray.depth+1)) * wi.dot(dg.nn).abs
+    else col.clamp * integrator.traceRay(scene, Ray(dg.p, wi.nor, ray.depth+1)) * wi.dot(dg.nn).abs
   }
 }
