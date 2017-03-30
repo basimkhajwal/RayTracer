@@ -5,7 +5,7 @@ import raytracer.math.Vec3
 /**
   * Created by Basim on 10/03/2017.
   */
-class SpecularReflection(val colour: Spectrum) extends BxDF{
+class SpecularReflection(val r: Spectrum, val fresnel: Fresnel) extends BxDF{
 
   override val bsdfType: Int = BSDF.SPECULAR | BSDF.REFLECTION
 
@@ -13,6 +13,6 @@ class SpecularReflection(val colour: Spectrum) extends BxDF{
 
   override def sample(wo: Vec3, u1: Double, u2: Double): (Vec3, Spectrum) = {
     val wi: Vec3 = Vec3(-wo.x, -wo.y, wo.z)
-    (wi, colour)
+    (wi, fresnel.evaluate(wo.z) * r / math.abs(wi.z))
   }
 }
