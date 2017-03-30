@@ -1,7 +1,7 @@
 package raytracer.materials
 
 import raytracer.Spectrum
-import raytracer.bxdf.{BSDF, SpecularReflection}
+import raytracer.bxdf.{BSDF, FresnelNoOp, SpecularReflection}
 import raytracer.shapes.DifferentialGeometry
 import raytracer.textures.Texture
 
@@ -16,7 +16,7 @@ class MirrorMaterial (
     val bsdf = new BSDF(dgShading, dgGeom.nn)
 
     val colour = r(dgShading).clamp
-    if (!colour.isBlack()) bsdf.add(new SpecularReflection(colour))
+    if (!colour.isBlack()) bsdf.add(new SpecularReflection(colour, new FresnelNoOp()))
 
     bsdf
   }
