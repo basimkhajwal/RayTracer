@@ -13,6 +13,6 @@ class SpecularReflection(val r: Spectrum, val fresnel: Fresnel) extends BxDF{
 
   override def sample(wo: Vec3, u1: Double, u2: Double): (Vec3, Spectrum) = {
     val wi: Vec3 = Vec3(-wo.x, -wo.y, wo.z)
-    (wi, fresnel.evaluate(wo.z) * r / math.abs(wi.z))
+    (wi, fresnel.evaluate(cosTheta(wo)) * r / absCosTheta(wi))
   }
 }
