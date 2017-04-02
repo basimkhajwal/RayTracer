@@ -23,6 +23,10 @@ object Vec3 {
 
     (v2, v3)
   }
+
+  def sphericalDirection(sintheta: Double, costheta: Double, phi: Double): Vec3 = {
+    Vec3(sintheta * math.cos(phi), sintheta * math.sin(phi), costheta)
+  }
 }
 
 case class Vec3(x: Double, y: Double, z: Double) {
