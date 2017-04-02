@@ -45,13 +45,32 @@ final class BSDF (
   def sample(woW: Vec3, u1: Double, u2: Double, flags: Int): (Spectrum, Vec3) = {
     val wo = worldToLocal(woW)
 
-    bxdfs.find(_ matches flags) match {
-      case None => (Spectrum.BLACK, Vec3.ZERO)
-      case Some(b) => {
-        val (wi, lum) = b.sample(wo, u1, u2)
-        (lum, localToWorld(wi))
+    var bxdf = bxdfs
+    var wi: Vec3 = null
+    var lum: Spectrum = null
+    var sampledBxdf: BxDF = null
+
+    while (wi == null && bxdf.nonEmpty) {
+      if (bxdf.head matches flags) {
+        val sample = bxdf.head.sample(wo, u1, u2)
+        wi = sample._1
+        lum = sample._2
+        sampledBxdf = bxdf.head
       }
+      bxdf = bxdf.tail
     }
+
+    if (wi == null) return (Spectrum.BLACK, Vec3.ZERO)
+
+    bxdf = bxdfs
+    while (bxdf.nonEmpty) {
+      if (bxdf.head.matches(flags) && bxdf.head != sampledBxdf) {
+        lum += bxdf.head.apply(wo, wi)
+      }
+      bxdf = bxdf.tail
+    }
+
+    (lum, localToWorld(wi))
   }
 }
 
