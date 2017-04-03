@@ -73,13 +73,13 @@ The process of sampling determines from which parts of screen the
 
 An integral part of the ray tracing process is to be able to actually generate the rays that will eventually be traced against the scene for incoming light sources. In my ray tracer, the generation of these light rays is abstracted by the 'Camera' interface.  For each ray, two main things are required: the start position and it's direction. 
 
-The first type of camera is called an Orthographic camera, this camera generates rays by starting at the location on the screen and setting the direction to be going directly out of the image, perpendicular to the screen. As a result, using an orthographic camera will result in an image which looks 'flat', i.e. parallel lines in the scene remain paralell lines in the image. Although this can be a desirable property for testing, a realistic camera implementation does not have this quality and instead maps objects depending on how far away they are from the camera. In an orthographic camera, the object would look the same size no matter how far away it was.
+The first type of camera is called an Orthographic camera, this camera generates rays by starting at the location on the screen and setting the direction to be going directly out of the image, perpendicular to the screen. As a result, using an orthographic camera will result in an image which looks 'flat', i.e. parallel lines in the scene remain paralell lines in the image. Although this can be a desirable property for testing, a realistic camera implementation does not have this quality and instead maps objects depending on how far away they are from the camera. In an orthographic camera, the object would look the same size no matter how far away it was hence it doesn't often result in an authentic image output.
 
-A better camera simulation is by using a perspective camera, this camera takes into account the distance of an object so that objects which are further away appear proportionally smaller.
+A better camera simulation is by using a perspective camera, this camera takes into account the distance of an object so that objects which are further away appear proportionally smaller. As a result, an extra parameter is required when creating a perspective camera: the FOV (field of view). This is a single number which specifies the range of vision of the camera ranging from 0° to 180°, to simulate typical human vision the FOV is generally set to around 60° to 70°<sup>[[6](#6)]</sup>.
 
-- Describe the function of a orthographic camera vs that of a perspective camera.
-- Give an illustration of how the rays are generated and an illustration of how it affects the output image
+Both these camera implementations can be implemented simply as a projection by applying the same transformation for each incoming sample location. The orthographic camera will apply an orthographic projection (as described above) and the perspective camera will apply a perspective projection. This projection must be efficient as it will be applied hundres of thousands of time for each image rendered, hence I decided to use a matrix multiplication to combine all the steps into one computation. The matrix I have used for each projection is a commonly used matrix, for which one of the first descriptions was by Carlbrom and Paciorek<sup>[[6](#6)]</sup>. In my raytracer, I used their definition for orthographic and perspective projections in order to generate rays. Below is a comparsion of both camera implementations:
 
+- TODO: Create an image showing a comparison of both orthographic and perspective cameras
 
 ### Optimisation Strategies
 
@@ -117,4 +117,7 @@ A better camera simulation is by using a perspective camera, this camera takes i
 
 ##### 9
 ###### Pharr, M. (2017). mmp/pbrt-v2. [online] GitHub. Available at: https://github.com/mmp/pbrt-v2 [Accessed 22 Mar. 2017].
+
+##### 10
+###### Carlbom, I. and Paciorek, J. (1978). Planar Geometric Projections and Viewing Transformations. ACM Computing Surveys, 10(4), pp.465-502.
 
