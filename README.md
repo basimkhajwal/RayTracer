@@ -83,6 +83,12 @@ Both these camera implementations can be implemented simply as a projection by a
 
 ### Optimisation Strategies
 
+Ray tracing is a very expensive process, in terms of both time requirements and memory needed to render an image. As a result, a lot of research in recent years has been towards finding techniques to reduce both of these requirements [INSERT CITATION FOR THIS HERE]. For my raytracer, the goal has been mainly to go for photorealism and speed has not been the goal of the project. However, even for my requirements optimisations are definitely required otherwise rendering good quality scenes would take many days, whilst with sufficient optimisation strategies (described in depth below) this time can be reduce to less than an hour to produce the exact same image.
+
+The first stage of optimisation was to go through the code and see where I can use a different code construct that would result in less memory wasted and faster runtime. By applying this general process throughout the code, I was able to see a roughly 30% improvement in speed when comparing the runtime on the same scene wit the optimised and the un-optimised code.
+
+Those optimisations are generally seen as 'low-level' where the gain in performance is a constant factor of the original speed, e.g. always running twice or three times as fast. However, another kind of optimisation is to reduce the _complexity_ of the program. In this way, the program doesn't slow down as much for larger scenes.  
+
 - First describe why optimisation is neccessary
 - Then describe low level specific optimisations i.e. a 30% improvement
 - Then describe the need for an acceleration data structure
