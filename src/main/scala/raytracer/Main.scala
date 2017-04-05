@@ -46,7 +46,7 @@ object Main {
 
       attributeBegin()
       translateTransform(2.1, -6, 0)
-      material("mirror", ParamSet.from("r" -> List(Spectrum.WHITE)))
+      material("plastic", ParamSet.from("r" -> List(Spectrum.WHITE)))
       shape("sphere", ParamSet.from("radius" -> List(2.0)))
       attributeEnd()
 
@@ -83,8 +83,8 @@ object Main {
   val TRIANGLE_SCENE = "scenes/triangletest.txt"
 
   def main(args: Array[String]) = {
-    //getTestScene().render()
-    renderFile(TEAPOT_SCENE)
+    getTestScene().render()
+    //renderFile(TEAPOT_SCENE)
 
     Reporter.outputReport()
   }

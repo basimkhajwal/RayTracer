@@ -22,9 +22,10 @@ class PlasticMaterial(
 
     val d = kd(dgShading).clamp
     val s = ks(dgShading).clamp
+    val r = rough(dgShading)
 
     bsdf.add(new Lambertian(d))
-    bsdf.add(new SpecularReflection(s, fresnel))
+    bsdf.add(new Microfacet(s, fresnel, new Blinn(1 / r)))
 
     bsdf
   }
