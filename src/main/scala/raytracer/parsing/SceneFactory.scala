@@ -6,7 +6,7 @@ import raytracer.films.{Film, ImageFilm, ScreenFilm}
 import raytracer.filters._
 import raytracer.integrators.{Integrator, Whitted}
 import raytracer.lights.{Light, PointLight}
-import raytracer.materials.{Material, MatteMaterial, MirrorMaterial, PlasticMaterial}
+import raytracer.materials._
 import raytracer.math.{Point, Transform, Vec3}
 import raytracer.primitives.{Aggregate, GridAccelerator, Primitive}
 import raytracer.renderers.{Renderer, SamplerRenderer}
@@ -204,6 +204,14 @@ object SceneFactory {
           textureParams.getSpectrumTexture("kd", Spectrum(0.25, 0.25, 0.25)),
           textureParams.getSpectrumTexture("ks", Spectrum(0.25, 0.25, 0.25)),
           textureParams.getFloatTexture("roughness", 0.1)
+        )
+      }
+
+      case "glass" => {
+        new GlassMaterial(
+          textureParams.getSpectrumTexture("kr", Spectrum.WHITE),
+          textureParams.getSpectrumTexture("kd", Spectrum.WHITE),
+          textureParams.getFloatTexture("index", 1.5)
         )
       }
 
