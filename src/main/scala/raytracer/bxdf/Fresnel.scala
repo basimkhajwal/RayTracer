@@ -30,15 +30,16 @@ class FresnelDielectric(val eta_i: Double, val eta_t: Double) extends Fresnel {
 
     val (ei, et) = if (cosi > 0) (eta_i, eta_t) else (eta_t, eta_i)
 
-    val sint = (ei / et) * math.sqrt(math.max(0, 1 - cosi*cosi))
+    val sint = (ei / et) * math.sqrt(1 - cosi*cosi)
 
     /* Total internal reflection */
     if (sint >= 1) return Spectrum.WHITE
 
-    val cost = math.sqrt(math.max(0, 1 - sint*sint))
+    val cost = math.sqrt(1 - sint*sint)
+    val acosi = cosi.abs
 
-    val Rparl = (et*cosi - ei*cost) / (et*cosi + ei*cost)
-    val Rperp = (ei*cosi - et*cost) / (ei*cosi + et*cost)
+    val Rparl = (et*acosi - ei*cost) / (et*acosi + ei*cost)
+    val Rperp = (ei*acosi - et*cost) / (ei*acosi + et*cost)
 
     val rTotal = (Rparl*Rparl + Rperp*Rperp) / 2.0
     Spectrum(rTotal, rTotal, rTotal)
