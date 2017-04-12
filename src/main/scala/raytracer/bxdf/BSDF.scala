@@ -9,8 +9,10 @@ import raytracer.shapes.DifferentialGeometry
   */
 final class BSDF (
   val dgShading: DifferentialGeometry,
-  val ng: Vec3
+  val ng: Vec3,
+  val eta: Double
 ) {
+  def this(dgShading: DifferentialGeometry, ng: Vec3) = this(dgShading, ng, 1)
 
   private var bxdfs: List[BxDF] = Nil
   def add(b: BxDF) = bxdfs ::= b
