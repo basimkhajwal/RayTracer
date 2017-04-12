@@ -226,43 +226,15 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
 
         case "include" => parseInclude
 
-        case "camera" => {
-          val camType = nextToken().getOrElse("Camera type must be specified")
-          catchError { camera(camType, parseParams()) }
-        }
-
-        case "film" => {
-          val filmType = nextToken().getOrElse("Film type must be specified")
-          catchError { film(filmType, parseParams()) }
-        }
-
-        case "filter" => {
-          val filterType = nextToken().getOrElse("Filter type must be specified")
-          catchError { filter(filterType, parseParams()) }
-        }
-
-        case "accelerator" => {
-          val acceleratorType = nextToken().getOrElse("Accelerator type must be specified")
-          catchError { accelerator(acceleratorType, parseParams()) }
-        }
-
-        case "integrator" => {
-          val integratorType = nextToken().getOrElse("Integrator type must be specified")
-          catchError { integrator(integratorType, parseParams()) }
-        }
-
-        case "sampler" => {
-          val samplerType = nextToken().getOrElse("Sampler type must be specified")
-          catchError { sampler(samplerType, parseParams()) }
-        }
-
-        case "renderer" => {
-          val rendererType = nextToken().getOrElse("Renderer type must be specified")
-          catchError { renderer(rendererType, parseParams()) }
-        }
+        case "camera" => runTypedCommand("Camera", camera)
+        case "film" => runTypedCommand("Film", film)
+        case "filter" => runTypedCommand("Filter", filter)
+        case "accelerator" => runTypedCommand("Accelerator", accelerator)
+        case "integrator" => runTypedCommand("Integrator", integrator)
+        case "sampler" => runTypedCommand("Sampler", sampler)
+        case "renderer" => runTypedCommand("Renderer", renderer)
 
         case token if parseTransform(token) =>
-
         case _ =>
       }
     }
