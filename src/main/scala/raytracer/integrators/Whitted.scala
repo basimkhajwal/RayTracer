@@ -34,6 +34,8 @@ class Whitted(maxRayDepth: Int) extends Integrator{
     }
 
     if (ray.depth >= maxRayDepth) directLight
-    else directLight + Integrator.specularReflect(scene, ray, isect, this)
+    else directLight +
+      Integrator.specularReflect(scene, ray, isect, this) +
+      Integrator.specularTransmit(scene, ray, isect, this)
   }
 }
