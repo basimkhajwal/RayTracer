@@ -31,8 +31,8 @@ final class BSDF (
   private val localToWorld = worldToLocal.inverse
 
   def apply(woW: Vec3, wiW: Vec3, flags: Int): Spectrum = {
-    val wo = worldToLocal(woW)
-    val wi = worldToLocal(wiW)
+    val wo = worldToLocal(woW).nor
+    val wi = worldToLocal(wiW).nor
     var total = Spectrum.BLACK
     var bxdf = bxdfs
     while (bxdf.nonEmpty) {
@@ -45,7 +45,7 @@ final class BSDF (
   }
 
   def sample(woW: Vec3, u1: Double, u2: Double, flags: Int): (Spectrum, Vec3) = {
-    val wo = worldToLocal(woW)
+    val wo = worldToLocal(woW).nor
 
     var bxdf = bxdfs
     var wi: Vec3 = null
