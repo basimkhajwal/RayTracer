@@ -25,8 +25,16 @@ class FresnelConductor(val eta: Spectrum, val k: Spectrum)extends Fresnel {
 
 class FresnelDielectric(val eta_i: Double, val eta_t: Double) extends Fresnel {
 
+  private def frDiel(cosi: Double, cost: Double, ei: Double, et: Double): Spectrum = {
+    val Rparl = ((et * cosi) - (ei * cost)) / ((et * cosi) + (et * cost))
+    val Rperp = ((et * cosi) - (et * cost)) / ((et * cosi) + (et * cost))
+    val total = (Rparl*Rparl + Rperp*Rperp) / 2
+
+    Spectrum(total, total, total)
+  }
+
   override def evaluate(inCosi: Double): Spectrum = {
-    val cosi = math.min(1, math.max(-1, inCosi))
+    val cosi = clamp(inCosi, -1, 1)
 
     val (ei, et) = if (cosi > 0) (eta_i, eta_t) else (eta_t, eta_i)
 
@@ -36,13 +44,8 @@ class FresnelDielectric(val eta_i: Double, val eta_t: Double) extends Fresnel {
     if (sint >= 1) return Spectrum.WHITE
 
     val cost = math.sqrt(1 - sint*sint)
-    val acosi = cosi.abs
 
-    val Rparl = (et*acosi - ei*cost) / (et*acosi + ei*cost)
-    val Rperp = (ei*acosi - et*cost) / (ei*acosi + et*cost)
-
-    val rTotal = (Rparl*Rparl + Rperp*Rperp) / 2.0
-    Spectrum(rTotal, rTotal, rTotal)
+    frDiel(math.abs(cosi), cost, ei, et)
   }
 }
 
