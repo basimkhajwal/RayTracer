@@ -42,8 +42,7 @@ case class Sphere(r: Double, o2w: Transform) extends Shape {
 
     val t =  if (t2 <= 0) t1 else t2 //if (t1 < 0) t2 else if (t2 < 0) t1 else Math.min(t1, t2)
     val point = ray.start + ray.dir*t
-    val normal = (point-Point.ZERO).nor
-    val surfacePoint = point + normal*EPSILON
+    //val normal = (point-Point.ZERO).nor
 
     val phiAngle = math.atan2(point.y, point.x)
     val phi = if (phiAngle < 0) phiAngle+2*math.Pi else phiAngle
@@ -54,7 +53,9 @@ case class Sphere(r: Double, o2w: Transform) extends Shape {
     val dpdu = Vec3(-2*math.Pi*point.y, -2*math.Pi*point.x, 0)
     val dpdv = Vec3(point.z* math.cos(phi), point.z*math.sin(phi), -r*math.sin(theta)) * math.Pi
 
-    val dg = DifferentialGeometry(objectToWorld(surfacePoint), normal, u, v, dpdu, dpdv, this)
+    val normal = (dpdu cross dpdv).nor
+
+    val dg = DifferentialGeometry(objectToWorld(point), objectToWorld(normal), u, v, objectToWorld(dpdu), objectToWorld(dpdv), this)
     Some((dg, t))
   }
 

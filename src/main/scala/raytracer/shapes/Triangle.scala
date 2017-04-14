@@ -44,7 +44,6 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
 
     val ray = worldToObject(worldRay)
 
-    // Compute triangle intersection using Moller-Trombore algorithm
     val D = ray.dir
     val P = D.cross(e2)
     val disc = e1.dot(P)
@@ -62,9 +61,8 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
     val t = e2.dot(Q) * invDisc
     if (t < 0) return None
 
-    val intersectionPoint = (1-u-v)*p1 + u*p2 + v*p3
-    val n = if (disc < 0) -nor else nor
-    val surfacePoint = intersectionPoint + n*EPSILON
+    val surfacePoint = (1-u-v)*p1 + u*p2 + v*p3
+    //val n = if (disc < 0) -nor else nor
 
     // Compute partial derivatives
     val du1 = uvs(0)-uvs(4)
@@ -84,7 +82,9 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
     val tu = (1-u-v)*uvs(0) + u*uvs(2) + v*uvs(4)
     val tv = (1-u-v)*uvs(1) + u*uvs(3) + v*uvs(5)
 
-    val dg = DifferentialGeometry(objectToWorld(surfacePoint), objectToWorld(n), tu, tv, objectToWorld(dpdu), objectToWorld(dpdv), this)
+    val n = (dpdu cross dpdv).nor
+
+    val dg = DifferentialGeometry(objectToWorld(surfacePoint), objectToWorld(n).nor, tu, tv, objectToWorld(dpdu), objectToWorld(dpdv), this)
     Some((dg, t))
   }
 
