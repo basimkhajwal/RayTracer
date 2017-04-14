@@ -21,18 +21,22 @@ final class BSDF (
   private val sn: Vec3 = dgShading.dpdu.nor
   private val tn: Vec3 = nn cross sn
 
-  private val transformMat: Mat4 = new Mat4(Array(
-    sn.x, sn.y, sn.z, 0,
-    tn.x, tn.y, tn.z, 0,
-    nn.x, nn.y, nn.z, 0,
-    0, 0, 0, 0
-  ))
-  private val worldToLocal = new Transform(transformMat, transformMat.transpose)
-  private val localToWorld = worldToLocal.inverse
+  private def worldToLocal(v: Vec3): Vec3 = Vec3(v dot sn, v dot tn, v dot nn)
 
-  def apply(woW: Vec3, wiW: Vec3, flags: Int): Spectrum = {
+  private def localToWorld(v: Vec3): Vec3 = {
+    Vec3(
+      sn.x * v.x + tn.x * v.y + nn.x * v.z,
+      sn.y * v.x + tn.y * v.y + nn.y * v.z,
+      sn.z * v.x + tn.z * v.y + nn.z * v.z
+    )
+  }
+
+  def apply(woW: Vec3, wiW: Vec3, inFlags: Int): Spectrum = {
     val wo = worldToLocal(woW).nor
     val wi = worldToLocal(wiW).nor
+
+    val flags = inFlags & (if ((wiW dot ng) * (woW dot ng) > 0) ~BSDF.TRANSMISSION else ~BSDF.REFLECTION)
+
     var total = Spectrum.BLACK
     var bxdf = bxdfs
     while (bxdf.nonEmpty) {
@@ -62,17 +66,11 @@ final class BSDF (
       bxdf = bxdf.tail
     }
 
-    if (wi == null) return (Spectrum.BLACK, Vec3.ZERO)
+    if (wi == null || wi.mag2 == 0) return (Spectrum.BLACK, Vec3.ZERO)
 
-    bxdf = bxdfs
-    while (bxdf.nonEmpty) {
-      if (bxdf.head.matches(flags) && bxdf.head != sampledBxdf) {
-        lum += bxdf.head.apply(wo, wi)
-      }
-      bxdf = bxdf.tail
-    }
+    val wiW = localToWorld(wi).nor
 
-    (lum, localToWorld(wi))
+    (if ((flags & BSDF.SPECULAR) == 0) apply(woW, wiW, flags) else lum, wiW)
   }
 }
 
