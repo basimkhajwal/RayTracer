@@ -18,19 +18,19 @@ object Integrator {
     val dg = isect.dg
     val bsdf = isect.getBSDF()
     val (col, wi) = bsdf.sample(-ray.dir, 0, 0, BSDF.REFLECTION | BSDF.SPECULAR)
-    val mask = col.clamp * wi.dot(dg.nn).abs
+    val mask = col * wi.dot(dg.nn).abs
 
     if (mask.isBlack()) mask
-    else mask * integrator.traceRay(scene, Ray(dg.p, wi.nor, ray.depth+1))
+    else mask.clamp * integrator.traceRay(scene, Ray(dg.p + bsdf.ng*1e-9, wi, ray.depth+1))
   }
 
   def specularTransmit(scene: Scene, ray: Ray, isect: Intersection, integrator: Integrator): Spectrum = {
     val dg = isect.dg
     val bsdf = isect.getBSDF()
     val (col, wi) = bsdf.sample(-ray.dir, 0, 0, BSDF.TRANSMISSION | BSDF.SPECULAR)
-    val mask = col.clamp * wi.dot(dg.nn).abs
+    val mask = col * wi.dot(dg.nn).abs
 
     if (mask.isBlack()) mask
-    else mask * integrator.traceRay(scene, Ray(dg.p + wi.nor * 1e-7, wi.nor, ray.depth+1))
+    else mask.clamp * integrator.traceRay(scene, Ray(dg.p + wi*1e-9, wi, ray.depth+1))
   }
 }
