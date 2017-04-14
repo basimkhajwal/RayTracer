@@ -1,10 +1,10 @@
 ConcatTransform 0.828849 -0.295370 -0.475149 0.000000 -0.559473 -0.437585 -0.703924 0.000000 -0.000000 0.849280 -0.527943 0.000000 0.000000 0.000000 0.000000 1.000000
 Translate -4.860000 -7.200000 -5.400000
 
-Camera "perspective" "float fov" [45.000000 ] "float screenwindow" [-1.000000 1.000000 -1.000000 1.000000] "float lensradius" [0.0] "float focaldistance" [5]
-Film "image" "integer xresolution" 400 "integer yresolution" 400 "integer width" 800 "string filename" "progress/21.png" "integer height" 800
+Camera "perspective" "float fov" [45.000000 ] "float screenwindow" [-1.000000 1.000000 -1.000000 1.000000] "float lensradius" [0] "float focaldistance" [5]
+Film "screen" "integer xresolution" 800 "integer yresolution" 800 "integer width" 800 "string filename" "progress/21.png" "integer height" 800
 
-Integrator "whitted" "integer maxdepth" [3]
+Integrator "whitted" "integer maxdepth" [5]
 Sampler "random" "integer pixelsamples" [1]
 Renderer "sampler" "integer taskcount" [1]
 Accelerator "grid"
@@ -23,14 +23,14 @@ TransformBegin
     LightSource "point" "rgb I" [300 300 300]
 TransformEnd
 
-#AttributeBegin
-#    Material "mirror"
-#    Translate 2 -1.5 3
-#    Shape "sphere" "float radius" [1.4]
-#AttributeEnd
+AttributeBegin
+    Material "mirror" "float index" [1.0]
+    Translate 1.5 1 3
+    Shape "sphere" "float radius" [0.8]
+AttributeEnd
 
-#Material "matte" "rgb Kd" [ 0.5 0.5 0.25 ]
-Material "plastic" "color Kd" [.25 .25 .25] "color Ks" [.4 .4 .4] "float roughness" [.3]
+Material "matte" "rgb Kd" [ 0.5 0.5 0.25 ]
+#Material "plastic" "color Kd" [.15 .15 .15] "color Ks" [.4 .4 .4] "float roughness" [.2]
 
 Shape "trianglemesh"  "integer indices" [0 2 1 ] "point P" [1.332760 -0.370922 2.454690 1.350740 -0.375926 2.400000 1.400000 0.000000 2.400000 ] "vector N" [0.953562 -0.257047 0.156989 0.871509 -0.234929 0.430442 0.902861 0.000000 0.429934 ]
 Shape "trianglemesh"  "integer indices" [0 2 1 ] "point P" [1.400000 0.000000 2.400000 1.381370 0.000000 2.454690 1.332760 -0.370922 2.454690 ] "vector N" [0.902861 0.000000 0.429934 0.987636 0.000000 0.156768 0.953562 -0.257047 0.156989 ]

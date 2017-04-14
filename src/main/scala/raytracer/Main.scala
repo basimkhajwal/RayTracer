@@ -14,14 +14,14 @@ object Main {
   def getTestScene(): SceneBuilder = {
     new SceneBuilder {
       val spacing: Double = 100000
-      val intensity = 150
+      val intensity = 100
 
-      lookAtTransform(Point(3,0,-5), Point(0,-8,0), Vec3(0,1,0))
+      lookAtTransform(Point(3,-2,-5), Point(0,-8,0), Vec3(0,1,0))
 
       film("screen", ParamSet.from("xresolution" -> List(800), "yresolution" -> List(600),
         "filename" -> List(findFirst(0)), "width" -> List(1600), "height" -> List(1200)))
       camera("perspective", ParamSet.from("fov" -> List(80)))
-      integrator("whitted", ParamSet.from("maxdepth" -> List(3)))
+      integrator("whitted", ParamSet.from("maxdepth" -> List(5)))
       sampler("random", ParamSet.from("pixelsamples" -> List(1)))
 
       renderer("sampler", ParamSet.from("taskcount" -> List(20)))
@@ -30,28 +30,33 @@ object Main {
       material("matte", ParamSet.from("kd" -> List(Spectrum.WHITE)))
 
       transformBegin()
-      translateTransform(-3, 5, 0)
+      translateTransform(-3, -0.5, 0)
       lightSource("point", ParamSet.from("I" -> List(Spectrum(intensity, intensity, intensity))))
       transformEnd()
 
       transformBegin()
-      translateTransform(0, 5, 0)
+      translateTransform(0, -0.5, 0)
       lightSource("point", ParamSet.from("I" -> List(Spectrum(intensity, intensity, intensity))))
       transformEnd()
 
       transformBegin()
-      translateTransform(3, 5, 0)
+      translateTransform(3, -0.5, 0)
       lightSource("point", ParamSet.from("I" -> List(Spectrum(intensity, intensity, intensity))))
       transformEnd()
 
       attributeBegin()
       translateTransform(2.1, -6, 0)
-      material("plastic", ParamSet.from("r" -> List(Spectrum.WHITE)))
+      material("glass", ParamSet.from("index" -> List(1.0)))
       shape("sphere", ParamSet.from("radius" -> List(2.0)))
       attributeEnd()
 
       transformBegin()
       translateTransform(2.1, -6-spacing-6, 0)
+      shape("sphere", ParamSet.from("radius" -> List(spacing)))
+      transformEnd()
+
+      transformBegin()
+      translateTransform(2.1, -6+spacing+6, 0)
       shape("sphere", ParamSet.from("radius" -> List(spacing)))
       transformEnd()
 
@@ -83,8 +88,8 @@ object Main {
   val TRIANGLE_SCENE = "scenes/triangletest.txt"
 
   def main(args: Array[String]) = {
-    getTestScene().render()
-    //renderFile(TEAPOT_SCENE)
+    //getTestScene().render()
+    renderFile(TEAPOT_SCENE)
 
     Reporter.outputReport()
   }
