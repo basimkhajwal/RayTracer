@@ -62,7 +62,7 @@ class GridAccelerator(val primitives: Array[Primitive]) extends Primitive {
       if (worldBound contains ray.start) 0
       else worldBound.checkIntersect(ray).getOrElse(Double.NaN)
 
-    if (intersectionTime == Double.NaN) return None
+    if (intersectionTime.isNaN) return None
 
     val gridIntersect = ray.start + ray.dir * intersectionTime
     val nextCrossing = new Array[Double](3)
