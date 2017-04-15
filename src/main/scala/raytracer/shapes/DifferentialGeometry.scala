@@ -1,6 +1,6 @@
 package raytracer.shapes
 
-import raytracer.math.{Point, Vec3}
+import raytracer.math.{Point, Transform, Vec3}
 
 /**
   * Created by Basim on 10/01/2017.
@@ -14,17 +14,22 @@ class DifferentialGeometry(
 )
 
 object DifferentialGeometry {
-  def apply(
-    p: Point, nn: Vec3,
-    u: Double, v: Double,
-    dpdu: Vec3, dpdv: Vec3,
-    shape: Shape
+  def create(
+    p: Point, dpduW: Vec3, dpdvW: Vec3,
+    u: Double, v: Double, shape: Shape
   ): DifferentialGeometry = {
+    val o2w = shape.objectToWorld
 
-    if (shape.objectToWorld.swapsHandedness) {
-      new DifferentialGeometry(p, -nn, u, v, dpdu, dpdv, shape)
-    } else {
-      new DifferentialGeometry(p, nn, u, v, dpdu, dpdv, shape)
+    val dpdu = o2w(dpduW)
+    val dpdv = o2w(dpdvW)
+
+    var nn = (dpdu cross dpdv).nor
+    val sf = if (o2w.swapsHandedness) -1 else 1
+
+    if (shape.isInstanceOf[Sphere]) {
+      nn *= -1
     }
+
+    new DifferentialGeometry(o2w(p), nn * sf, u, v, dpdu, dpdv, shape)
   }
 }
