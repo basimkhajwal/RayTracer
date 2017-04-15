@@ -7,8 +7,6 @@ import raytracer.math._
   */
 case class Sphere(r: Double, o2w: Transform) extends Shape {
 
-  val EPSILON = 1e-9
-
   override val objectToWorld: Transform = o2w
   override val worldToObject: Transform = o2w.inverse
 
@@ -17,46 +15,47 @@ case class Sphere(r: Double, o2w: Transform) extends Shape {
     BBox(Point.ZERO+(-offset), Point.ZERO+offset)
   }
 
+  val phiMax = 2*math.Pi
+  val thetaMin = 0
+  val thetaMax = math.Pi
+
   override def intersect(worldRay: Ray): Option[(DifferentialGeometry, Double)] = {
 
     val ray = worldToObject(worldRay)
+    val d = ray.dir
+    val o = ray.start
 
-    // Solve the quadratic equation for t
-    val dx = ray.start.x
-    val dy = ray.start.y //(ray.start.y-centre.y)
-    val dz = ray.start.z // (ray.start.z-centre.z)
+    val A = d.x*d.x + d.y*d.y + d.z*d.z
+    val B = 2 * (d.x*o.x + d.y*o.y + d.z*o.z)
+    val C = o.x*o.x + o.y*o.y + o.z*o.z - r*r
 
-    val a = 1 // Assuming ray direction is normalized
-    val b = 2 * (ray.dir.x*dx + ray.dir.y*dy + ray.dir.z*dz)
-    val c = dx*dx + dy*dy + dz*dz - r*r
+    val solution = Solver.quadratic(A, B, C).orNull
+    if (solution == null) return None
 
-    val det2 = b*b - 4*a*c
+    val t0 = solution._1
+    val t1 = solution._2
 
-    if (det2 < 0) return None
+    if (t0 <= 0 && t1 <= 0) return None
 
-    val det = Math.sqrt(det2)
-    val t1 = ((-b) + det) / (2*a)
-    val t2 = ((-b) - det) / (2*a)
+    val tHit =  if (t0 <= 0) t1 else t0
+    val pHit = ray.start + ray.dir*tHit
 
-    if (t1 <= 0 && t2 <= 0) return None
-
-    val t =  if (t2 <= 0) t1 else t2 //if (t1 < 0) t2 else if (t2 < 0) t1 else Math.min(t1, t2)
-    val point = ray.start + ray.dir*t
-    //val normal = (point-Point.ZERO).nor
-
-    val phiAngle = math.atan2(point.y, point.x)
+    val phiAngle = math.atan2(pHit.y, pHit.x)
     val phi = if (phiAngle < 0) phiAngle+2*math.Pi else phiAngle
-    val theta = math.acos(math.min(1, math.max(-1, point.z / r)))
-    val u = phi / (2 * math.Pi)
-    val v = theta / math.Pi
 
-    val dpdu = Vec3(-2*math.Pi*point.y, -2*math.Pi*point.x, 0)
-    val dpdv = Vec3(point.z* math.cos(phi), point.z*math.sin(phi), -r*math.sin(theta)) * math.Pi
+    val theta = math.acos(pHit.z / r)
+    val u = phi / phiMax
+    val v = (theta - thetaMin) / (thetaMax - thetaMin)
 
-    val normal = (dpdu cross dpdv).nor
+    val zradius = math.sqrt(pHit.x*pHit.x + pHit.y*pHit.y)
+    val cosphi = pHit.x / zradius
+    val sinphi = pHit.y / zradius
 
-    val dg = DifferentialGeometry(objectToWorld(point), objectToWorld(normal), u, v, objectToWorld(dpdu), objectToWorld(dpdv), this)
-    Some((dg, t))
+    val dpdu = Vec3(-phiMax*pHit.y, phiMax*pHit.x, 0)
+    val dpdv = Vec3(pHit.z*cosphi, pHit.z*sinphi, -r*math.sin(theta)) * (thetaMax-thetaMin)
+
+    val dg = DifferentialGeometry.create(pHit, dpdu, dpdv, u, v, this)
+    Some((dg, tHit))
   }
 
 }
