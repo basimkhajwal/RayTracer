@@ -99,6 +99,13 @@ case class Mat4(data: Array[Double]) {
     Mat4(
       Array(0,4,8,12,1,5,9,13,2,6,10,14,3,7,11,15) map (data(_))
     )
+  lazy val innerDet = {
+    (data(0) * (data(5)*data(10) - data(6)*data(9))) -
+    (data(1) * (data(4)*data(10) - data(6)*data(8))) +
+    (data(2) * (data(4)*data(9) - data(5)*data(8)))
+  }
+
+  lazy val swapsHandedness = innerDet < 0
 
   @inline
   final def apply(r: Int, c: Int): Double = {
@@ -131,7 +138,6 @@ case class Mat4(data: Array[Double]) {
   def *(sf: Double): Mat4 = Mat4(data map (_ * sf))
   def /(sf: Double): Mat4 = Mat4(data map (_ / sf))
 
-  lazy val swapsHandedness = det < 0
 }
 
 object Mat4 {
