@@ -38,7 +38,6 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
 
   private val e1: Vec3 = p2-p1
   private val e2: Vec3 = p3-p1
-  private val nor = e1.cross(e2).nor
 
   override def intersect(worldRay: Ray): Option[(DifferentialGeometry, Double)] = {
 
@@ -62,7 +61,6 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
     if (t < 0) return None
 
     val surfacePoint = (1-u-v)*p1 + u*p2 + v*p3
-    //val n = if (disc < 0) -nor else nor
 
     // Compute partial derivatives
     val du1 = uvs(0)-uvs(4)
@@ -82,9 +80,7 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
     val tu = (1-u-v)*uvs(0) + u*uvs(2) + v*uvs(4)
     val tv = (1-u-v)*uvs(1) + u*uvs(3) + v*uvs(5)
 
-    val n = (dpdu cross dpdv).nor
-
-    val dg = DifferentialGeometry(objectToWorld(surfacePoint), objectToWorld(n).nor, tu, tv, objectToWorld(dpdu), objectToWorld(dpdv), this)
+    val dg = DifferentialGeometry.create(surfacePoint, dpdu, dpdv, tu, tv, this)
     Some((dg, t))
   }
 
@@ -123,6 +119,6 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
       ts = coordSystem._2
     }
 
-    DifferentialGeometry(dg.p, ns, dg.u, dg.v, ss, ts, this)
+    new DifferentialGeometry(dg.p, ns, dg.u, dg.v, ss, ts, this)
   }
 }
