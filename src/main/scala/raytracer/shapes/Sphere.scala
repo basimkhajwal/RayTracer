@@ -10,14 +10,11 @@ case class Sphere(r: Double, o2w: Transform) extends Shape {
   override val objectToWorld: Transform = o2w
   override val worldToObject: Transform = o2w.inverse
 
-  override val objectBounds: BBox = {
-    val offset = Vec3(r, r, r)
-    BBox(Point.ZERO+(-offset), Point.ZERO+offset)
-  }
+  override val objectBounds: BBox = BBox(Point(-r,-r,-r), Point(r,r,r))
 
-  val phiMax = 2*math.Pi
-  val thetaMin = 0
-  val thetaMax = math.Pi
+  val phiMax: Double = 2*math.Pi
+  val thetaMin: Double = 0
+  val thetaMax: Double = math.Pi
 
   override def intersect(worldRay: Ray): Option[(DifferentialGeometry, Double)] = {
 
