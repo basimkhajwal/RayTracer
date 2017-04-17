@@ -24,7 +24,7 @@ object Main {
       integrator("whitted", ParamSet.from("maxdepth" -> List(5)))
       sampler("random", ParamSet.from("pixelsamples" -> List(1)))
 
-      renderer("sampler", ParamSet.from("taskcount" -> List(20)))
+      renderer("sampler", ParamSet.from("taskcount" -> List(10)))
 
       worldBegin()
       material("matte", ParamSet.from("kd" -> List(Spectrum.WHITE)))
@@ -46,7 +46,7 @@ object Main {
 
       attributeBegin()
       translateTransform(2.1, -6, 0)
-      material("glass", ParamSet.from("index" -> List(1.0)))
+      //material("matte", ParamSet.from("index" -> List(1.0)))
       shape("sphere", ParamSet.from("radius" -> List(2.0)))
       attributeEnd()
 
