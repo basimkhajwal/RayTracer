@@ -150,8 +150,13 @@ object Mat4 {
   )) {
     override lazy val inv = this
     override lazy val det = 1
+    override lazy val innerDet = 1
+    override lazy val swapsHandedness = false
+
     override def *(that: Mat4) = that
+
     override def *(that: Point) = that
+
     override def *(that: Vec3) = that
   }
 }
