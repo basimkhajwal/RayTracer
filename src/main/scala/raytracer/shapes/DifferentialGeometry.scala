@@ -23,13 +23,10 @@ object DifferentialGeometry {
     val dpdu = o2w(dpduW)
     val dpdv = o2w(dpdvW)
 
-    var nn = (dpdu cross dpdv).nor
-    val sf = if (o2w.swapsHandedness) -1 else 1
+    var nn = (dpduW cross dpdv).nor
 
-    if (shape.isInstanceOf[Sphere]) {
-      nn *= -1
-    }
+    if (o2w.swapsHandedness ^ shape.isInstanceOf[Sphere]) nn *= -1
 
-    new DifferentialGeometry(o2w(p), nn * sf, u, v, dpdu, dpdv, shape)
+    new DifferentialGeometry(o2w(p), nn, u, v, dpdu, dpdv, shape)
   }
 }
