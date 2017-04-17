@@ -36,31 +36,28 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
 
   override val objectBounds: BBox = BBox.fromPoints(p1, p2, p3)
 
-  private val e1: Vec3 = p2-p1
-  private val e2: Vec3 = p3-p1
-
   override def intersect(worldRay: Ray): Option[(DifferentialGeometry, Double)] = {
 
     val ray = worldToObject(worldRay)
 
-    val D = ray.dir
-    val P = D.cross(e2)
-    val disc = e1.dot(P)
-    if (math.abs(disc) < EPSILON) return None
+    val e1 = p2 - p1
+    val e2 = p3 - p1
+    val s1 = ray.dir cross e2
 
-    val invDisc = 1 / disc
-    val T = ray.start - p1
-    val u = T.dot(P) * invDisc
-    if (u < 0 || u > 1) return None
+    val divisor = s1 dot e1
+    if (divisor < EPSILON) return None
+    val invDivisor = 1 / divisor
 
-    val Q = T.cross(e1)
-    val v = D.dot(Q) * invDisc
-    if (v < 0 || u + v > 1) return None
+    val s = ray.start - p1
+    val b1 = (s dot s1) * invDivisor
+    if (b1 < 0 || b1 > 1) return None
 
-    val t = e2.dot(Q) * invDisc
-    if (t < 0) return None
+    val s2 = s cross e1
+    val b2 = (ray.dir dot s2) * invDivisor
+    if (b2 < 0 || b1 + b2 > 1) return None
 
-    val surfacePoint = (1-u-v)*p1 + u*p2 + v*p3
+    val tHit = (e2 dot s2) * invDivisor
+    if (tHit <= EPSILON) return None
 
     // Compute partial derivatives
     val du1 = uvs(0)-uvs(4)
@@ -77,11 +74,13 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
     val dpdu = (dv2 * dp1 - dv1 * dp2) * invDet
     val dpdv = (-du2 * dp1 + du1 * dp2) * invDet
 
-    val tu = (1-u-v)*uvs(0) + u*uvs(2) + v*uvs(4)
-    val tv = (1-u-v)*uvs(1) + u*uvs(3) + v*uvs(5)
+    val b0 = 1 - b1 - b2
+    val surfacePoint = b0*p1 + b1*p2 + b2*p3
+    val tu = b0*uvs(0) + b1*uvs(2) + b2*uvs(4)
+    val tv = b0*uvs(1) + b1*uvs(3) + b2*uvs(5)
 
     val dg = DifferentialGeometry.create(surfacePoint, dpdu, dpdv, tu, tv, this)
-    Some((dg, t))
+    Some((dg, tHit))
   }
 
   val shadingMat = Array(
