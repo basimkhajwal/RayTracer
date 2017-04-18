@@ -5,9 +5,9 @@ import raytracer.cameras.{Camera, OrthographicCamera, PerspectiveCamera}
 import raytracer.films.{Film, ImageFilm, ScreenFilm}
 import raytracer.filters._
 import raytracer.integrators.{Integrator, Whitted}
-import raytracer.lights.{Light, PointLight}
+import raytracer.lights.{Light, PointLight, SpotLight}
 import raytracer.materials._
-import raytracer.math.{Point, Transform, Vec3}
+import raytracer.math.{Mat4, Point, Transform, Vec3}
 import raytracer.primitives.{Aggregate, GridAccelerator, Primitive}
 import raytracer.renderers.{Renderer, SamplerRenderer}
 import raytracer.sampling.{RandomSampler, Sampler}
@@ -173,15 +173,39 @@ object SceneFactory {
   }
 
   def makeLightSource(lightType: String, lightToWorld: Transform, params: ParamSet): Light = reportUnused(params) {
+    val scale = params.getOneOr[Spectrum]("scale", Spectrum.WHITE)
+
     lightType match {
 
       case "point" => {
         val intensity = params.getOneOr[Spectrum]("i", Spectrum.WHITE)
-        val scale = params.getOneOr[Spectrum]("scale", Spectrum.WHITE)
         val from = params.getOneOr[Point]("from", Point.ZERO)
         val l2w = Transform.translate(from.x, from.y, from.z) * lightToWorld
 
         PointLight(l2w, intensity * scale)
+      }
+
+      case "spot" => {
+        val intensity = params.getOneOr[Spectrum]("i", Spectrum.WHITE)
+        val from = params.getOneOr[Point]("from", Point.ZERO)
+        val to = params.getOneOr[Point]("to", Point(0,0,1))
+        val coneangle = params.getOneOr[Double]("coneangle", params.getOneOr[Int]("coneangle", 30))
+        val conedelta = params.getOneOr[Double]("conedeltaangle", params.getOneOr[Int]("conedeltaangle", 5))
+        val dir = (to - from).nor
+        val coords = Vec3.createCoordinateSystem(dir)
+        val du = coords._1
+        val dv = coords._2
+
+        val dirToZ =
+          Transform(Mat4(Array(
+            du.x,  du.y,  du.z, 0,
+            dv.x,  dv.y,  dv.z, 0,
+            dir.x, dir.y, dir.z, 0,
+            0, 0, 0, 1
+          )))
+
+        val l2w = lightToWorld * Transform.translate(from.x, from.y, from.z) * dirToZ.inverse
+        new SpotLight(l2w, intensity * scale, coneangle, coneangle-conedelta)
       }
 
       case _ => throw new IllegalArgumentException(s"Un-implemented light source type $lightType")

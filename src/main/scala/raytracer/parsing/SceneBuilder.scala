@@ -252,11 +252,11 @@ class SceneBuilder {
 
     val textureParams = graphicsState.getTextureParams(params, params)
 
-    if (textureType == "float") {
+    if (textureType.equals("float")) {
       val tex = SceneFactory.makeFloatTexture(textureClass, textureParams)
       graphicsState.floatTextures(name) = tex
     } else {
-      require(textureClass == "spectrum" || textureClass == "color", s"Unknown texture type $textureType")
+      require(textureType.equals("spectrum") || textureType.equals("color"), s"Unknown texture type $textureType")
 
       val tex = SceneFactory.makeSpectrumTexture(textureClass, textureParams)
       graphicsState.spectrumTextures(name) = tex
