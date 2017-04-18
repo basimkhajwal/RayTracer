@@ -1,16 +1,25 @@
+Translate 0 0 10
+Camera "perspective" "float fov" [45.000000 ] "float screenwindow" [-1.000000 1.000000 -1.000000 1.000000] "float lensradius" [0] "float focaldistance" [5]
+Film "screen" "integer xresolution" 400 "integer yresolution" 400 "integer width" 800 "string filename" "progress/23.png" "integer height" 800
+
+Integrator "whitted" "integer maxdepth" [5]
+Sampler "random" "integer pixelsamples" [1]
+Renderer "sampler" "integer taskcount" [1]
+Accelerator "grid"
+Filter "box"
+
 WorldBegin
 
-Material "matte" "rgb kd" [1 1 1]
-
 TransformBegin
-    Translate 0 0 0
-    LightSource "point" "rgb I" [1 1 1]
+    CoordSysTransform "camera"
+    Translate 0 0.25 0
+    LightSource "spot" "rgb I" [300 300 300] "float coneangle" 15 "float conedeltaangle" 10
 TransformEnd
 
-TransformBegin
-    Translate -1 0 0
-    #Shape "trianglemesh" "integer indices" [1 0 2] "point P" [ 0.38 1 2.7 1 -0.2 1 -1 0 0.5 ]
-    Shape "trianglemesh" "integer indices" [1 0 2] "point P" [ 1.33 -0.37 2.45 1.65 -0.68 2.4 1.4 0 2.4 ]
-TransformEnd
+Material "matte" "rgb Kd" [ 0.5 0.5 0.25 ]
+#Material "plastic" "color Kd" [.15 .15 .15] "color Ks" [.4 .4 .4] "float roughness" [.2]
+
+Rotate -90 1 0 0
+Include "teapotgeom.txt"
 
 WorldEnd
