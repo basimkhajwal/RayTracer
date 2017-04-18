@@ -1,5 +1,7 @@
 package raytracer.parsing
 
+import java.io.File
+
 import raytracer.Spectrum
 import raytracer.math.{Mat4, Point, Transform, Vec3}
 import raytracer.utils.Logger
@@ -307,7 +309,8 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
       case None => throwError("Include directive requires a file name to be specified")
       case Some(file) => {
         infoMsg(s"Added lexer from file $file")
-        lexerStack ::= new Lexer(file)
+        val sceneDir = new File(sceneFile).getParent()
+        lexerStack ::= new Lexer(sceneDir + File.separator + file)
       }
     }
   }
