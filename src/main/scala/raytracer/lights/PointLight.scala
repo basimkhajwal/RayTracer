@@ -5,7 +5,10 @@ import raytracer.math.{Point, Transform, Vec3}
 /**
   * Created by Basim on 18/02/2017.
   */
-case class PointLight(lightToWorld: Transform, intensity: Spectrum) extends Light {
+case class PointLight(
+  lightToWorld: Transform,
+  intensity: Spectrum
+) extends Light {
 
   val lightPoint = lightToWorld(Point.ZERO)
 
