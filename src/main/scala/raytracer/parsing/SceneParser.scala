@@ -4,7 +4,7 @@ import java.io.File
 
 import raytracer.Spectrum
 import raytracer.math.{Mat4, Point, Transform, Vec3}
-import raytracer.utils.Logger
+import raytracer.utils.{Logger, Reporter}
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
@@ -212,6 +212,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
   def parse(): Unit = {
 
     infoMsg("Began parsing scene definition")
+    Reporter.parsing.start()
 
     def runTypedCommand(name: String, command: (String, ParamSet) => Unit): Unit = {
       val cmdType = nextToken().getOrElse(s"$name type must be specified")
@@ -241,6 +242,7 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
       }
     }
 
+    Reporter.parsing.stop()
     infoMsg("Parsing complete!", false)
   }
 

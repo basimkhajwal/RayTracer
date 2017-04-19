@@ -31,7 +31,9 @@ object Reporter {
 
   val primitive = new Reporter("Primitives")
 
-  private val allReporters = List(render, primitive)
+  val parsing = new Reporter("Parsing")
+
+  private val allReporters = List(render, primitive, parsing)
 
   def outputReport(): Unit = {
     println()
