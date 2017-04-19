@@ -15,8 +15,15 @@ case class Transform(mat: Mat4, matInv: Mat4) {
 
   def apply(ray: Ray): Ray = Ray(this(ray.start), this(ray.dir).nor, ray.depth)
 
-  def apply(bbox: BBox): BBox = (0 to 7).map(p => this(bbox(p))).foldLeft(bbox)(_.union(_))
-
+  def apply(bbox: BBox): BBox = {
+    var i = 0
+    var bounds = BBox.empty
+    while (i < 8) {
+      bounds = bounds.union(this(bbox(i)))
+      i += 1
+    }
+    bounds
+  }
   def *(that: Transform): Transform = Transform(mat * that.mat, that.matInv * matInv)
 
 }
