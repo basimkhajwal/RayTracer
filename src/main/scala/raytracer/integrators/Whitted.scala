@@ -15,9 +15,8 @@ class Whitted(maxRayDepth: Int) extends Integrator{
     if (isect == null) return Spectrum.BLACK
 
     val bsdf = isect.getBSDF()
-    val ng = bsdf.ng
     val n = bsdf.dgShading.nn
-    val p = bsdf.dgShading.p + n*1e-5
+    val p = bsdf.dgShading.p
 
     var directLight = Spectrum.BLACK
     var i = 0
@@ -26,7 +25,7 @@ class Whitted(maxRayDepth: Int) extends Integrator{
       val (lightIntensity, wi, lightDist) = scene.lights(i).sample(p)
       val lightValue = lightIntensity * Math.abs(wi.dot(n)) * bsdf(-ray.dir, wi, BSDF.ALL_REFLECTION)
 
-      val lightCheck = scene.intersect(Ray(p, wi, 0)).orNull
+      val lightCheck = scene.intersect(Ray(p + wi*1e-5, wi, 0)).orNull
       if (lightCheck == null || lightCheck.time >= lightDist) {
         directLight += lightValue
       }

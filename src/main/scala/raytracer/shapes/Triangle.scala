@@ -45,7 +45,7 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
     val s1 = ray.dir cross e2
 
     val divisor = s1 dot e1
-    if (divisor < EPSILON) return None
+    if (divisor == 0) return None
     val invDivisor = 1 / divisor
 
     val s = ray.start - p1

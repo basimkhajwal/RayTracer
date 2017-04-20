@@ -21,7 +21,7 @@ object Integrator {
     val mask = col * wi.dot(dg.nn).abs
 
     if (mask.isBlack()) mask
-    else mask.clamp * integrator.traceRay(scene, Ray(dg.p + bsdf.ng*1e-9, wi, ray.depth+1))
+    else mask.clamp * integrator.traceRay(scene, Ray(dg.p + wi*1e-9, wi, ray.depth+1))
   }
 
   def specularTransmit(scene: Scene, ray: Ray, isect: Intersection, integrator: Integrator): Spectrum = {
