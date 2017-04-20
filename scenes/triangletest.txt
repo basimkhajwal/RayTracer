@@ -1,37 +1,10 @@
-Camera "perspective" "float fov" [45.000000 ]
-Film "screen" "integer xresolution" 400 "integer yresolution" 400 "integer width" 800 "string filename" "progress/19.png" "integer height" 800
-
-Integrator "whitted" "integer maxdepth" [3]
-Sampler "random" "integer pixelsamples" [4]
-Renderer "sampler" "integer taskcount" [5]
-Accelerator "grid"
+Camera "perspective" "float fov" [45 ]
+Film "screen" "integer xresolution" 400 "integer yresolution" 400
+Integrator "whitted"
+Sampler "random" "integer pixelsamples" 1
+Renderer "sampler" "integer taskcount" 1
 
 WorldBegin
-
 LightSource "point" "rgb I" [800 800 800]
-
-#AttributeBegin
-#    Material "matte" "rgb Kd" [ 0.5 0.5 0.25 ]
-#    Translate 0 2 10
-#    Shape "sphere"
-#AttributeEnd
-
-AttributeBegin
-    Material "matte" "rgb Kd" [ 0.3 0.1 0.1 ]
-    Translate 0 -1 10
-    Rotate 65 0 1 0
-    Shape "trianglemesh" "integer indices" [0 1 2 0 3 2]
-          "point P" [ 0 0 0   0 2 0    2 2 0    2 0 0]
-AttributeEnd
-
-AttributeBegin
-    Material "matte" "rgb Kd" [ 0.3 0.1 0.1 ]
-    Translate 0 -1 10
-    #Rotate -65 0 1 0
-    Shape "trianglemesh" "integer indices" [0 1 2]
-          "point P" [ 0 0 0    0 2 0    -2 2 0    -2 0 0]
-    Shape "trianglemesh" "integer indices" [0 2 1]
-          "point P" [ 0 0 0    -2 2 0    -2 0 0]
-AttributeEnd
-
+Shape "trianglemesh" "integer indices" [0 1 2] "point P" [-2 -2 1 -2 10 1 10 -2 1]
 WorldEnd
