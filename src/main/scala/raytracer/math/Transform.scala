@@ -13,6 +13,15 @@ case class Transform(mat: Mat4, matInv: Mat4) {
 
   def apply(point: Point): Point = mat * point
 
+  def apply(n: Normal): Normal = {
+    val m = matInv.data
+    Normal(
+      m(0)*n.x + m(4)*n.y + m(8)*n.z,
+      m(1)*n.x + m(5)*n.y + m(9)*n.z,
+      m(2)*n.x + m(6)*n.y + m(10)*n.z
+    )
+  }
+
   def apply(ray: Ray): Ray = Ray(this(ray.start), this(ray.dir).nor, ray.depth)
 
   def apply(bbox: BBox): BBox = {
