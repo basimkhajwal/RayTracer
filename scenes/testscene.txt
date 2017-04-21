@@ -1,6 +1,6 @@
 LookAt 0 10 -10 0 0 0 0 1 0
 Camera "perspective" "float fov" [45.000000 ] "float screenwindow" [-1.000000 1.000000 -1.000000 1.000000] "float lensradius" [0] "float focaldistance" [5]
-Film "screen" "integer xresolution" 800 "integer yresolution" 800 "integer width" 800 "string filename" "progress/23.png" "integer height" 800
+Film "screen" "integer xresolution" 400 "integer yresolution" 400 "integer width" 800 "string filename" "progress/23.png" "integer height" 800
 
 Integrator "whitted" "integer maxdepth" [5]
 Sampler "random" "integer pixelsamples" [3]
@@ -18,8 +18,9 @@ LightSource "spot" "rgb I" [400 400 400] "float coneangle" 30 "float conedeltaan
 
 Shape "trianglemesh" "integer indices" [ 0 2 3 0 1 3 ] "point P" [ -10 0 -10 10 0 -10 -10 0 10 10 0 10 ]
 
-Material "plastic" "color Kd" [.15 .05 .05] "color Ks" [.2 .1 .1] "float roughness" [.1]
+#Material "plastic" "color Kd" [.15 .05 .05] "color Ks" [.2 .1 .1] "float roughness" [.1]
 #Material "matte" "rgb Kd" [ 0.5 0.5 0.25 ]
+Material "glass"
 Rotate -90 1 0 0
 Include "teapotgeom.txt"
 
