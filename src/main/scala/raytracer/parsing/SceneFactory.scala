@@ -7,7 +7,7 @@ import raytracer.filters._
 import raytracer.integrators.{Integrator, Whitted}
 import raytracer.lights.{Light, PointLight, SpotLight}
 import raytracer.materials._
-import raytracer.math.{Mat4, Point, Transform, Vec3}
+import raytracer.math._
 import raytracer.primitives.{Aggregate, GridAccelerator, Primitive}
 import raytracer.renderers.{Renderer, SamplerRenderer}
 import raytracer.sampling.{RandomSampler, Sampler}
@@ -280,7 +280,7 @@ object SceneFactory {
 
         require(indices.length % 3 == 0, "Indices must specify 3 points for each triangle")
 
-        val normals = params.get[Vec3]("N").map(_.toArray).orNull
+        val normals = params.get[Normal]("N").map(_.toArray).orNull
         val uvs = params.get[Double]("uv").map(_.toArray).orNull
 
         if (normals != null)

@@ -113,7 +113,7 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
       ts = ts.nor
       ss = ts.cross(ns)
     } else {
-      val coordSystem = Vec3.createCoordinateSystem(ns)
+      val coordSystem = Vec3.createCoordinateSystem(Vec3(ns.x, ns.y, ns.z))
       ss = coordSystem._1
       ts = coordSystem._2
     }

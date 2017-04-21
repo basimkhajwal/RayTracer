@@ -16,24 +16,11 @@ case class Sphere(radius: Double, o2w: Transform) extends Shape {
   val thetaMin: Double = math.Pi // This took ages to fix :P
   val thetaMax: Double = 0
 
-  def epEQ(a: Double, b: Double): Boolean = {
-    b > a-0.0005 && b < a+0.0005
-  }
-
-  def epEQ(a: Vec3, b: Vec3): Boolean = {
-    epEQ(a(0), b(0)) && epEQ(a(1), b(1)) && epEQ(a(2), b(2))
-  }
-
   override def intersect(worldRay: Ray): Option[(DifferentialGeometry, Double)] = {
-
-    if (epEQ(worldRay.dir, Vec3(-0.4943, -0.8398, -0.22442))) {
-      println("gotcha")
-    }
 
     val ray = worldToObject(worldRay)
     val d = ray.dir
     val o = ray.start
-
 
     val A = d.x*d.x + d.y*d.y + d.z*d.z
     val B = 2 * (d.x*o.x + d.y*o.y + d.z*o.z)

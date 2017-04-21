@@ -1,7 +1,7 @@
 package raytracer.bxdf
 
 import raytracer.Spectrum
-import raytracer.math.{Mat4, Transform, Vec3}
+import raytracer.math.{Mat4, Normal, Transform, Vec3}
 import raytracer.shapes.DifferentialGeometry
 
 /**
@@ -9,15 +9,15 @@ import raytracer.shapes.DifferentialGeometry
   */
 final class BSDF (
   val dgShading: DifferentialGeometry,
-  val ng: Vec3,
+  val ng: Normal,
   val eta: Double
 ) {
-  def this(dgShading: DifferentialGeometry, ng: Vec3) = this(dgShading, ng, 1)
+  def this(dgShading: DifferentialGeometry, ng: Normal) = this(dgShading, ng, 1)
 
   private var bxdfs: List[BxDF] = Nil
   def add(b: BxDF) = bxdfs ::= b
 
-  private val nn: Vec3 = dgShading.nn
+  private val nn: Normal = dgShading.nn
   private val sn: Vec3 = dgShading.dpdu.nor
   private val tn: Vec3 = nn cross sn
 

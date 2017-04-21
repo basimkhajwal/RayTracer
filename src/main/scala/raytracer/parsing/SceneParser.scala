@@ -3,7 +3,7 @@ package raytracer.parsing
 import java.io.File
 
 import raytracer.Spectrum
-import raytracer.math.{Mat4, Point, Transform, Vec3}
+import raytracer.math._
 import raytracer.utils.{Logger, Reporter}
 
 import scala.annotation.tailrec
@@ -16,7 +16,8 @@ import scala.util.{Success, Try}
   */
 class SceneParser(sceneFile: String) extends SceneBuilder {
 
-  private val validParameters = List("float", "integer", "string", "bool", "vector", "point", "rgb", "color", "texture")
+  private val validParameters =
+    List("float", "integer", "string", "bool", "vector", "normal", "point", "rgb", "color", "texture")
 
   private val firstLexer = new Lexer(sceneFile)
   private var lexerStack: List[Lexer] = firstLexer :: Nil
@@ -156,6 +157,12 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
         val elements = checkedMap(_ + "is not a valid point part", _.toDouble)
         if (elements.length % 3 != 0) throwError("Invalid parts, 3 doubles per point required")
         params.add(paramName, elements.grouped(3).map(p => Point(p(0), p(1), p(2))).toSeq)
+      }
+
+      case "normal" => {
+        val elements = checkedMap(_ + "is not a valid normal part", _.toDouble)
+        if (elements.length % 3 != 0) throwError("Invalid parts, 3 doubles per normal required")
+        params.add(paramName, elements.grouped(3).map(p => Normal(p(0), p(1), p(2))).toSeq)
       }
 
       case "texture" => mapAndAdd[String](_.toString, _.toString)

@@ -5,11 +5,9 @@ import raytracer.math._
   * Created by Basim on 12/02/2017.
   */
 class TriangleMesh(
-  val indices: Array[Int],
-  val points: Array[Point],
+  val indices: Array[Int], val points: Array[Point],
   o2w: Transform,
-  val normals: Array[Vec3],
-  val uvs: Array[Double]
+  val normals: Array[Normal], val uvs: Array[Double]
 ) extends Shape {
 
   val hasNormals = normals != null
