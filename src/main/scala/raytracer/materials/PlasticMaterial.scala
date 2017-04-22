@@ -15,7 +15,7 @@ class PlasticMaterial(
   /* bump: Texture[Float] */
 ) extends Material {
 
-  val fresnel = new FresnelNoOp() //new FresnelDielectric(1.5, 1)
+  val fresnel = new FresnelDielectric(1.5, 1)
 
   override def getBSDF(dgGeom: DifferentialGeometry, dgShading: DifferentialGeometry): BSDF = {
     val bsdf = new BSDF(dgShading, dgGeom.nn)
