@@ -11,14 +11,13 @@ trait Fresnel {
 
 class FresnelConductor(val eta: Spectrum, val k: Spectrum)extends Fresnel {
 
-  override def evaluate(cosi: Double): Spectrum = {
-    // TODO: Make this more efficient (once tested)
+  override def evaluate(inCosi: Double): Spectrum = {
+    val cosi = math.abs(inCosi)
     val tmp = (eta*eta + k*k) * cosi*cosi
-    val Rparl2 = (tmp - ((2 * cosi) * eta) + 1) / (tmp + ((2 * cosi) * eta) + 1)
-
+    val tmp2 = 2*eta*cosi
+    val Rparl2 = (tmp - tmp2 + 1) / (tmp + tmp2 + 1)
     val tmp_f = eta*eta + k*k
-    val Rperp2 = (tmp_f - ((2 * cosi) * eta) + cosi*cosi) / (tmp_f + ((2 * cosi) * eta) + cosi*cosi)
-
+    val Rperp2 = (tmp_f - tmp2 + cosi*cosi) / (tmp_f + tmp2 + cosi*cosi)
     (Rparl2 + Rperp2) / 2
   }
 }
