@@ -223,6 +223,14 @@ object SceneFactory {
         new MirrorMaterial(textureParams.getSpectrumTexture("r", Spectrum.WHITE))
       }
 
+      case "metal" => {
+        new MetalMaterial(
+          textureParams.getSpectrumTexture("eta", MetalMaterial.copperN),
+          textureParams.getSpectrumTexture("k", MetalMaterial.copperK),
+          textureParams.getFloatTexture("roughness", 0.05)
+        )
+      }
+
       case "plastic" => {
         new PlasticMaterial(
           textureParams.getSpectrumTexture("kd", Spectrum(0.25, 0.25, 0.25)),
