@@ -10,42 +10,40 @@ import raytracer.textures.MipMap._
 /**
   * Created by Basim on 23/04/2017.
   */
-class ImageTexture[T : Manifest](
+class ImageSpectrumTexture(
   val mapping: TextureMapping2D, val fileName: String,
   val doTrilinear: Boolean, val maxAniso: Double, val wrapMode: ImageWrap,
-  val scale: Double, val gamma: Double,
-  convertIn: (Spectrum, Double, Double) => T
-)(implicit evidence: T => MipMappable[T]) extends Texture[T]{
+  val scale: Double, val gamma: Double
+) extends Texture[Spectrum]{
 
- def this(
-   m: TextureMapping2D, t: TextureInfo,
-   convertIn: (Spectrum, Double, Double) => T)
- (implicit evidence: T => MipMappable[T]) = {
-    this(m, t.fileName, t.doTrilinear, t.maxAniso, t.wrapMode, t.scale, t.gamma, convertIn)
+  def this(m: TextureMapping2D, t: TextureInfo) = {
+    this(m, t.fileName, t.doTrilinear, t.maxAniso, t.wrapMode, t.scale, t.gamma)
   }
 
-  private def getMipMap(): MipMap[T] = {
+  def convertIn(s: Spectrum): Spectrum = (s * scale).pow(gamma)
+
+  private def getMipMap(): SpectrumMipMap = {
     val img = ImageIO.read(new File(fileName))
     val width = img.getWidth()
     val height = img.getHeight()
-    val imgData = new Array[T](width * height)
+    val imgData = new Array[Spectrum](width * height)
 
     var y = 0
     while (y < height) {
       var x = 0
       while (x < width) {
-        imgData(y*width+x) = convertIn(Spectrum.fromRGBInt(img.getRGB(x, y)), scale, gamma)
+        imgData(y*width+x) = convertIn(Spectrum.fromRGBInt(img.getRGB(x, y)))
         x += 1
       }
       y += 1
     }
 
-    new MipMap[T](width, height, imgData, doTrilinear, maxAniso, wrapMode)
+    MipMap.createSpectrum(width, height, imgData, doTrilinear, maxAniso, wrapMode)
   }
 
-  val mipMap: MipMap[T] = getMipMap()
+  val mipMap = getMipMap()
 
-  override def apply(dg: DifferentialGeometry): T = {
+  override def apply(dg: DifferentialGeometry): Spectrum = {
     val texMap = mapping.map(dg)
     mipMap.lookUp(texMap.s, texMap.t, 0, 0, 0, 0) // TODO: Implement differentials
   }
@@ -57,26 +55,24 @@ class ImageTexture[T : Manifest](
 * */
 object ImageTexture {
 
-  private var floatImages = Map[TextureInfo, ImageTexture[Double]]()
-  private var spectrumImages = Map[TextureInfo, ImageTexture[Spectrum]]()
+  //private var floatImages = Map[TextureInfo, ImageTexture[Double]]()
+  private var spectrumImages = Map[TextureInfo, ImageSpectrumTexture]()
 
-  def convertSpectrum(s: Spectrum, scale: Double, gamma: Double): Spectrum = (s * scale).pow(gamma)
+  //def convertFloat(s: Spectrum, scale: Double, gamma: Double): Double = math.pow(scale * s.getY(), gamma)
 
-  def convertFloat(s: Spectrum, scale: Double, gamma: Double): Double = math.pow(scale * s.getY(), gamma)
-
-  def createFloatImage(mapping: TextureMapping2D, textureInfo: TextureInfo): ImageTexture[Double] = {
+  /*def createFloatImage(mapping: TextureMapping2D, textureInfo: TextureInfo): ImageTexture[Double] = {
     if (floatImages.contains(textureInfo)) floatImages(textureInfo)
     else {
-      val img = new ImageTexture[Double](mapping, textureInfo, convertFloat)
+      val img = create[Double](mapping, textureInfo, convertFloat)
       floatImages += (textureInfo -> img)
       img
     }
-  }
+  }*/
 
-  def createSpectrumImage(mapping: TextureMapping2D, textureInfo: TextureInfo): ImageTexture[Spectrum] = {
+  def createSpectrumImage(mapping: TextureMapping2D, textureInfo: TextureInfo): ImageSpectrumTexture = {
     if (spectrumImages.contains(textureInfo)) spectrumImages(textureInfo)
     else {
-      val img = new ImageTexture[Spectrum](mapping, textureInfo, convertSpectrum)
+      val img = new ImageSpectrumTexture(mapping, textureInfo)
       spectrumImages += (textureInfo -> img)
       img
     }

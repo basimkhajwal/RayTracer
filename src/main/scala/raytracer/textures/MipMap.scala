@@ -14,18 +14,17 @@ import raytracer.filters.LanczosFilter
 *   4. Write elliptically weighted averaging algorithm - TODO
 * */
 
-class MipMap[T : Manifest](
-  val width: Int, val height: Int, val data: Array[T],
+class SpectrumMipMap(
+  val width: Int, val height: Int, val data: Array[Spectrum],
   val doTrilinear: Boolean, val maxAnisotropy: Double, val wrapMode: ImageWrap
-)(implicit evidence: T => MipMappable[T]) {
+) {
 
   val nLevels = 1 + math.round(math.log(math.max(width, height)) / math.log(2)).toInt
-  val pyramid = new Array[BlockedArray[T]](nLevels)
-  val black: T = data.head.zero()
+  val pyramid = new Array[BlockedArray[Spectrum]](nLevels)
 
   init()
 
-  def texel(level: Int, s: Int, t: Int): T = {
+  def texel(level: Int, s: Int, t: Int): Spectrum = {
     val l = pyramid(level)
 
     var x: Int = s
@@ -38,20 +37,22 @@ class MipMap[T : Manifest](
       x = math.max(0, math.min(x, l.width-1))
       y = math.max(0, math.min(y, l.height-1))
     } else if (x < 0 || x >= l.width || y < 0 || t >= l.height) {
-      return black
+      return Spectrum.BLACK
     }
 
-    l(x, y)
+    val a = l(x, y)
+    assert(a != null)
+    a
   }
 
   def init(): Unit = {
-    pyramid(0) = new BlockedArray[T](width, height, data)
+    pyramid(0) = new BlockedArray[Spectrum](width, height, data)
 
     var i = 1
     while (i < nLevels) {
       val xRes = math.max(1, pyramid(i-1).width/2)
       val yRes = math.max(1, pyramid(i-1).height/2)
-      pyramid(i) = new BlockedArray[T](width, height)
+      pyramid(i) = new BlockedArray[Spectrum](xRes, yRes)
 
       var x = 0
       while (x < xRes) {
@@ -69,7 +70,7 @@ class MipMap[T : Manifest](
     }
   }
 
-  def triangle(inLevel: Int, x: Double, y: Double): T = {
+  def triangle(inLevel: Int, x: Double, y: Double): Spectrum = {
     val level = math.max(0, math.min(inLevel, nLevels-1))
     val s = x * pyramid(level).width - 0.5
     val t = y * pyramid(level).height - 0.5
@@ -84,7 +85,7 @@ class MipMap[T : Manifest](
     texel(level, s0+1, t0+1) * (ds * dt)
   }
 
-  def lookUp(x: Double, y: Double, width: Double): T = {
+  def lookUp(x: Double, y: Double, width: Double): Spectrum = {
     val level = nLevels - 1 + (math.log(math.max(width, 1e-8f)) / math.log(2))
 
     if (level < 0) {
@@ -101,7 +102,7 @@ class MipMap[T : Manifest](
   def lookUp(
     s: Double, t: Double,
     ds0: Double, dt0: Double, ds1: Double, dt1: Double
-  ): T = {
+  ): Spectrum = {
     lookUp(s, t,
       2 * math.max(
         math.max(math.abs(ds0), math.abs(dt0)),
@@ -140,21 +141,6 @@ object MipMap {
     v+1
   }
 
-  implicit def doubleToMipMap(x: Double) = new MipMappable[Double] {
-    override def +(that: Double): Double = x+that
-    override def *(that: Double): Double = x*that
-    override def zero(): Double = 0
-    def clamp(): Double = math.max(0, x)
-  }
-
-  implicit def spectrumToMipMap(s: Spectrum) = new MipMappable[Spectrum] {
-    override def +(that: Spectrum): Spectrum = s+that
-    override def *(that: Double): Spectrum = s*that
-    override def *(that: Spectrum): Spectrum = s*that
-    override def zero(): Spectrum = Spectrum.BLACK
-    override def clamp(): Spectrum = s.clamp(Double.PositiveInfinity)
-  }
-
   case class ResampleWeight(firstTexel: Int, weight: Array[Double])
 
   def resampleWeights(oldres: Int, newres: Int): Array[ResampleWeight] = {
@@ -188,18 +174,17 @@ object MipMap {
     wt
   }
 
-  def create[T : Manifest](
-    xRes: Int, yRes: Int, data: Array[T],
+  def createSpectrum(
+    xRes: Int, yRes: Int, data: Array[Spectrum],
     dt: Boolean = false, ma: Double = 8,
-    wm: ImageWrap = TEXTURE_REPEAT)(implicit ev: T => MipMappable[T]): MipMap[T] = {
+    wm: ImageWrap = TEXTURE_REPEAT): SpectrumMipMap = {
 
     val width = nextPOT(xRes)
     val height = nextPOT(yRes)
 
-    if (width==xRes && height==yRes) return new MipMap[T](xRes, yRes, data, dt, ma, wm)
+    if (width==xRes && height==yRes) return new SpectrumMipMap(xRes, yRes, data, dt, ma, wm)
 
-    val resampledImage = new Array[T](width * height)
-    val zero = data.head.zero()
+    val resampledImage = new Array[Spectrum](width * height)
     var x = 0
     var y = 0
     var j = 0
@@ -209,12 +194,13 @@ object MipMap {
     while (y < yRes) {
       x = 0
       while (x < width) {
-        resampledImage(y*width+x) = zero
+        resampledImage(y*width+x) = Spectrum.BLACK
         j = 0
         while (j < 4) {
           var origX = xWeights(x).firstTexel + j
           if (wm == TEXTURE_REPEAT) {
-            origX %= xRes
+            if (origX < 0) origX += xRes
+            else origX %= xRes
           } else if (wm == TEXTURE_CLAMP) {
             origX = math.max(0, math.min(origX, xRes - 1))
           }
@@ -231,19 +217,20 @@ object MipMap {
     }
 
     val yWeights = resampleWeights(yRes, height)
-    val workData = new Array[T](height)
+    val workData = new Array[Spectrum](height)
 
     x = 0
     while (x < width) {
       y = 0
       while (y < height) {
-        workData(y) = zero
+        workData(y) = Spectrum.BLACK
 
         j = 0
         while (j < 4) {
           var offset = yWeights(y).firstTexel + j
           if (wm == TEXTURE_REPEAT) {
-            offset %= yRes
+            if (offset < 0) offset += yRes
+            else offset %= yRes
           } else if (wm == TEXTURE_CLAMP) {
             offset = math.max(0, math.min(offset, yRes-1))
           }
@@ -266,7 +253,7 @@ object MipMap {
       x += 1
     }
 
-    new MipMap[T](width, height, resampledImage, dt, ma, wm)
+    new SpectrumMipMap(width, height, resampledImage, dt, ma, wm)
   }
 
 }
