@@ -46,7 +46,7 @@ object Spectrum {
   val RGB_Y = Array(0.212671, 0.715160, 0.072169)
 
   def fromRGBInt(col: Int): Spectrum = {
-    val r = col >> 16
+    val r = (col >> 16) & 0xFF
     val g = (col >> 8) & 0xFF
     val b = col & 0xFF
     Spectrum(r / 255.0, g / 255.0, b / 255.0)
