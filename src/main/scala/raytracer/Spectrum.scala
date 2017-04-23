@@ -5,9 +5,10 @@ package raytracer
   */
 case class Spectrum(r: Double, g: Double, b: Double) {
 
+  /*
   assert(r >= 0)
   assert(g >= 0)
-  assert(b >= 0)
+  assert(b >= 0)*/
 
   def this(colour: Double) = this(colour, colour, colour)
 
@@ -27,7 +28,10 @@ case class Spectrum(r: Double, g: Double, b: Double) {
 
   def /(that: Spectrum): Spectrum = Spectrum(r / that.r, g / that.g, b / that.b)
 
-  def clamp: Spectrum = Spectrum(Math.min(r, 1), Math.min(g, 1), Math.min(b, 1))
+  @inline
+  private def clamp(v: Double, m: Double) = Math.max(0, Math.min(v, m))
+
+  def clamp(max: Double = 1): Spectrum = Spectrum(clamp(r, max), clamp(g, max), clamp(b, max))
 
   def isBlack(epsilon: Double = 0): Boolean = r <= epsilon && g <= epsilon && b <= epsilon
 }

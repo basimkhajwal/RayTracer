@@ -18,8 +18,8 @@ class GlassMaterial(
     val ior = refractiveIndex(dgShading)
     val bsdf = new BSDF(dgShading, dgGeom.nn, ior)
 
-    val R = reflectance(dgShading).clamp
-    val T = transmittance(dgShading).clamp
+    val R = reflectance(dgShading).clamp()
+    val T = transmittance(dgShading).clamp()
 
     if (!R.isBlack()) bsdf.add(new SpecularReflection(R, new FresnelDielectric(1, ior)))
 

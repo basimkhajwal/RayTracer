@@ -15,7 +15,7 @@ class MirrorMaterial (
   override def getBSDF(dgGeom: DifferentialGeometry, dgShading: DifferentialGeometry): BSDF = {
     val bsdf = new BSDF(dgShading, dgGeom.nn)
 
-    val colour = r(dgShading).clamp
+    val colour = r(dgShading).clamp()
     if (!colour.isBlack()) bsdf.add(new SpecularReflection(colour, new FresnelNoOp()))
 
     bsdf

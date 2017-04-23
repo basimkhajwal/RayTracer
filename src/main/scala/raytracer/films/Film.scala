@@ -32,7 +32,7 @@ abstract class Film(
 
     def getSpectrum(): Spectrum = {
       if (weightSum == 0) Spectrum.BLACK
-      else Spectrum(r / weightSum, g / weightSum, b / weightSum).clamp
+      else Spectrum(r / weightSum, g / weightSum, b / weightSum).clamp()
     }
   }
 

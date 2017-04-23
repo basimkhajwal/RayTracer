@@ -20,8 +20,8 @@ class PlasticMaterial(
   override def getBSDF(dgGeom: DifferentialGeometry, dgShading: DifferentialGeometry): BSDF = {
     val bsdf = new BSDF(dgShading, dgGeom.nn)
 
-    val d = kd(dgShading).clamp
-    val s = ks(dgShading).clamp
+    val d = kd(dgShading).clamp()
+    val s = ks(dgShading).clamp()
     val r = rough(dgShading)
 
     bsdf.add(new Lambertian(d))
