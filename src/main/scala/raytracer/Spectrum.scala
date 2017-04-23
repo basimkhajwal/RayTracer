@@ -28,6 +28,10 @@ case class Spectrum(r: Double, g: Double, b: Double) {
 
   def /(that: Spectrum): Spectrum = Spectrum(r / that.r, g / that.g, b / that.b)
 
+  def pow(sf: Double): Spectrum = Spectrum(Math.pow(r, sf), Math.pow(g, sf), Math.pow(b, sf))
+
+  def getY(): Double = r * Spectrum.RGB_Y(0) + g * Spectrum.RGB_Y(1) + b * Spectrum.RGB_Y(2)
+
   @inline
   private def clamp(v: Double, m: Double) = Math.max(0, Math.min(v, m))
 
@@ -39,6 +43,14 @@ case class Spectrum(r: Double, g: Double, b: Double) {
 object Spectrum {
   val BLACK = Spectrum(0, 0, 0)
   val WHITE = Spectrum(1, 1, 1)
+  val RGB_Y = Array(0.212671, 0.715160, 0.072169)
+
+  def fromRGBInt(col: Int): Spectrum = {
+    val r = col >> 16
+    val g = (col >> 8) & 0xFF
+    val b = col & 0xFF
+    Spectrum(r / 255.0, g / 255.0, b / 255.0)
+  }
 
   trait Scalable { def *(that: Spectrum): Spectrum }
   implicit def doubleToScalable(d: Double): Scalable = _ * d
