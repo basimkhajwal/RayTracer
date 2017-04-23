@@ -103,6 +103,12 @@ object SceneFactory {
         new MitchellFilter(xWidth, yWidth, B, C)
       }
 
+      case "sinc" => {
+        val tau = params.getOneOr[Double]("tau", params.getOneOr[Int]("tau", 3))
+
+        new LanczosFilter(xWidth, yWidth, tau)
+      }
+
       case "gaussian" => {
         val alpha = params.getOneOr[Double]("alpha", 2)
         new GaussianFilter(xWidth, yWidth, alpha)
