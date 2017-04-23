@@ -8,18 +8,116 @@ import raytracer.filters.LanczosFilter
   */
 /*
 *  Steps:
-*   1. Re-sample image so dimensions are to next highest POT
-*   2. Build MipMap pyramid
-*   3. Write code for the trilinear filtering algorithm
-*   4. Write elliptically weighted averaging algorithm
+*   1. Re-sample image so dimensions are to next highest POT - Done
+*   2. Build MipMap pyramid - Done
+*   3. Write code for the trilinear filtering algorithm - Done
+*   4. Write elliptically weighted averaging algorithm - TODO
 * */
 
 class MipMap[T : Manifest](
-  val xRes: Int, val yRes: Int, val data: Array[T],
+  val width: Int, val height: Int, val data: Array[T],
   val doTrilinear: Boolean, val maxAnisotropy: Double, val wrapMode: ImageWrap
 )(implicit evidence: T => MipMappable[T]) {
 
+  val nLevels = 1 + math.round(math.log(math.max(width, height)) / math.log(2)).toInt
+  val pyramid = new Array[BlockedArray[T]](nLevels)
+  val black: T = data.head.zero()
 
+  init()
+
+  def texel(level: Int, s: Int, t: Int): T = {
+    val l = pyramid(level)
+
+    var x: Int = s
+    var y: Int = t
+
+    if (wrapMode == TEXTURE_REPEAT) {
+      x %= l.width
+      y %= l.height
+    } else if (wrapMode == TEXTURE_CLAMP) {
+      x = math.max(0, math.min(x, l.width-1))
+      y = math.max(0, math.min(y, l.height-1))
+    } else if (x < 0 || x >= l.width || y < 0 || t >= l.height) {
+      return black
+    }
+
+    l(x, y)
+  }
+
+  def init(): Unit = {
+    pyramid(0) = new BlockedArray[T](width, height, data)
+
+    var i = 1
+    while (i < nLevels) {
+      val xRes = math.max(1, pyramid(i-1).width/2)
+      val yRes = math.max(1, pyramid(i-1).height/2)
+      pyramid(i) = new BlockedArray[T](width, height)
+
+      var x = 0
+      while (x < xRes) {
+        var y = 0
+        while (y < yRes) {
+          pyramid(i)(x, y) =
+             (texel(i-1, 2*x, 2*y)   + texel(i-1, 2*x+1, 2*y) +
+              texel(i-1, 2*x, 2*y+1) + texel(i-1, 2*x+1, 2*y+1)) * 0.25
+
+          y += 1
+        }
+        x += 1
+      }
+      i += 1
+    }
+  }
+
+  def triangle(inLevel: Int, x: Double, y: Double): T = {
+    val level = math.max(0, math.min(inLevel, nLevels-1))
+    val s = x * pyramid(level).width - 0.5
+    val t = y * pyramid(level).height - 0.5
+    val s0 = s.toInt
+    val t0 = t.toInt
+    val ds = s - s0
+    val dt = t - t0
+
+    texel(level, s0, t0) * ((1-ds) * (1-dt)) +
+    texel(level, s0, t0+1) * ((1-ds) * dt) +
+    texel(level, s0+1, t0) * (ds * (1-dt)) +
+    texel(level, s0+1, t0+1) * (ds * dt)
+  }
+
+  def lookUp(x: Double, y: Double, width: Double): T = {
+    val level = nLevels - 1 + (math.log(math.max(width, 1e-8f)) / math.log(2))
+
+    if (level < 0) {
+      triangle(0, x, y)
+    } else if (level >= nLevels - 1) {
+      texel(nLevels - 1, 0, 0)
+    } else {
+      val iLevel = level.toInt
+      val delta = level - iLevel
+      triangle(iLevel, x, y)*(1-delta) + triangle(iLevel+1, x, y)*delta
+    }
+  }
+
+  def lookUp(
+    s: Double, t: Double,
+    ds0: Double, dt0: Double, ds1: Double, dt1: Double
+  ): T = {
+    lookUp(s, t,
+      2 * math.max(
+        math.max(math.abs(ds0), math.abs(dt0)),
+        math.max(math.abs(ds1), math.abs(dt1))
+      )
+    )
+  }
+}
+
+class BlockedArray[T : Manifest](val width: Int, val height: Int, val data: Array[T]) {
+  def this(width: Int, height: Int) = this(width, height, new Array[T](width * height))
+
+  def apply(x: Int, y: Int): T = data(y*width + x)
+  def update(x: Int, y: Int, v: T): Unit = {
+    data(y*width + x) = v
+  }
 }
 
 trait MipMappable[T] {
