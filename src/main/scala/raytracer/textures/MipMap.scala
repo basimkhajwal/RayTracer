@@ -272,6 +272,16 @@ object MipMap {
 }
 
 sealed trait ImageWrap
+object ImageWrap {
+  def fromString(str: String): ImageWrap = {
+    str match {
+      case "repeat" => TEXTURE_REPEAT
+      case "clamp" => TEXTURE_CLAMP
+      case "black" => TEXTURE_BLACK
+      case _ => throw new NotImplementedError("Invalid wrap type " + str)
+    }
+  }
+}
 object TEXTURE_REPEAT extends ImageWrap
 object TEXTURE_BLACK extends ImageWrap
 object TEXTURE_CLAMP extends ImageWrap
