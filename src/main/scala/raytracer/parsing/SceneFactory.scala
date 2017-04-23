@@ -12,7 +12,7 @@ import raytracer.primitives.{Aggregate, GridAccelerator, Primitive}
 import raytracer.renderers.{Renderer, SamplerRenderer}
 import raytracer.sampling.{RandomSampler, Sampler}
 import raytracer.shapes.{Shape, Sphere, Triangle, TriangleMesh}
-import raytracer.textures.{ConstantTexture, Texture}
+import raytracer.textures._
 
 /**
   * Created by Basim on 12/02/2017.
@@ -257,20 +257,62 @@ object SceneFactory {
     }
   }
 
-  def makeSpectrumTexture(textureClass: String, params: TextureParams): Texture[Spectrum] = reportUnused(params){
+  def make2DMapping(mapType: String, t2w: Transform, params: TextureParams): TextureMapping2D = {
+    mapType match {
+
+      case "uv" => {
+        val su = params.getOneOr("uscale", 1.0)
+        val sv = params.getOneOr("vscale", 1.0)
+        val du = params.getOneOr("udelta", 0.0)
+        val dv = params.getOneOr("vdelta", 0.0)
+
+        new UVMapping2D(su, sv, du, dv)
+      }
+
+      case _ => throw new IllegalArgumentException(s"Un-implemented film type $mapType")
+    }
+  }
+
+  def makeSpectrumTexture(textureClass: String, t2w: Transform, params: TextureParams): Texture[Spectrum] = reportUnused(params){
     textureClass match {
       case "constant" => {
         new ConstantTexture[Spectrum](params.getOneOr("value", Spectrum(0.5, 0.5, 0.5)))
+      }
+      case "image" => {
+        val mapping = make2DMapping(params.getOneOr("mapping", "uv"), t2w, params)
+        val texInfo = TextureInfo(
+          params.getOne[String]("filename").getOrElse(throw new NotImplementedError("File name is required")),
+          params.getOneOr("trilinear", false),
+          params.getOneOr("maxanisotropy", 8.0),
+          ImageWrap.fromString(params.getOneOr("wrap", "repeat")),
+          params.getOneOr("scale", 1.0),
+          params.getOneOr("gamma", 1.0)
+        )
+        ImageTexture.createSpectrumImage(mapping, texInfo)
       }
       case _ => throw new IllegalArgumentException(s"Unknown spectrum texture class $textureClass")
     }
   }
 
-  def makeFloatTexture(textureClass: String, params: TextureParams): Texture[Double] = reportUnused(params){
+  def makeFloatTexture(textureClass: String, t2w: Transform, params: TextureParams): Texture[Double] = reportUnused(params){
     textureClass match {
       case "constant" => {
         new ConstantTexture[Double](params.getOneOr("value", 1.0))
       }
+
+      case "image" => {
+        val mapping = make2DMapping(params.getOneOr("mapping", "uv"), t2w, params)
+        val texInfo = TextureInfo(
+          params.getOne[String]("filename").getOrElse(throw new NotImplementedError("File name is required")),
+          params.getOneOr("trilinear", false),
+          params.getOneOr("maxanisotropy", 8.0),
+          ImageWrap.fromString(params.getOneOr("wrap", "repeat")),
+          params.getOneOr("scale", 1.0),
+          params.getOneOr("gamma", 1.0)
+        )
+        ImageTexture.createFloatImage(mapping, texInfo)
+      }
+
       case _ => throw new IllegalArgumentException(s"Unknown float texture class $textureClass")
     }
   }
