@@ -278,7 +278,7 @@ object SceneFactory {
       case "constant" => {
         new ConstantTexture[Spectrum](params.getOneOr("value", Spectrum(0.5, 0.5, 0.5)))
       }
-      case "image" => {
+      case "imagemap" => {
         val mapping = make2DMapping(params.getOneOr("mapping", "uv"), t2w, params)
         val texInfo = TextureInfo(
           params.getOne[String]("filename").getOrElse(throw new NotImplementedError("File name is required")),
@@ -300,7 +300,7 @@ object SceneFactory {
         new ConstantTexture[Double](params.getOneOr("value", 1.0))
       }
 
-      case "image" => {
+      /*case "imagemap" => {
         val mapping = make2DMapping(params.getOneOr("mapping", "uv"), t2w, params)
         val texInfo = TextureInfo(
           params.getOne[String]("filename").getOrElse(throw new NotImplementedError("File name is required")),
@@ -311,7 +311,7 @@ object SceneFactory {
           params.getOneOr("gamma", 1.0)
         )
         ImageTexture.createFloatImage(mapping, texInfo)
-      }
+      }*/
 
       case _ => throw new IllegalArgumentException(s"Unknown float texture class $textureClass")
     }
