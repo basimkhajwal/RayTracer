@@ -6,13 +6,6 @@ import raytracer.filters.LanczosFilter
 /**
   * Created by Basim on 23/04/2017.
   */
-/*
-*  Steps:
-*   1. Re-sample image so dimensions are to next highest POT - Done
-*   2. Build MipMap pyramid - Done
-*   3. Write code for the trilinear filtering algorithm - Done
-*   4. Write elliptically weighted averaging algorithm - TODO
-* */
 
 class SpectrumMipMap(
   val width: Int, val height: Int, val data: Array[Spectrum],
@@ -31,6 +24,8 @@ class SpectrumMipMap(
     var y: Int = t
 
     if (wrapMode == TEXTURE_REPEAT) {
+      if (x < 0) x += l.width
+      if (y < 0) y += l.height
       x %= l.width
       y %= l.height
     } else if (wrapMode == TEXTURE_CLAMP) {
@@ -40,9 +35,7 @@ class SpectrumMipMap(
       return Spectrum.BLACK
     }
 
-    val a = l(x, y)
-    assert(a != null)
-    a
+    l(x, y)
   }
 
   def init(): Unit = {
@@ -109,6 +102,7 @@ class SpectrumMipMap(
         math.max(math.abs(ds1), math.abs(dt1))
       )
     )
+    // TODO: Write elliptically weighted averaging algorithm
   }
 }
 
@@ -119,14 +113,6 @@ class BlockedArray[T : Manifest](val width: Int, val height: Int, val data: Arra
   def update(x: Int, y: Int, v: T): Unit = {
     data(y*width + x) = v
   }
-}
-
-trait MipMappable[T] {
-  def +(that: T): T
-  def *(that: T): T
-  def *(that: Double): T
-  def zero(): T
-  def clamp(): T
 }
 
 object MipMap {

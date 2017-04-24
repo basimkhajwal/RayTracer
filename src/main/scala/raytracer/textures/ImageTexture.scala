@@ -5,25 +5,21 @@ import javax.imageio.ImageIO
 
 import raytracer.Spectrum
 import raytracer.shapes.DifferentialGeometry
-import raytracer.textures.MipMap._
 
 /**
   * Created by Basim on 23/04/2017.
   */
-class ImageSpectrumTexture(
-  val mapping: TextureMapping2D, val fileName: String,
-  val doTrilinear: Boolean, val maxAniso: Double, val wrapMode: ImageWrap,
-  val scale: Double, val gamma: Double
-) extends Texture[Spectrum]{
+class ImageSpectrumTexture(mapping: TextureMapping2D, texInfo: TextureInfo) extends Texture[Spectrum]{
 
-  def this(m: TextureMapping2D, t: TextureInfo) = {
-    this(m, t.fileName, t.doTrilinear, t.maxAniso, t.wrapMode, t.scale, t.gamma)
-  }
-
-  def convertIn(s: Spectrum): Spectrum = (s * scale).pow(gamma)
+  def convertIn(s: Spectrum): Spectrum = (s * texInfo.scale).pow(texInfo.gamma)
 
   private def getMipMap(): SpectrumMipMap = {
-    val img = ImageIO.read(new File(fileName))
+
+    if (ImageTexture.spectrumCache contains texInfo) {
+      return ImageTexture.spectrumCache(texInfo)
+    }
+
+    val img = ImageIO.read(new File(texInfo.fileName))
     val width = img.getWidth()
     val height = img.getHeight()
     val imgData = new Array[Spectrum](width * height)
@@ -38,7 +34,9 @@ class ImageSpectrumTexture(
       y += 1
     }
 
-    MipMap.createSpectrum(width, height, imgData, doTrilinear, maxAniso, wrapMode)
+    val m = MipMap.createSpectrum(width, height, imgData, texInfo.doTrilinear, texInfo.maxAniso, texInfo.wrapMode)
+    ImageTexture.spectrumCache += texInfo -> m
+    m
   }
 
   val mipMap = getMipMap()
@@ -49,38 +47,13 @@ class ImageSpectrumTexture(
   }
 }
 
-/*
-* Note: There will be a bug in the texture caching when different mapping schemes relate to the
-* same image details, fix this later
-* */
 object ImageTexture {
-
-  //private var floatImages = Map[TextureInfo, ImageTexture[Double]]()
-  private var spectrumImages = Map[TextureInfo, ImageSpectrumTexture]()
+  private[textures] var spectrumCache = Map[TextureInfo, SpectrumMipMap]()
 
   //def convertFloat(s: Spectrum, scale: Double, gamma: Double): Double = math.pow(scale * s.getY(), gamma)
-
-  /*def createFloatImage(mapping: TextureMapping2D, textureInfo: TextureInfo): ImageTexture[Double] = {
-    if (floatImages.contains(textureInfo)) floatImages(textureInfo)
-    else {
-      val img = create[Double](mapping, textureInfo, convertFloat)
-      floatImages += (textureInfo -> img)
-      img
-    }
-  }*/
-
-  def createSpectrumImage(mapping: TextureMapping2D, textureInfo: TextureInfo): ImageSpectrumTexture = {
-    if (spectrumImages.contains(textureInfo)) spectrumImages(textureInfo)
-    else {
-      val img = new ImageSpectrumTexture(mapping, textureInfo)
-      spectrumImages += (textureInfo -> img)
-      img
-    }
-  }
 }
 
 case class TextureInfo (
   fileName: String, doTrilinear: Boolean, maxAniso: Double,
   wrapMode: ImageWrap, scale: Double, gamma: Double
 )
-

@@ -288,7 +288,7 @@ object SceneFactory {
           params.getOneOr("scale", 1.0),
           params.getOneOr("gamma", 1.0)
         )
-        ImageTexture.createSpectrumImage(mapping, texInfo)
+        new ImageSpectrumTexture(mapping, texInfo)
       }
       case _ => throw new IllegalArgumentException(s"Unknown spectrum texture class $textureClass")
     }
