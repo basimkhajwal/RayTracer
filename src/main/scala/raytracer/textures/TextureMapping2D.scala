@@ -13,7 +13,7 @@ class UVMapping2D(
   val su: Double, val sv: Double, val du: Double, val dv: Double
 ) extends TextureMapping2D {
   override def map(dg: DifferentialGeometry): TexMap = {
-    TexMap(dg.u, dg.v)
+    TexMap(su*dg.u + du, sv*dg.v + dv)
   }
 }
 
