@@ -98,7 +98,7 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
       else Array(1 - solution._1 - solution._2, solution._1, solution._2)
 
     val ns =
-      objectToWorld(
+      mesh.o2w(
         b(0)*mesh.normals(v0) +
         b(1)*mesh.normals(v1) +
         b(2)*mesh.normals(v2)

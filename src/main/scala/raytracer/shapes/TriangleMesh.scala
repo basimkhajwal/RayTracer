@@ -6,7 +6,7 @@ import raytracer.math._
   */
 class TriangleMesh(
   val indices: Array[Int], val points: Array[Point],
-  o2w: Transform,
+  val o2w: Transform,
   val normals: Array[Normal], val uvs: Array[Double]
 ) extends Shape {
 
