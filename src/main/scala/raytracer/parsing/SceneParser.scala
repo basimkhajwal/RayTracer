@@ -336,6 +336,11 @@ class SceneParser(sceneFile: String) extends SceneBuilder {
         catchError { translateTransform(ps(0), ps(1), ps(2)) }
       }
 
+      case "scale" => {
+        val ps = getNumbers(3)
+        catchError { scaleTransform(ps(0), ps(1), ps(2)) }
+      }
+
       case "rotate" => {
         val ps = getNumbers(4)
         catchError { rotateTransform(ps(0), ps(1), ps(2), ps(3)) }

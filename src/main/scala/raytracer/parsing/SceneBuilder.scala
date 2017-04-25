@@ -209,6 +209,11 @@ class SceneBuilder {
     log(s"Applied rotation around ($x, $y, $z) of angle $angle")
   }
 
+  final def scaleTransform(x: Double, y: Double, z: Double) = {
+    applyTransform(Transform.scale(x, y, z))
+    log(s"Applied scale of ($x, $y, $z)")
+  }
+
   final def lookAtTransform(from: Point, to: Point, up: Vec3) = {
     applyTransform(Transform.lookAt(from, to, up))
     log(s"Applied LookAt from $from to $to")
