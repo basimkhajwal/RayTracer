@@ -278,6 +278,16 @@ object SceneFactory {
       case "constant" => {
         new ConstantTexture[Spectrum](params.getOneOr("value", Spectrum(0.5, 0.5, 0.5)))
       }
+
+      case "checkerboard" => {
+        new Checkerboard[Spectrum](
+          make2DMapping(params.getOneOr("mapping", "uv"), t2w, params),
+          params.getSpectrumTexture("tex1", Spectrum.BLACK),
+          params.getSpectrumTexture("tex2", Spectrum.WHITE),
+          AAMethod.fromString(params.getOneOr[String]("aamode", "closedform"))
+        )
+      }
+
       case "imagemap" => {
         val mapping = make2DMapping(params.getOneOr("mapping", "uv"), t2w, params)
         val texInfo = TextureInfo(
