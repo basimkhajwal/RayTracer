@@ -36,9 +36,7 @@ case class Triangle(mesh: TriangleMesh, idx: Int) extends Shape {
 
   override val objectBounds: BBox = BBox.fromPoints(p1, p2, p3)
 
-  override def intersect(worldRay: Ray): Option[(DifferentialGeometry, Double)] = {
-
-    val ray = worldToObject(worldRay)
+  override def intersect(ray: Ray): Option[(DifferentialGeometry, Double)] = {
 
     val e1 = p2 - p1
     val e2 = p3 - p1

@@ -10,11 +10,20 @@ class TriangleMesh(
   val normals: Array[Normal], val uvs: Array[Double]
 ) extends Shape {
 
+  // Transform mesh vertices to world space
+  {
+    var i = 0
+    while (i < points.length) {
+      points(i) = o2w(points(i))
+      i += 1
+    }
+  }
+
   val hasNormals = normals != null
   val hasUVS = uvs != null
 
-  override val objectToWorld: Transform = o2w
-  override val worldToObject: Transform = objectToWorld.inverse
+  override val objectToWorld: Transform = Transform.identity
+  override val worldToObject: Transform = Transform.identity
 
   val triangles = (0 until (indices.length/3)) map (Triangle(this, _)) toArray
 
