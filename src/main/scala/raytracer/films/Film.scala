@@ -55,8 +55,6 @@ abstract class Film(
     val x1 = math.min(xStart + xCount - 1, (imageX + filter.xWidth).toInt)
     val y1 = math.min(yStart + yCount - 1, (imageY + filter.yWidth).toInt)
 
-    assert((x1 - x0) >= 0 && (y1 - y0) >= 0, "Sample extent exceeded!")
-
     var x = x0
 
     while (x <= x1) {
