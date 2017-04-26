@@ -106,6 +106,56 @@ class SpectrumMipMap(
   }
 }
 
+class FloatMipMap(
+  val width: Int, val height: Int, val data: Array[Double],
+  val doTrilinear: Boolean, val maxAnisotropy: Double, val wrapMode: ImageWrap
+) {
+
+  val nLevels = 1 + math.round(math.log(math.max(width, height)) / math.log(2)).toInt
+  val pyramid = new Array[BlockedArray[Double]](nLevels)
+  pyramid(0) = new BlockedArray[Double](width, height, data)
+
+  def texel(level: Int, s: Int, t: Int): Double = {
+    val l = pyramid(level)
+
+    var x: Int = s
+    var y: Int = t
+
+    if (wrapMode == TEXTURE_REPEAT) {
+      if (x < 0) x += l.width
+      if (y < 0) y += l.height
+      x %= l.width
+      y %= l.height
+    } else if (wrapMode == TEXTURE_CLAMP) {
+      x = math.max(0, math.min(x, l.width-1))
+      y = math.max(0, math.min(y, l.height-1))
+    } else if (x < 0 || x >= l.width || y < 0 || t >= l.height) {
+      return 0
+    }
+
+    l(x, y)
+  }
+
+  def triangle(level: Int, x: Double, y: Double): Double = {
+    val s = x * pyramid(level).width - 0.5
+    val t = y * pyramid(level).height - 0.5
+    val s0 = s.toInt
+    val t0 = t.toInt
+    val ds = s - s0
+    val dt = t - t0
+
+    texel(level, s0, t0) * ((1-ds) * (1-dt)) +
+      texel(level, s0, t0+1) * ((1-ds) * dt) +
+      texel(level, s0+1, t0) * (ds * (1-dt)) +
+      texel(level, s0+1, t0+1) * (ds * dt)
+  }
+
+  def lookUp(
+    s: Double, t: Double,
+    ds0: Double, dt0: Double, ds1: Double, dt1: Double
+  ): Double = triangle(0, s, t)
+}
+
 class BlockedArray[T : Manifest](val width: Int, val height: Int, val data: Array[T]) {
   def this(width: Int, height: Int) = this(width, height, new Array[T](width * height))
 
@@ -242,6 +292,86 @@ object MipMap {
     new SpectrumMipMap(width, height, resampledImage, dt, ma, wm)
   }
 
+  def createFloat(
+    xRes: Int, yRes: Int, data: Array[Double],
+    dt: Boolean = false, ma: Double = 8,
+    wm: ImageWrap = TEXTURE_REPEAT): FloatMipMap = {
+
+    val width = nextPOT(xRes)
+    val height = nextPOT(yRes)
+
+    if (width==xRes && height==yRes) return new FloatMipMap(xRes, yRes, data, dt, ma, wm)
+
+    val resampledImage = new Array[Double](width * height)
+    var x = 0
+    var y = 0
+    var j = 0
+
+    y = 0
+    val xWeights = resampleWeights(xRes, width)
+    while (y < yRes) {
+      x = 0
+      while (x < width) {
+        resampledImage(y*width+x) = 0
+        j = 0
+        while (j < 4) {
+          var origX = xWeights(x).firstTexel + j
+          if (wm == TEXTURE_REPEAT) {
+            if (origX < 0) origX += xRes
+            else origX %= xRes
+          } else if (wm == TEXTURE_CLAMP) {
+            origX = math.max(0, math.min(origX, xRes - 1))
+          }
+
+          if (origX >= 0 && origX < xRes) {
+            resampledImage(y*width+x) =
+              resampledImage(y*width+x) + (data(y*xRes+origX) * xWeights(x).weight(j))
+          }
+          j += 1
+        }
+        x += 1
+      }
+      y += 1
+    }
+
+    val yWeights = resampleWeights(yRes, height)
+    val workData = new Array[Double](height)
+
+    x = 0
+    while (x < width) {
+      y = 0
+      while (y < height) {
+        workData(y) = 0
+
+        j = 0
+        while (j < 4) {
+          var offset = yWeights(y).firstTexel + j
+          if (wm == TEXTURE_REPEAT) {
+            if (offset < 0) offset += yRes
+            else offset %= yRes
+          } else if (wm == TEXTURE_CLAMP) {
+            offset = math.max(0, math.min(offset, yRes-1))
+          }
+
+          if (offset >= 0 && offset < yRes) {
+            workData(y) = workData(y) + (resampledImage(offset*width + x) * yWeights(y).weight(j))
+          }
+
+          j += 1
+        }
+        y += 1
+      }
+
+      y = 0
+      while (y < height) {
+        resampledImage(y*width + x) = math.max(0, workData(y))
+        y += 1
+      }
+      x += 1
+    }
+
+    new FloatMipMap(width, height, resampledImage, dt, ma, wm)
+  }
 }
 
 sealed trait ImageWrap

@@ -310,7 +310,16 @@ object SceneFactory {
         new ConstantTexture[Double](params.getOneOr("value", 1.0))
       }
 
-      /*case "imagemap" => {
+      case "checkerboard" => {
+        new Checkerboard[Double](
+          make2DMapping(params.getOneOr("mapping", "uv"), t2w, params),
+          params.getFloatTexture("tex1", 0),
+          params.getFloatTexture("tex2", 1),
+          AAMethod.fromString(params.getOneOr[String]("aamode", "closedform"))
+        )
+      }
+
+      case "imagemap" => {
         val mapping = make2DMapping(params.getOneOr("mapping", "uv"), t2w, params)
         val texInfo = TextureInfo(
           params.getOne[String]("filename").getOrElse(throw new NotImplementedError("File name is required")),
@@ -320,8 +329,8 @@ object SceneFactory {
           params.getOneOr("scale", 1.0),
           params.getOneOr("gamma", 1.0)
         )
-        ImageTexture.createFloatImage(mapping, texInfo)
-      }*/
+        new ImageFloatTexture(mapping, texInfo)
+      }
 
       case _ => throw new IllegalArgumentException(s"Unknown float texture class $textureClass")
     }
