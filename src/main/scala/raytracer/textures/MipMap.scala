@@ -15,7 +15,8 @@ class SpectrumMipMap(
   val nLevels = 1 + math.round(math.log(math.max(width, height)) / math.log(2)).toInt
   val pyramid = new Array[BlockedArray[Spectrum]](nLevels)
 
-  init()
+  pyramid(0) = new BlockedArray[Spectrum](width, height, data)
+  // init() - not needed until we actually get differentials
 
   def texel(level: Int, s: Int, t: Int): Spectrum = {
     val l = pyramid(level)
@@ -39,7 +40,6 @@ class SpectrumMipMap(
   }
 
   def init(): Unit = {
-    pyramid(0) = new BlockedArray[Spectrum](width, height, data)
 
     var i = 1
     while (i < nLevels) {
@@ -63,8 +63,7 @@ class SpectrumMipMap(
     }
   }
 
-  def triangle(inLevel: Int, x: Double, y: Double): Spectrum = {
-    val level = math.max(0, math.min(inLevel, nLevels-1))
+  def triangle(level: Int, x: Double, y: Double): Spectrum = {
     val s = x * pyramid(level).width - 0.5
     val t = y * pyramid(level).height - 0.5
     val s0 = s.toInt
@@ -96,12 +95,13 @@ class SpectrumMipMap(
     s: Double, t: Double,
     ds0: Double, dt0: Double, ds1: Double, dt1: Double
   ): Spectrum = {
-    lookUp(s, t,
+    triangle(0, s, t)
+    /*lookUp(s, t,
       2 * math.max(
         math.max(math.abs(ds0), math.abs(dt0)),
         math.max(math.abs(ds1), math.abs(dt1))
       )
-    )
+    )*/
     // TODO: Write elliptically weighted averaging algorithm
   }
 }
