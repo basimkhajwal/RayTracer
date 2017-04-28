@@ -5,11 +5,6 @@ package raytracer
   */
 case class Spectrum(r: Double, g: Double, b: Double) {
 
-  /*
-  assert(r >= 0)
-  assert(g >= 0)
-  assert(b >= 0)*/
-
   def this(colour: Double) = this(colour, colour, colour)
 
   def toRGBInt: Int = (b*255.0).toInt + ((g*255.0).toInt << 8) + ((r*255.0).toInt << 16)
