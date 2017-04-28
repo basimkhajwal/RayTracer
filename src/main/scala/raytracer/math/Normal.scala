@@ -8,9 +8,14 @@ case class Normal(x: Double, y: Double, z: Double) {
   require(!y.isNaN)
   require(!z.isNaN)
 
-  lazy val mag2 = x*x + y*y + z*z
-  lazy val mag = Math.sqrt(mag2)
-  lazy val nor = this / mag
+  def mag2 = x*x + y*y + z*z
+  def mag = Math.sqrt(mag2)
+  def nor = this / mag
+
+  def unary_- = Normal(-x, -y, -z)
+
+  def faceForward(v: Vec3) = if ((v dot this) > 0) this else -this
+  def faceForward(n: Normal) = if ((n dot this) > 0) this else -this
 
   def +(that: Normal) = Normal(x + that.x, y + that.y, z + that.z)
   def -(that: Normal) = Normal(x - that.x, y - that.y, z - that.z)

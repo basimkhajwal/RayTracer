@@ -9,9 +9,21 @@ case class Transform(mat: Mat4, matInv: Mat4) {
 
   lazy val swapsHandedness: Boolean = mat.swapsHandedness
 
-  def apply(vec: Vec3): Vec3 = mat * vec
+  def apply(vec: Vec3): Vec3 = {
+    Vec3(
+      mat.data(0)*vec(0)+mat.data(1)*vec(1)+mat.data(2)*vec(2),
+      mat.data(4)*vec(0)+mat.data(5)*vec(1)+mat.data(6)*vec(2),
+      mat.data(8)*vec(0)+mat.data(9)*vec(1)+mat.data(10)*vec(2)
+    )
+  }
 
-  def apply(point: Point): Point = mat * point
+  def apply(point: Point): Point = {
+    Point(
+      mat.data(0)*point(0)+mat.data(1)*point(1)+mat.data(2)*point(2)+mat.data(3),
+      mat.data(4)*point(0)+mat.data(5)*point(1)+mat.data(6)*point(2)+mat.data(7),
+      mat.data(8)*point(0)+mat.data(9)*point(1)+mat.data(10)*point(2)+mat.data(11)
+    )
+  }
 
   def apply(n: Normal): Normal = {
     val m = matInv.data
@@ -33,8 +45,8 @@ case class Transform(mat: Mat4, matInv: Mat4) {
     }
     bounds
   }
-  def *(that: Transform): Transform = Transform(mat * that.mat, that.matInv * matInv)
 
+  def *(that: Transform): Transform = Transform(mat * that.mat, that.matInv * matInv)
 }
 
 object Transform {
@@ -106,57 +118,6 @@ object Transform {
     data(15) = 1
 
     val m = Mat4(data)
-    Transform(m, m.transpose)
-
-    /* Un-optimised form
-
-    // Rotate into xy plane
-    val t1 = Transform.rotateY(math.toDegrees(math.atan2(a.z, a.x)))
-
-    // Rotate onto x axis
-    val l1 = math.sqrt(a.x*a.x + a.z*a.z)
-    val t2 = Transform.rotateZ(360-math.toDegrees(math.atan2(a.y, l1)))
-    val t3 = Transform.rotateX(angle)
-
-    t1.inverse * t2.inverse * t3 * t2 * t1
-    * */
-  }
-
-  def rotate(rx: Double, ry: Double, rz: Double): Transform = rotateX(rx) * rotateY(ry) * rotateZ(rz)
-
-  def rotateX(t: Double): Transform = {
-    val c = math.cos(math.toRadians(t))
-    val s = math.sin(math.toRadians(t))
-    val m = Mat4(Array(
-      1, 0, 0, 0,
-      0, c, -s, 0,
-      0, s, c, 0,
-      0, 0, 0, 1
-    ))
-    Transform(m, m.transpose)
-  }
-
-  def rotateY(t: Double): Transform = {
-    val c = math.cos(math.toRadians(t))
-    val s = math.sin(math.toRadians(t))
-    val m = Mat4(Array(
-      c, 0, s, 0,
-      0, 1, 0, 0,
-      -s, 0, c, 0,
-      0, 0, 0, 1
-    ))
-    Transform(m, m.transpose)
-  }
-
-  def rotateZ(t: Double): Transform = {
-    val c = math.cos(math.toRadians(t))
-    val s = math.sin(math.toRadians(t))
-    val m = Mat4(Array(
-      c, -s, 0, 0,
-      s, c, 0, 0,
-      0, 0, 1, 0,
-      0, 0, 0, 1
-    ))
     Transform(m, m.transpose)
   }
 

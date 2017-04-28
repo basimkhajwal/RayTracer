@@ -34,16 +34,16 @@ case class Vec3(x: Double, y: Double, z: Double) {
   require(!y.isNaN)
   require(!z.isNaN)
 
-  lazy val mag2 = x*x + y*y + z*z
-  lazy val mag = Math.sqrt(mag2)
-  lazy val nor = this / mag
+  def mag2() = x*x + y*y + z*z
+  def mag() = Math.sqrt(mag2)
+  def nor() = this / mag
 
   def +(that: Vec3): Vec3 = Vec3(x + that.x, y + that.y, z + that.z)
   def -(that: Vec3): Vec3 = Vec3(x - that.x, y - that.y, z - that.z)
 
   def apply(index: Int): Double = if (index == 0) x else if (index == 1) y else z
 
-  lazy val unary_- = Vec3(-x, -y, -z)
+  def unary_-() = Vec3(-x, -y, -z)
 
   def /(sf: Double): Vec3 = this * (1 / sf)
   def *(sf: Double): Vec3 = Vec3(x * sf, y * sf, z * sf)

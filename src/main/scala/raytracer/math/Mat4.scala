@@ -6,7 +6,7 @@ package raytracer.math
 case class Mat4(data: Array[Double]) {
   require(data.length == 16, "All 16 elements must be specified")
 
-  lazy val inv: Mat4 = {
+  def inv(): Mat4 = {
 
     val inv: Array[Double] = new Array[Double](16)
 
@@ -80,7 +80,7 @@ case class Mat4(data: Array[Double]) {
     Mat4( inv map (_ / det))
   }
 
-  lazy val det: Double = {
+  def det(): Double = {
     data(12) * data(9)  * data(6)  * data(3)   -  data(8) * data(13) * data(6)  * data(3)   -
     data(12) * data(5)  * data(10) * data(3)   +  data(4) * data(13) * data(10) * data(3)   +
     data(8)  * data(5)  * data(14) * data(3)   -  data(4) * data(9)  * data(14) * data(3)   -
@@ -95,49 +95,24 @@ case class Mat4(data: Array[Double]) {
     data(4)  * data(1)  * data(10) * data(15)  +  data(0) * data(5)  * data(10) * data(15)
   }
 
-  lazy val transpose =
+  def transpose(): Mat4 =
     Mat4(
       Array(0,4,8,12,1,5,9,13,2,6,10,14,3,7,11,15) map (data(_))
     )
-  lazy val innerDet = {
+
+  val innerDet = {
     (data(0) * (data(5)*data(10) - data(6)*data(9))) -
     (data(1) * (data(4)*data(10) - data(6)*data(8))) +
     (data(2) * (data(4)*data(9) - data(5)*data(8)))
   }
+  val swapsHandedness = innerDet < 0
 
-  lazy val swapsHandedness = innerDet < 0
-
-  @inline
-  final def apply(r: Int, c: Int): Double = {
-    require(r >= 0 && r < 4, "Row index out of bounds")
-    require(c >= 0 && c < 4, "Column index out of bounds")
-    data(r*4+c)
-  }
-
-  def *(vec: Vec3): Vec3 = {
-    Vec3(
-      data(0)*vec(0)+data(1)*vec(1)+data(2)*vec(2),
-      data(4)*vec(0)+data(5)*vec(1)+data(6)*vec(2),
-      data(8)*vec(0)+data(9)*vec(1)+data(10)*vec(2)
-    )
-  }
-
-  def *(point: Point): Point = {
-    Point(
-      data(0)*point(0)+data(1)*point(1)+data(2)*point(2)+data(3),
-      data(4)*point(0)+data(5)*point(1)+data(6)*point(2)+data(7),
-      data(8)*point(0)+data(9)*point(1)+data(10)*point(2)+data(11)
-    )
-  }
+  def apply(r: Int, c: Int) = this.data(r*4+c)
 
   def *(that: Mat4): Mat4 = Mat4(
       (
-        for (r <- 0 to 3; c <- 0 to 3) yield (0 to 3).map(i => this(r, i)*that(i, c)).sum
+        for (r <- 0 to 3; c <- 0 to 3) yield (0 to 3).map(i => data(r*4+i)*that.data(i*4+c)).sum
       ).toArray)
-
-  def *(sf: Double): Mat4 = Mat4(data map (_ * sf))
-  def /(sf: Double): Mat4 = Mat4(data map (_ / sf))
-
 }
 
 object Mat4 {
@@ -148,15 +123,9 @@ object Mat4 {
     0, 0, 1, 0,
     0, 0, 0, 1.0
   )) {
-    override lazy val inv = this
-    override lazy val det = 1
-    override lazy val innerDet = 1
-    override lazy val swapsHandedness = false
-
-    override def *(that: Mat4) = that
-
-    override def *(that: Point) = that
-
-    override def *(that: Vec3) = that
+    override def inv = this
+    override def det = 1
+    override val innerDet = 1
+    override val swapsHandedness = false
   }
 }
