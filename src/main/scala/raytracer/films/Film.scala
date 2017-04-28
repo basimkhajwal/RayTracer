@@ -60,7 +60,7 @@ abstract class Film(
     while (x <= x1) {
       var y = y0
       while (y <= y1) {
-        imageData(x)(y).add(l, filter.evaluate(x - imageX, y - imageY))
+        imageData(x)(y).add(l.pow(1/2.2), filter.evaluate(x - imageX, y - imageY))
         y += 1
       }
       x += 1
