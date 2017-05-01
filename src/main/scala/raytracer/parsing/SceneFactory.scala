@@ -422,7 +422,17 @@ object SceneFactory {
         val box = BBox.fromPoints(p1, p2)
         val points = (0 to 7) map (box(_))
 
-        ???
+        val indices = Array(
+          0, 1, 3, 0, 2, 3, // Left
+          2, 6, 7, 2, 3, 7, // Top
+          1, 5, 7, 1, 3, 7, // Back
+          4, 5, 7, 4, 6, 7, // Right
+          0, 2, 6, 0, 4, 6, // Front
+          0, 4, 5, 0, 1, 5 // Bottom
+        )
+
+        val mesh = new TriangleMesh(indices, points.toArray, objToWorld, null, null)
+        mesh.triangles
       }
 
       case _ => throw new IllegalArgumentException(s"Unimplemented shape type $name")
