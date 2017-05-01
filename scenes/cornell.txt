@@ -1,0 +1,55 @@
+Sampler "random" "integer pixelsamples" [1]
+Scale -1 1 1
+Translate -278 -273 500
+Camera "perspective" "float fov" 55
+Film "screen" "integer xresolution" 800 "integer yresolution" 800
+
+WorldBegin
+AttributeBegin
+
+    Material "matte" "color Kd" [.5 .5 .5]
+# AreaLightSource "diffuse" "color L" [100 100 100 ]
+Translate 278 273 -610
+Shape "sphere" "float radius" [100]
+
+    Translate 278 278 279.500000
+    LightSource "point" "color I" [412300 341100 298600 ] "color scale" [4 4 4]
+
+#Rotate 180 1 0 0
+#LightSource "infinite" "string mapname" "textures/grace-new_latlong.exr"
+#    "integer nsamples" [8]
+AttributeEnd
+
+AttributeBegin
+    Material "matte" "color Kd" [.5 .5 .5]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [550 0 0 0 0 0 0 0 560 550 0 560 ]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [560 550 0 560 550 560 0 550 560 0 550 0 ]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [550 0 560 0 0 560 0 550 560 560 550 560 ]
+        Material "matte" "color Kd" [0 .9 0]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [0 0 560 0 0 0 0 550 0 0 550 560 ]
+        Material "matte" "color Kd" [.9  0 0]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [550 0 0 550 0 560 560 550 560 560 550 0 ]
+AttributeEnd
+############################################################################
+# Short Box Definition
+############################################################################
+AttributeBegin
+    Material "plastic" "color Kd" [.7 .7 .7]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [130 165 65 82 165 225 240 165 272 290 165 114 ]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [290 0 114 290 165 114 240 165 272 240 0 272 ]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [130 0 65 130 165 65 290 165 114 290 0 114 ]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [82 0 225 82 165 225 130 165 65 130 0 65 ]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [240 0 272 240 165 272 82 165 225 82 0 225 ]
+AttributeEnd
+############################################################################
+# Tall Box Definition
+############################################################################
+AttributeBegin
+    Material "uber" "color Kd"  [.8 .5 .5] "color Ks" [1 1 1] "color Kr" [0.3 0.3 0.3] "float roughness" 0.1
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [423 330 247 265 330 296 314 330 456 472 330 406 ]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [423 0 247 423 330 247 472 330 406 472 0 406 ]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [472 0 406 472 330 406 314 330 456 314 0 456 ]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [314 0 456 314 330 456 265 330 296 265 0 296 ]
+    Shape "trianglemesh"  "integer indices" [0 2 1 0 3 2 ] "point P" [265 0 296 265 330 296 423 330 247 423 0 247 ]
+AttributeEnd
+WorldEnd
