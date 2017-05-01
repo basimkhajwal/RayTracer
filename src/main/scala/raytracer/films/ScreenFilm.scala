@@ -15,7 +15,7 @@ class ScreenFilm(
   extends Film(filter, xRes, yRes, cw) {
 
   override def saveImage(): Unit = {
-    val frame = new JFrame("Sphere Render Test")
+    val frame = new JFrame("Ray Tracer")
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
     frame.setResizable(false)
     frame.add(new CustomRenderer(getBufferedImage(), new Dimension(width, height)))
