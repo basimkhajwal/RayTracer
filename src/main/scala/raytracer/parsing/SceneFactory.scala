@@ -253,6 +253,18 @@ object SceneFactory {
         )
       }
 
+      case "uber" => {
+        new UberMaterial(
+          textureParams.getSpectrumTexture("kd", Spectrum(0.25, 0.25, 0.25)),
+          textureParams.getSpectrumTexture("ks", Spectrum(0.25, 0.25, 0.25)),
+          textureParams.getSpectrumTexture("kr", Spectrum.BLACK),
+          textureParams.getSpectrumTexture("kt", Spectrum.BLACK),
+          textureParams.getFloatTexture("roughness", 0.1),
+          textureParams.getFloatTexture("index", 1.5),
+          textureParams.getSpectrumTexture("opacity", Spectrum.WHITE)
+        )
+      }
+
       case _ => throw new IllegalArgumentException(s"Un-implemented material type $matType")
     }
   }
