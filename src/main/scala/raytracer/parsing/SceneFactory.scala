@@ -357,7 +357,7 @@ object SceneFactory {
     }
   }
 
-  def makeShape(name: String, objToWorld: Transform, params: ParamSet): List[Shape] = reportUnused(params){
+  def makeShape(name: String, objToWorld: Transform, params: ParamSet): Seq[Shape] = reportUnused(params){
     name match {
 
       case "sphere" => {
@@ -381,10 +381,48 @@ object SceneFactory {
 
         if (normals != null)
           require(normals.length == indices.length, s"Incorrect number of normals ${normals.length}")
+        if (uvs != null)
+          require(uvs.length == indices.length, s"Incorrect number of uvs ${uvs.length}")
 
         val mesh = new TriangleMesh(indices.toArray, points.toArray, objToWorld, normals, uvs)
+        mesh.triangles
+      }
 
-        mesh.triangles.toList
+      case "quadmesh" => {
+        val indices = params.get[Int]("indices")
+          .getOrElse(throw new IllegalArgumentException("Indices parameter required for quad mesh"))
+
+        val points = params.get[Point]("P")
+          .getOrElse(throw new IllegalArgumentException("Point (P) parameter required for quad mesh"))
+
+        require(indices.length % 4 == 0, "Indices must specify 4 points for each quad")
+
+        val normals = params.get[Normal]("N").map(_.toArray).orNull
+        val uvs = params.get[Double]("uv").map(_.toArray).orNull
+
+        if (normals != null)
+          require(normals.length == indices.length, s"Incorrect number of normals ${normals.length}")
+
+        if (uvs != null)
+          require(uvs.length == indices.length, s"Incorrect number of uvs ${uvs.length}")
+
+        // Map quad indices to triangle indices
+        val triIndices = indices.grouped(4).flatMap(quad =>
+          List(quad(0), quad(1), quad(3), quad(0), quad(2), quad(3)))
+
+        val mesh = new TriangleMesh(triIndices.toArray, points.toArray, objToWorld, normals, uvs)
+        mesh.triangles
+      }
+
+      case "cuboid" => {
+        val p1 = params.getOne[Point]("p1").orNull
+        val p2 = params.getOne[Point]("p2").orNull
+        require(p1 != null && p2 != null, "Cuboid needs p1 and p2 defined")
+
+        val box = BBox.fromPoints(p1, p2)
+        val points = (0 to 7) map (box(_))
+
+        ???
       }
 
       case _ => throw new IllegalArgumentException(s"Unimplemented shape type $name")

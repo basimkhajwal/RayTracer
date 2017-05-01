@@ -1,9 +1,9 @@
 LookAt 0 10 -10 0 0 0 0 1 0
 Camera "perspective" "float fov" [45.000000 ] "float screenwindow" [-1.000000 1.000000 -1.000000 1.000000] "float lensradius" [0.5] "float focaldistance" [13]
-Film "image" "integer xresolution" 800 "integer yresolution" 800 "integer width" 800 "string filename" "progress/27.png" "integer height" 800
+Film "screen" "integer xresolution" 600 "integer yresolution" 600 "integer width" 800 "string filename" "progress/27.png" "integer height" 800
 
 Integrator "whitted" "integer maxdepth" [5]
-Sampler "stratified"
+Sampler "random" "integer pixelsamples" 1
 Renderer "sampler" "integer taskcount" [5]
 Accelerator "grid"
 Filter "triangle"
@@ -19,7 +19,7 @@ LightSource "spot" "rgb I" [400 400 400] "float coneangle" 30 "float conedeltaan
 #Texture "smiley" "spectrum" "checkerboard" "color tex1" [1 0 0] "float uscale" [10.0] "float vscale" [10.0]
 Texture "smiley" "spectrum" "imagemap" "string filename" "scenes/boards_small.png" "float uscale" 2 "float vscale" 2
 Material "plastic" "texture Kd" "smiley" "color Ks" [.5 .5 .5] "float roughness" [.1]
-Shape "trianglemesh" "integer indices" [ 0 2 3 0 1 3 ] "point P" [ -10 0 -10 10 0 -10 -10 0 10 10 0 10 ]
+Shape "quadmesh" "integer indices" [ 0 1 2 3 ] "point P" [ -10 0 -10 10 0 -10 -10 0 10 10 0 10 ]
 
 AttributeBegin
     Scale 0.7 0.7 0.7
