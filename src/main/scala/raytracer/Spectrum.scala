@@ -33,6 +33,8 @@ case class Spectrum(r: Double, g: Double, b: Double) {
   def clamp(max: Double = 1): Spectrum = Spectrum(clamp(r, max), clamp(g, max), clamp(b, max))
 
   def isBlack(epsilon: Double = 0): Boolean = r <= epsilon && g <= epsilon && b <= epsilon
+
+  def isWhite(epsilon: Double = 0): Boolean = r >= 1-epsilon && g >= 1-epsilon && b >= 1-epsilon
 }
 
 object Spectrum {
