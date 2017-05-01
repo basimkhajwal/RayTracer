@@ -10,7 +10,7 @@ import raytracer.materials._
 import raytracer.math._
 import raytracer.primitives.{Aggregate, GridAccelerator, Primitive}
 import raytracer.renderers.{Renderer, SamplerRenderer}
-import raytracer.sampling.{RandomSampler, Sampler}
+import raytracer.sampling.{RandomSampler, Sampler, StratifiedSampler}
 import raytracer.shapes.{Shape, Sphere, Triangle, TriangleMesh}
 import raytracer.textures._
 
@@ -56,13 +56,22 @@ object SceneFactory {
   }
 
   def makeSampler(samplerType: String, params: ParamSet, camera: Camera): Sampler = reportUnused(params) {
+    val (xs, xe, ys, ye) = camera.film.sampleExtent
+
     samplerType match {
 
       case "random" => {
         val samplesPerPixel = params.getOneOr[Int]("pixelsamples", 4)
-        val (xs, xe, ys, ye) = camera.film.sampleExtent
 
         new RandomSampler(xs, xe, ys, ye, samplesPerPixel)
+      }
+
+      case "stratified" => {
+        val jitter = params.getOneOr[Boolean]("jitter", true)
+        val xSamples = params.getOneOr[Int]("xsamples", 2)
+        val ySamples = params.getOneOr[Int]("ysamples", 2)
+
+        new StratifiedSampler(xs, xe, ys, ye, xSamples, ySamples, jitter)
       }
 
       case _ => throw new IllegalArgumentException(s"Un-implemented sampler type $samplerType")
