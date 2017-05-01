@@ -245,9 +245,10 @@ class SceneBuilder {
   final def shape(name: String, params: ParamSet): Unit = {
     require(worldSection, "Shapes can only be defined in the world section")
 
-    val shape = SceneFactory.makeShape(name, currentTransform, params)
+    val shapes = SceneFactory.makeShape(name, currentTransform, params)
     val mat = graphicsState.createMaterial(params)
-    primitives ::= new GeometricPrimitive(shape, mat)
+
+    for (shape <- shapes) primitives ::= new GeometricPrimitive(shape, mat)
 
     Reporter.primitive.report()
   }

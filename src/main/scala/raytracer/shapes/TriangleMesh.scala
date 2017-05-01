@@ -29,21 +29,6 @@ class TriangleMesh(
 
   override val objectBounds: BBox = triangles.foldLeft(BBox.empty)((a,b) => a.union(b.objectBounds))
 
-  override def intersect(ray: Ray): Option[(DifferentialGeometry, Double)] = {
-
-    var minT = Double.PositiveInfinity
-    var minIsect: (DifferentialGeometry, Double) = null
-
-    var i = 0
-    while (i < triangles.length) {
-      val isect = triangles(i).intersect(ray).orNull
-      if (isect != null && isect._2 < minT) {
-        minT = isect._2
-        minIsect = isect
-      }
-      i += 1
-    }
-
-    Option(minIsect)
-  }
+  // Shouldn't be called
+  override def intersect(ray: Ray): Option[(DifferentialGeometry, Double)] = ???
 }

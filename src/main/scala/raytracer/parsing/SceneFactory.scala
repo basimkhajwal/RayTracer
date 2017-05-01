@@ -336,13 +336,13 @@ object SceneFactory {
     }
   }
 
-  def makeShape(name: String, objToWorld: Transform, params: ParamSet): Shape = reportUnused(params){
+  def makeShape(name: String, objToWorld: Transform, params: ParamSet): List[Shape] = reportUnused(params){
     name match {
 
       case "sphere" => {
         val radius = params.getOneOr[Double]("radius", 1)
 
-        Sphere(radius, objToWorld)
+        Sphere(radius, objToWorld) :: Nil
       }
 
       case "trianglemesh" => {
@@ -361,7 +361,9 @@ object SceneFactory {
         if (normals != null)
           require(normals.length == indices.length, s"Incorrect number of normals ${normals.length}")
 
-        new TriangleMesh(indices.toArray, points.toArray, objToWorld, normals, uvs)
+        val mesh = new TriangleMesh(indices.toArray, points.toArray, objToWorld, normals, uvs)
+
+        mesh.triangles.toList
       }
 
       case _ => throw new IllegalArgumentException(s"Unimplemented shape type $name")
