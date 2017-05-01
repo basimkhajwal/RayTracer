@@ -1,0 +1,61 @@
+LookAt 3 3.5 -8 0 0 0 0 1 0
+Camera "perspective" "float fov" 45 "float focaldistance" 8.5 "float lensradius" 0.4
+Film "image" "integer xresolution" 800 "integer yresolution" 600 "string filename" "progress/31.png"
+Sampler "stratified" "integer xsamples" 2 "integer ysamples" 2
+PixelFilter "mitchell"
+
+WorldBegin
+
+LightSource "spot" "color I" [120 120 120] "point from" [-10 10 -10] "point to" [0 0 0]
+            "float coneangle" 50 "float conedeltaangle" 50
+LightSource "spot" "color I" [150 150 150] "point from" [-10 10 10] "point to" [0 0 0]
+            "float coneangle" 50 "float conedeltaangle" 50
+LightSource "spot" "color I" [150 150 150] "point from" [10 10 -10] "point to" [0 0 0]
+            "float coneangle" 50 "float conedeltaangle" 50
+LightSource "spot" "color I" [120 120 120] "point from" [10 10 10] "point to" [0 0 0]
+            "float coneangle" 50 "float conedeltaangle" 50
+
+Texture "floor" "spectrum" "checkerboard" "float uscale" 80 "float vscale" 80
+        "color tex1" [0.2 0.2 0.2] "color tex2" [0.1 0.1 0.1]
+
+Material "matte" "texture Kd" "floor"
+Shape "cuboid" "point p1" [-90 -1 -90] "point p2" [90 0 90]
+
+Material "uber" "color Ks" [0.1 0.1 0.1] "color Kr" [0.4 0.4 0.4] "float roughness" 0.05
+
+AttributeBegin
+Translate 0 1 0
+Shape "sphere" "color Kd" [0.4 0.4 0.4]
+AttributeEnd
+
+AttributeBegin
+Translate 3 1.8 2
+Shape "sphere" "float radius" 1.8 "color Kd" [1 0 0]
+AttributeEnd
+
+AttributeBegin
+Translate -2 1.2 3
+Shape "sphere" "float radius" 1.2 "color Kd" [0.5 0 0]
+AttributeEnd
+
+AttributeBegin
+Translate -3 0.8 1
+Shape "sphere" "float radius" 0.8 "color Kd" [0 0 0.5]
+AttributeEnd
+
+AttributeBegin
+Translate 3.5 0.6 -1
+Shape "sphere" "float radius" 0.6 "color Kd" [0.54 0.17 0.89]
+AttributeEnd
+
+AttributeBegin
+Translate 2.5 0.75 -2
+Shape "sphere" "float radius" 0.75 "color Kd" [0.5 0 0.5]
+AttributeEnd
+
+AttributeBegin
+Translate 0 1.1 -4
+Shape "sphere" "float radius" 1.1 "color Kd" [0.83 0.686 0.216]
+AttributeEnd
+
+WorldEnd
