@@ -41,16 +41,24 @@ class StratifiedSampler(
 
       stratifiedSample2D(imageSamples)
       stratifiedSample2D(lensSamples)
+
+      var i = 0
+      while (i < samplesPerPixel) {
+        imageSamples(2*i) += xPos
+        imageSamples(2*i+1) += yPos
+        i += 1
+      }
     }
 
     // TODO - Implement latin hypercube sampling for 1D and 2D sampling (assumed 0 for now)
-
-    samplePos += 1
-    Sample(
+    val sample = Sample(
       imageSamples(samplePos*2), imageSamples(samplePos*2+1),
       lensSamples(samplePos*2), lensSamples(samplePos*2+1),
       Array.emptyDoubleArray, Array.emptyDoubleArray
     )
+    samplePos += 1
+
+    sample
   }
 
   val OneMinusEpsilon = 1 - 1e-10
