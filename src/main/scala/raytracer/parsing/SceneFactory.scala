@@ -235,7 +235,7 @@ object SceneFactory {
       }
 
       case "mirror" => {
-        new MirrorMaterial(textureParams.getSpectrumTexture("r", Spectrum.WHITE))
+        new MirrorMaterial(textureParams.getSpectrumTexture("kr", Spectrum.WHITE))
       }
 
       case "metal" => {
@@ -380,9 +380,9 @@ object SceneFactory {
         val uvs = params.get[Double]("uv").map(_.toArray).orNull
 
         if (normals != null)
-          require(normals.length == indices.length, s"Incorrect number of normals ${normals.length}")
+          require(normals.length == points.length, s"Incorrect number of normals ${normals.length}")
         if (uvs != null)
-          require(uvs.length == indices.length, s"Incorrect number of uvs ${uvs.length}")
+          require(uvs.length == points.length*2, s"Incorrect number of uvs ${uvs.length}")
 
         val mesh = new TriangleMesh(indices.toArray, points.toArray, objToWorld, normals, uvs)
         mesh.triangles
@@ -401,10 +401,10 @@ object SceneFactory {
         val uvs = params.get[Double]("uv").map(_.toArray).orNull
 
         if (normals != null)
-          require(normals.length == indices.length, s"Incorrect number of normals ${normals.length}")
+          require(normals.length == points.length, s"Incorrect number of normals ${normals.length}")
 
         if (uvs != null)
-          require(uvs.length == indices.length, s"Incorrect number of uvs ${uvs.length}")
+          require(uvs.length == points.length*2, s"Incorrect number of uvs ${uvs.length}")
 
         // Map quad indices to triangle indices
         val triIndices = indices.grouped(4).flatMap(quad =>
@@ -423,12 +423,12 @@ object SceneFactory {
         val points = (0 to 7) map (box(_))
 
         val indices = Array(
-          0, 1, 3, 0, 2, 3, // Left
-          2, 6, 7, 2, 3, 7, // Top
-          1, 5, 7, 1, 3, 7, // Back
-          4, 5, 7, 4, 6, 7, // Right
-          0, 2, 6, 0, 4, 6, // Front
-          0, 4, 5, 0, 1, 5 // Bottom
+          0, 1, 3, 0, 3, 2, // Left
+          2, 7, 6, 2, 3, 7, // Top
+          1, 5, 7, 1, 7, 3, // Back
+          4, 6, 7, 4, 7, 5, // Right
+          0, 2, 6, 0, 6, 4, // Front
+          0, 4, 5, 0, 5, 1 // Bottom
         )
 
         val mesh = new TriangleMesh(indices, points.toArray, objToWorld, null, null)
