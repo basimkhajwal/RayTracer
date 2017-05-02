@@ -1,0 +1,61 @@
+LookAt -8 8 -9 -1 1 0 0 1 0
+# LookAt -3 3 -5 -1 1 0 0 1 0
+Camera "perspective" "float fov" 70 "float focaldistance" 6.6 "float lensradius" 0
+        "string filename" "progress/31.png"
+Film "image" "integer xresolution" 1600 "integer yresolution" 1200
+Sampler "stratified"
+Integrator "whitted" "integer maxdepth" 5
+PixelFilter "triangle"
+
+WorldBegin
+
+LightSource "spot" "color I" [120 120 120] "point from" [-4 6 -4] "point to" [0 0 0]
+            "float coneangle" 90 "float conedeltaangle" 60
+LightSource "spot" "color I" [120 120 120] "point from" [-4 6 4] "point to" [0 0 0]
+            "float coneangle" 90 "float conedeltaangle" 60
+LightSource "spot" "color I" [120 120 120] "point from" [4 6 -4] "point to" [0 0 0]
+            "float coneangle" 90 "float conedeltaangle" 60
+LightSource "spot" "color I" [120 120 120] "point from" [4 6 4] "point to" [0 0 0]
+            "float coneangle" 90 "float conedeltaangle" 60
+
+AttributeBegin
+Translate -7 2 -7
+LightSource "point" "color I" [20 20 20]
+AttributeEnd
+
+AttributeBegin
+Translate 0 1 7
+LightSource "point" "color I" [10 10 10]
+AttributeEnd
+
+AttributeBegin
+Translate 7 1 0
+LightSource "point" "color I" [10 10 10]
+AttributeEnd
+
+Shape "cuboid" "point p1" [-10 -0.1 -10] "point p2" [10 20 10] "color Kd" [0.5 0.5 0.5]
+
+Texture "floor" "spectrum" "checkerboard" "color tex1" [0 0.4 0] "color tex2" [0 0.2 0]
+        "float uscale" 4 "float vscale" 4
+
+Material "matte" "texture kd" "floor"
+Shape "trianglemesh" "integer indices" [0 3 2 0 2 1]
+      "point P" [-6 0 -6    6 0 -6    6 0 6   -6 0 6] "float uv" [0 0 1 0 1 1 0 1]
+
+Material "mirror" "color kr" [0.5 0.5 0.5]
+Shape "cuboid" "point p1" [6 0 6] "point p2" [6.1 4 -6.1]
+Shape "cuboid" "point p1" [-6 0 6] "point p2" [6 4 6.1]
+Shape "cuboid" "point p1" [-6 0 -6] "point p2" [6 4 -6.1]
+Shape "cuboid" "point p1" [-6 0 6] "point p2" [-6.1 4 -6]
+
+Material "matte" "color kd" [0.5 0.5 0.5]
+Shape "cuboid" "point p1" [6.01 0 6.01] "point p2" [6.11 4.01 -6.01]
+Shape "cuboid" "point p1" [-6.01 0 6.01] "point p2" [6.01 4.01 6.11]
+Shape "cuboid" "point p1" [-6.11 0 -6.01] "point p2" [6.01 4.01 -6.11]
+Shape "cuboid" "point p1" [-6.01 0 6.01] "point p2" [-6.11 4.01 -6.01]
+
+Translate 0 1 0
+Material "matte" "color kd" [0.95 0.6 0]
+Shape "sphere" "float radius" 1
+
+WorldEnd
