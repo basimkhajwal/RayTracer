@@ -64,7 +64,7 @@ Eventually, each rendering command would then be passed onto the rendering pipel
 
 ### Image Sampling Strategies
 
-The process of sampling determines from which parts of screen the 
+The process of sampling determines from which parts of screen the camera will generate rays from, this process is important since choosing good samples is necessary in order to be able to get a high quality image output 
 
 - Describe why an effective sampling strategy is required
 - Compare and constrast the difference between using a random sampler and a more effective sampler (e.g. Stratified with jittering)
