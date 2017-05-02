@@ -87,12 +87,12 @@ object Main {
   val TEAPOT_SCENE = "scenes/teapot.txt"
   val TRIANGLE_SCENE = "scenes/triangletest.txt"
   val TEST_SCENE = "scenes/testscene.txt"
-  val ROOM_SCENE = "scenes/room.txt"
+  val BALLS_UBER_SCENE = "scenes/balls_uber.txt"
   val CORNELL_BOX_SCENE = "scenes/cornell.txt"
 
   def main(args: Array[String]) = {
     //getTestScene().render()
-    renderFile(ROOM_SCENE)
+    renderFile(BALLS_UBER_SCENE)
 
     Reporter.outputReport()
   }
