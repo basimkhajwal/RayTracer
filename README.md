@@ -60,14 +60,7 @@ The first stage involves reading the stream of characters from the input file gi
 
 Consequently, the second stage reads in these tokens and builds a sequence of rendering commands out of them. This was one of the more complex tasks since it was specific to the PBRT file format and I needed to match the specification exactly doing this process. Each rendering command would require multiple tokens and I built a whole set of parsing functions in order to be handle each type. In order to do this, I consulted the specification<sup>[[8](#8)]</sup> as mentioned but also the existing source code<sup>[[9](#9)]</sup> which allowed me to double check to make sure that the logic I used was correct in my own code and also as a guideline to structure my own code. For example, when reading the input file it could end up referencing another file to read input out of, as a result the second stage would have to call the first stage again to ask for more tokens from a different file. This process could have been quite complex to implement but, using the existing implementation, I saw the original creators had the idea to use a data structure called a stack which helped me to simplify my code. 
 
-Eventually, each rendering command would then be passed onto the rendering pipeline, the details of which have been the topic of discussion of the rest of the report. From there the final image would then be generated using all the various rendering techniques and options set by the image file. In the end, I am quite happy with the results of my parser and I managed to read the vast majority of the file format (some parts were omitted for simplicity) using just under 1100 lines of code - compared to the C++ Parser used within the actual PBRT implementation which uses about 4500 lines of code. This further highlights how using Scala has been a good tool to increase productivity and reduce how much code will be needed. 
-
-### Image Sampling Strategies
-
-The process of sampling determines from which parts of screen the camera will generate rays from, this process is important since choosing good samples is necessary in order to be able to get a high quality image output 
-
-- Describe why an effective sampling strategy is required
-- Compare and constrast the difference between using a random sampler and a more effective sampler (e.g. Stratified with jittering)
+Eventually, each rendering command would then be passed onto the rendering pipeline, the details of which have been the topic of discussion of the rest of the report. From there the final image would then be generated using all the various rendering techniques and options set by the image file. In the end, I am quite happy with the results of my parser and I managed to read the vast majority of the file format (some parts were omitted for simplicity) using just under 1200 lines of code - compared to the C++ Parser used within the actual PBRT implementation which uses about 4500 lines of code<sup>[[1](#1)]</sup>. This further highlights how using Scala has been a good tool to increase productivity and reduce how much code will be needed.
 
 ### Camera Simulation
 
@@ -83,16 +76,28 @@ Both these camera implementations can be implemented simply as a projection by a
 
 ### Optimisation Strategies
 
-Ray tracing is a very expensive process, in terms of both time requirements and memory needed to render an image. As a result, a lot of research in recent years has been towards finding techniques to reduce both of these requirements [INSERT CITATION FOR THIS HERE]. For my raytracer, the goal has been mainly to go for photorealism and speed has not been the goal of the project. However, even for my requirements optimisations are definitely required otherwise rendering good quality scenes would take many days, whilst with sufficient optimisation strategies (described in depth below) this time can be reduce to less than an hour to produce the exact same image.
+Ray tracing is a very expensive process, in terms of both time requirements and memory needed to render an image. As a result, a lot of research in recent years has been towards finding techniques to reduce both of these requirements<sup>[[7](#7)]</sup>. For my raytracer, the goal has been mainly to go for photorealism and speed has not been the goal of the project. However, even for my requirements optimisations are definitely required otherwise rendering good quality scenes would take many days, whilst with sufficient optimisation strategies (described in depth below) this time can be reduce to less than an hour to produce the exact same image.
 
-The first stage of optimisation was to go through the code and see where I can use a different code construct that would result in less memory wasted and faster runtime. By applying this general process throughout the code, I was able to see a roughly 30% improvement in speed when comparing the runtime on the same scene wit the optimised and the un-optimised code.
+The first stage of optimisation was to go through the code and see where I can use a different code construct that would result in less memory wasted and faster runtime. By applying this general process throughout the code, I was able to see a roughly 30% improvement in speed when comparing the runtime on the same scene wit the optimised and the un-optimised code. For Scala, this meant having to look through code and see where I could cache expensive computations so that results could be saved for future use and additionally remove un-necessary variables which increased memory usage.
 
-Those optimisations are generally seen as 'low-level' where the gain in performance is a constant factor of the original speed, e.g. always running twice or three times as fast. However, another kind of optimisation is to reduce the _complexity_ of the program. In this way, the program doesn't slow down as much for larger scenes.  
+Those optimisations are generally seen as 'low-level' where the gain in performance is a constant factor of the original speed, e.g. always running twice or three times as fast. However, another kind of optimisation is to reduce the _complexity_ of the program. In this way, the program doesn't slow down as much for larger scenes hence allowing me to scale well into larger and more interesting scenes. In raytracing, the program spends most of the time testing rays for intersection since it has to iterate over all the objects in the scene to work out which one intersects with the ray first. In raytracing, there are techniques known as _acceleration data structures_ <sup>[[2](#2)]</sup> which aim to help reduce this time.
 
-- First describe why optimisation is neccessary
-- Then describe low level specific optimisations i.e. a 30% improvement
-- Then describe the need for an acceleration data structure
+There are many existing implementations of acceleration data structures, I have decided to for the grid-based method <sup>[[11](#11)]</sup> based on the original source by John Amanatides in his 1987 paper "_A Fast Voxel Traversal Algorithm for Ray Tracing_". There have been many newer acceleration data structures such as bounding-volume hierarchies and KD-tree's both of which have been shown to have better worst case performance than the grid based method<sup>[[#1](#1)]</sup>. However, the grid method has a much simpler implementation thus saving me time in creating it, furthermore it has a good enough performance that it should not make much of a difference.
+
+
+- Explain the grid acceleration data structure
+- Explain how ray tracing is an embrassingly parallel problem and using multi-threading
+- Create a chart to show speed increases
 - Describe how I used profiling and techniques learnt from online sources to debug the sources of slowness in my code
+
+# Surface Integration
+
+
+# Testing & Results
+
+
+# Evaluation
+
 
 
 ## References
@@ -126,4 +131,7 @@ Those optimisations are generally seen as 'low-level' where the gain in performa
 
 ##### 10
 ###### Carlbom, I. and Paciorek, J. (1978). Planar Geometric Projections and Viewing Transformations. ACM Computing Surveys, 10(4), pp.465-502.
+
+##### 11
+###### Amanatides, J. (1983). A Fast Voxel Traversal Algorithm for Ray Tracing. University of Toronto.
 
