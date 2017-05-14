@@ -100,13 +100,24 @@ TODO: Create graph showing performance for parallel programming
 
 # Surface Integration
 
-After each ray has been generated, it is the role of the surface integrator to compute the amount of light arriving at a particular pixel coordinate based on information described in the scene. This is the main part of ray tracing which solves the rendering equation
+After each ray has been generated, it is the role of the surface integrator to compute the amount of light arriving at a particular pixel coordinate based on information described in the scene. This is the main part of ray tracing which solves the rendering equation.
+
+- Describe what surface integration is
+- Describe the process of making the Whitted model and relevant sources / research done
+- Describe the path tracing integral and compare advantages/disadvantages to the Whitted model
+- Show some images comparing the result between the path integral and the whitted model
 
 # Testing & Results
 
+- Describe how unit tests were used for the mathematical models
+- Describe the testing plan in terms of visual appearance and comparison with the PBRT renderer
+
+- Show example images about what the ray tracer has achieved
 
 # Evaluation
 
+- Talk about how the project went well overall, referencing the images and how testing has proven success
+- Relate back to the question for realism and then evaluate whether they are really that realistic
 
 
 ## References
