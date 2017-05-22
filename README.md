@@ -94,13 +94,15 @@ From my research into the potential performance gains parallel programming, I al
 
 TODO: Create graph showing performance for parallel programming
 
-- Explain the grid acceleration data structure
-- Explain how ray tracing is an embrassingly parallel problem and using multi-threading
 - Create a chart to show speed increases
 
 # Surface Integration
 
-After each ray has been generated, it is the role of the surface integrator to compute the amount of light arriving at a particular pixel coordinate based on information described in the scene. This is the main part of ray tracing which solves the rendering equation.
+After each ray has been generated, it is the role of the surface integrator to compute the amount of light arriving at a particular pixel coordinate based on information described in the scene. 
+
+The end goal of any surface integrator is to solve the _rendering equation_, this is a famous equation in computer graphics first described in a paper by David Immel et al and James Kajiya in 1986<sup>[[#12](#12)]</sup>
+
+This is the main part of ray tracing which solves the rendering equation and in it I have incorportated a variety of models used to simulate the propagation of light rays.
 
 - Describe what surface integration is
 - Describe the process of making the Whitted model and relevant sources / research done
@@ -154,4 +156,7 @@ After each ray has been generated, it is the role of the surface integrator to c
 
 ##### 11
 ###### Amanatides, J. (1983). A Fast Voxel Traversal Algorithm for Ray Tracing. University of Toronto.
+
+##### 12
+###### Immel, D., Cohen, M. and Greenberg, D. (1986). A radiosity method for non-diffuse environments. ACM SIGGRAPH Computer Graphics, 20(4), pp.133-142.
 
