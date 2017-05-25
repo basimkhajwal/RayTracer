@@ -6,7 +6,7 @@ In the modern world we are constantly surrounded by realistic computer generated
 
 Behind the scenes, these renderers have a high variety of techniques they employ in order to capture the environment as we see it. They model the interaction of light rays with a whole host of materials with increasing degrees of accuracy. In this project, I plan to investigate how these techniques are used achieve results by building my own ray tracer from scratch and evaluating how well it can render compared to existing implementations.
 
-## Project Overview 
+## Project Overview
 
 There are two main categories that the majority of renderers fall into. The distinction is made between techniques relying on _rasterization_ vs _ray/path tracing_. The basic methodology for ray tracing is to trace a multitude of rays for each pixel of the resulting image to compute how much light arrives from that direction. This is done by simulating the physical properties of light; including reflection, refraction and the effect of different materials on incoming light e.g. metals vs. glass. However, even for small images, the light along _millions_ of rays has to be computed resulting in slow running times. The payback for all this effort is a photo-realistic output which naturally simulates realistic phenomenon such as soft shadows, global illumination and caustics <sup>[[2](#2)]</sup>. 
 
@@ -100,9 +100,18 @@ TODO: Create graph showing performance for parallel programming
 
 After each ray has been generated, it is the role of the surface integrator to compute the amount of light arriving at a particular pixel coordinate based on information described in the scene. 
 
-The end goal of any surface integrator is to solve the _rendering equation_, this is a famous equation in computer graphics first described in a paper by David Immel et al and James Kajiya in 1986<sup>[[#12](#12)]</sup>
+The end goal of any surface integrator is to solve the _rendering equation_, this is a famous equation in computer graphics first described in a paper by David Immel et al and James Kajiya in 1986<sup>[[#12](#12)]</sup>. The full rendering equation describes how images are formed by light and _any_ renderng system from ones in computer games to my own ray tracer attempty to solve this rendering equation to various degrees of accuracy. The equation is as in the image below:
 
-This is the main part of ray tracing which solves the rendering equation and in it I have incorportated a variety of models used to simulate the propagation of light rays.
+<p align="center">
+  <img src="progress/renderingEquation.png" alt="The rendering equation" />
+</p>
+
+In order to full understand the inner mechanics of the equation a working knowledge of multivariable calculus and surface optics is required, however the basic function of the equation is quite simple to understand. My ray tracer attempts to solve this function accurately but even then some assumptions are required to simplify the computational workload. For instance, it assumes that everything is static and nothing in the scene is changing with time and also that the reflective properties of a surface don't vary with position.
+
+The left hand side defines a function for outgoing light from a particular point, in a direction at a certain wavelength and at a certain time. This is evaluated by computing *Le* which is the amount of light emitted by that surface, e.g. the surface of the sun and a light bulb would have a non-zero emission value but something like a wall would have zero emission.
+
+The second part is the most computationally intense part, it is a hemispherical integral which essentially takes the sum of all the incoming light from all directions that arrive at that point. The incoming light is scaled by a _bi-directional reflectance distribution function_ that is unique for every material and describes the reflective properties of each surface.
+
 
 - Describe what surface integration is
 - Describe the process of making the Whitted model and relevant sources / research done
