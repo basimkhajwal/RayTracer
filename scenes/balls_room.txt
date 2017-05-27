@@ -1,10 +1,10 @@
 # LookAt -8 8 -9 -1 1 0 0 1 0
 LookAt -3 3 -5 -1 1 0 0 1 0
 Camera "perspective" "float fov" 70 "float focaldistance" 6.2 "float lensradius" 0.06
-Film "image" "integer xresolution" 1600 "integer yresolution" 1200 "string filename" "progress/33.png"
-Sampler "stratified" "integer xsamples" 10 "integer ysamples" 10
-Integrator "whitted" "integer maxdepth" 20
-Renderer "sampler" "integer taskcount" 25
+Film "screen" "integer xresolution" 800 "integer yresolution" 600 "string filename" "progress/33.png"
+Sampler "stratified" "integer xsamples" 1 "integer ysamples" 1
+Integrator "whitted" "integer maxdepth" 5
+Renderer "sampler" "integer taskcount" 1
 PixelFilter "box"
 
 WorldBegin
