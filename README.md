@@ -98,7 +98,13 @@ TODO: Create graph showing performance for parallel programming
 
 # Surface Integration
 
-After each ray has been generated, it is the role of the surface integrator to compute the amount of light arriving at a particular pixel coordinate based on information described in the scene. 
+After each ray has been generated, it is the role of the surface integrator to compute the amount of light arriving at a particular pixel coordinate based on information described in the scene.
+
+However, before I could start calculating I needed a way to describe the environment's various materials, for instance I needed some code that would differentiate between how light reflects off metals against how it reflects off wood. In order to fully capture the reflective and refractive properties of any surface a single function is required: the _bi-directional scattering distribution function_<sup>[[#13](#13)]</sup>(BSDF). This function takes a pair of spherical coordinates (angles in 3D) and returns the amount of light that the material permits to travel between that pair of directions. Despite being very simple to define, this function is all that is needed to encapsulate how a material will interact with light at any angle from any direction<sup>[[#13](#13)]</sup>. The diagram below shows a visual representation of two different BSDF's for..
+
+[TODO - FIND BRDF FOR TWO MATERIALS AND ADD IMAGE]
+
+In order to 
 
 The end goal of any surface integrator is to solve the _rendering equation_, this is a famous equation in computer graphics first described in a paper by David Immel et al and James Kajiya in 1986<sup>[[#12](#12)]</sup>. The full rendering equation describes how images are formed by light and _any_ renderng system from ones in computer games to my own ray tracer attempty to solve this rendering equation to various degrees of accuracy. The equation is as in the image below:
 
@@ -110,7 +116,7 @@ In order to full understand the inner mechanics of the equation a working knowle
 
 The left hand side defines a function for outgoing light from a particular point, in a direction at a certain wavelength and at a certain time. This is evaluated by computing *Le* which is the amount of light emitted by that surface, e.g. the surface of the sun and a light bulb would have a non-zero emission value but something like a wall would have zero emission.
 
-The second part is the most computationally intense part, it is a hemispherical integral which essentially takes the sum of all the incoming light from all directions that arrive at that point. The incoming light is scaled by a _bi-directional reflectance distribution function_ that is unique for every material and describes the reflective properties of each surface.
+The second part is the most computationally intense part, it is a hemispherical integral which essentially takes the sum of all the incoming light from all directions that arrive at that point. The incoming light is scaled by a _bi-directional reflectance distribution function_(BRDF) that is unique for every material and describes the reflective properties of each surface.
 
 
 - Describe what surface integration is
@@ -168,4 +174,8 @@ The second part is the most computationally intense part, it is a hemispherical 
 
 ##### 12
 ###### Immel, D., Cohen, M. and Greenberg, D. (1986). A radiosity method for non-diffuse environments. ACM SIGGRAPH Computer Graphics, 20(4), pp.133-142.
+
+##### 13
+###### Bartell, F, E Dereniak, and W Wolfe. "The Theory And Measurement Of Bidirectional Reflectance Distribution Function (Brdf) And Bidirectional Transmittance Distribution Function (BTDF)". Radiation Scattering in Optical Systems (1981): n. pag. Web. 27 May 2017.
+
 
