@@ -121,14 +121,9 @@ The equation is as in the image below:
 
 Inside the equation, the left hand side defines a function for outgoing light from a particular point, which is the value which we want to compute. This is evaluated by first computing *Le* which is the amount of light emitted by that surface, e.g. the surface of the sun and a light bulb would have a non-zero emission value but something like a wall would have zero emission. The second part is the most computationally intense part and is where surface integrators get their name from, it is a spherical integral which essentially takes the sum of all the incoming light from all directions that arrive at that point. The incoming light is scaled by a _bi-directional reflectance distribution function_(BRDF) which describes the reflective properties of that particular surface as explained in the previous section. In my ray tracer, I have implemented two integrators which both have their own advantages and disadvantages as explained below.
 
-The first model I created was the Whitted model for light transport based on the 198x paper by ABCD Whitted<sup>[[]()]</sup>. This model is based upon the approximation that the vast majority of directions contribute very little to the total light and the only directions which need to be considered are the ones towards light sources. Thus, when evaluating the surface integral we fire recursive rays towards every light source (sometimes multiple rays per light source for a better average) and take the summed and scaled value for the final light at that point. The main advantage of this approach is that it is very fast and renders most scenes in a matter of seconds and it also produces a smooth image without much super-sampling needed.
+The first model I created was the Whitted model for light transport based on the 1980 paper by Turner Whitted<sup>[[14](#14)]</sup>. This model is based upon the approximation that the vast majority of directions contribute very little to the total light so it only considers directions which need to be considered are the ones towards light sources. Thus, when evaluating the surface integral we fire recursive rays towards every light source (sometimes multiple rays per light source for a better average) and take the summed and scaled value for the final light at that point. The main advantage of this approach is that it is relatively fast, rendering most scenes in a matter of seconds whilst also produces a smooth image without much super-sampling needed. However, this model fails to simulate certain scenarios well, for instance in transparent objects where the path from the light might not be a straight one resulting in shadows for transparent objects when they should not exist[[14](#14)].
 
-The second model which I integrated into my ray tracer is called path tracing. The specific version of path tracing which I implemented included russian roulette, light sampling and importance sampling. Path tracing attempts to solve a more accurate integral than the one modelled with the Whitted integrator, it evaluates randomly selected directions.
-
-
-- Describe the process of making the Whitted model and relevant sources / research done
-- Describe the path tracing integral and compare advantages/disadvantages to the Whitted model
-- Show some images comparing the result between the path integral and the whitted model
+A more modern model, one which is used ubiquitously in the modern graphics industry, is the path tracing model which I also added to my ray tracer implementation. Path tracing attempts to solve a more accurate integral than the one modelled with the Whitted integrator, it evaluates randomly selected directions rather than only considering a fixed set of directions such as in the Whitted model. The naive implementation would require hundreds of ray's to be fired per sample to actually get a good image however they are techniques which I have employed that reduce this variation. In concrete terms, the techniques which I implemented were russian roulette, light sampling and importance sampling which all required modification of separate parts of the code however their core principles were all the same. Rather than sampling directions uniformly, we use the idea of probability distributions similar to the reasoning behind the Whitted model. In the Whitted model, only directions towards light sources were used but in this case we sample directions which have a higher probability of being near light source directions but could be in any direction since they are sampled randomly. This results in a faster convergence rate for the final light value so fewer samples are needed<sup>[[1](#1)]</sup> but it still requires more time than the Whitted model.
 
 # Testing & Results
 
@@ -183,5 +178,9 @@ The second model which I integrated into my ray tracer is called path tracing. T
 
 ##### 13
 ###### Bartell, F, E Dereniak, and W Wolfe. "The Theory And Measurement Of Bidirectional Reflectance Distribution Function (Brdf) And Bidirectional Transmittance Distribution Function (BTDF)". Radiation Scattering in Optical Systems (1981): n. pag. Web. 27 May 2017.
+
+##### 14
+###### Turner Whitted. 1980. An improved illumination model for shaded display. Commun. ACM 23, 6 (June 1980), 343-349. DOI=http://dx.doi.org/10.1145/358876.358882
+
 
 
