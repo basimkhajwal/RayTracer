@@ -125,10 +125,17 @@ The first model I created was the Whitted model for light transport based on the
 
 A more modern model, one which is used ubiquitously in the modern graphics industry, is the path tracing model which I also added to my ray tracer implementation. Path tracing attempts to solve a more accurate integral than the one modelled with the Whitted integrator, it evaluates randomly selected directions rather than only considering a fixed set of directions such as in the Whitted model. The naive implementation would require hundreds of ray's to be fired per sample to actually get a good image however they are techniques which I have employed that reduce this variation. In concrete terms, the techniques which I implemented were russian roulette, light sampling and importance sampling which all required modification of separate parts of the code however their core principles were all the same. Rather than sampling directions uniformly, we use the idea of probability distributions similar to the reasoning behind the Whitted model. In the Whitted model, only directions towards light sources were used but in this case we sample directions which have a higher probability of being near light source directions but could be in any direction since they are sampled randomly. This results in a faster convergence rate for the final light value so fewer samples are needed<sup>[[1](#1)]</sup> but it still requires more time than the Whitted model.
 
-# Testing & Results
+Overall, for my final rendering uses I used a mixture of the Whitted model and the path tracing model. For most scenes, the Whitted model did a good enough job at producing good output and the time advantage meant that I could render much higher resolution images in an acceptable amount of time (e.g. around 30 minutes). However, for certain scenes the compromises of the Whitted model resulted in non-realistic images so I had to resort to the path tracing which took considerably longer but produced good results at the end.
+
+# Testing
+
+As in all areas of software development, testing was a crucial and incremental part of building my ray tracer. It was critical that I had a clear test setup during all stages of development and also for the final model at the end. Within my testing, it was separated into two distinct parts: the automated tests and the manual testing.
 
 - Describe how unit tests were used for the mathematical models
-- Describe the testing plan in terms of visual appearance and comparison with the PBRT renderer
+
+- Describe the manual testing plan in terms of visual appearance and comparison with the PBRT renderer
+
+# Results
 
 - Show example images about what the ray tracer has achieved
 
