@@ -1,4 +1,4 @@
-# Building a functional 3D ray tracer and to what extent can it simulate realistic light behaviour.
+# Building a functional 3D ray tracer and to what extent it can simulate realistic light behaviour.
 
 ## Introduction
 

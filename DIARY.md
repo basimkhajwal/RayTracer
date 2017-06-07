@@ -47,3 +47,15 @@ I have made a lot of progress since having completed the previous section. The m
 
 ##### 27/03/17
 Over the last two weeks I have begun to write more for my report since I have realised that the actual project development won't be completed in March so I will have to develop my original deadlines that I had set in my original Gantt chart to take into account how much work I estimate is still required to be completed. So far, I have completed the introductory section and a section on the parsing process which has given me a total word count of around 2500 words. In addition, I have also done more work on the project by smoothing out normals, this has made a noticeable change to the teapot which now looks much more realistic.
+
+##### 08/04/17
+I have continued to make good progress and have added another 500 words onto my report by detailing how I implemented the optimisation procedures within my program and I've also started to plan out the next few sections which I plan to complete soon. In the programming part, I have added a lot of new properties and materials available to render with whilst also having found a couple of implementation bugs along the way which I have fixed.
+
+##### 20/04/17
+
+
+##### 15/05/17
+
+##### 24/05/17
+
+##### 08/06/17
