@@ -131,6 +131,10 @@ Overall, for my final rendering uses I used a mixture of the Whitted model and t
 
 As in all areas of software development, testing was a crucial and incremental part of building my ray tracer. It was critical that I had a clear test setup during all stages of development and also for the final model at the end. Within my testing, it was separated into two distinct parts: the automated tests and the manual testing.
 
+In software development, automdated tests are known as _unit tests_. This involves writing separate program code that performs checks on other parts of the code to ensure that it is producing correct output, the advantage of this approach is that it can be easily run after each change made to the code to make sure that the new changes don't break anything that was previously working correctly and, if they do, it idenitifies exactly where the issues are being generated. Test driven development is a software development principle which involes writing unit tests for each section whilst it is being implemented, I tried to follow this principle to smooth out my workflow as much as possible when doing the programming of the ray tracer. This approach was mainly only followed in the mathematical and physics based sides since they were easy to peform checks on, e.g. for my transformation classes I had some unit tests that ensured that a translation of (3, 0) followed by a translation of (-3, 0) would result in the original point. The only disadvantage of this type of testing is that it cannot be applied to all cases, especially when there is a human-based or subjective output that doesn't have a definite right or wrong answer, this was where the manual testing portion came into play.
+
+For manual testing....
+
 - Describe how unit tests were used for the mathematical models
 
 - Describe the manual testing plan in terms of visual appearance and comparison with the PBRT renderer
