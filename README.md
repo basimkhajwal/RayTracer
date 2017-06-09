@@ -141,9 +141,14 @@ The manual testing side was mainly validation that the image output seemed coher
 
 # Evaluation
 
+To conclude, this project has resulted in the design, development and testing of a ray tracer that produces three dimensional structured images given a scene description. Although it pales in comparison with modern, highly optimised rendering systems it has satisfied the majority of the intial objectives and has both strengths and shortcomings in meeting those targets.
+
+Firstly, one issue that is relevant for a functioning ray tracer is it's performance. The usage of the programming language Scala was definitely a bonus for development ease, but it cannot be glossed over that it has introduced a substantial amount of overhead, both in terms of memory performance and in terms of time for rendering. This overhead comes due to the fact the program runs on a additional layer, the Java Virtual Machine, which prevents low level optimisations or any kind of deterministic memory profiling that a similar program written in C++ would use to it's advantage. This also comes in part from my adoption of an immmutable data driven approach in which new objects are created instead of modifying existing values for ease of debugging. In order to test the significance of this, the performance of the ray tracer was compared against the PBRT ray tracer and the results are summarised in the graph below. As is evident, there is a significant difference in performance that only continues to increase with scaled environment sizes. Despite this, the program was still fast enough that it could render moderately complex scenes to render in a fair amount of time. In light of this, it is evident that the performance isn't by any means ideal however it is good enough to meet the requirement of a functional ray tracer.
+
+In terms of producing real lighting effects, there are aspects
+
 - Talk about how the project went well overall, referencing the images and how testing has proven success
 - Relate back to the question for realism and then evaluate whether they are really that realistic
-
 
 ## References
 
@@ -188,6 +193,3 @@ The manual testing side was mainly validation that the image output seemed coher
 
 ##### 14
 ###### Turner Whitted. 1980. An improved illumination model for shaded display. Commun. ACM 23, 6 (June 1980), 343-349. DOI=http://dx.doi.org/10.1145/358876.358882
-
-
-
