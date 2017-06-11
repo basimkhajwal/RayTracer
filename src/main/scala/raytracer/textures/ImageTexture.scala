@@ -43,7 +43,7 @@ class ImageSpectrumTexture(mapping: TextureMapping2D, texInfo: TextureInfo) exte
 
   override def apply(dg: DifferentialGeometry): Spectrum = {
     val texMap = mapping.map(dg)
-    mipMap.lookUp(texMap.s, texMap.t, 0, 0, 0, 0) // TODO: Implement differentials
+    mipMap.lookUp(texMap.s, texMap.t, 0, 0, 0, 0)
   }
 }
 
@@ -81,7 +81,7 @@ class ImageFloatTexture(mapping: TextureMapping2D, texInfo: TextureInfo) extends
 
   override def apply(dg: DifferentialGeometry): Double = {
     val texMap = mapping.map(dg)
-    mipMap.lookUp(texMap.s, texMap.t, 0, 0, 0, 0) // TODO: Implement differentials
+    mipMap.lookUp(texMap.s, texMap.t, 0, 0, 0, 0)
   }
 }
 object ImageTexture {

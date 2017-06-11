@@ -102,7 +102,6 @@ class SpectrumMipMap(
         math.max(math.abs(ds1), math.abs(dt1))
       )
     )*/
-    // TODO: Write elliptically weighted averaging algorithm
   }
 }
 

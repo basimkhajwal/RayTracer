@@ -50,7 +50,6 @@ class StratifiedSampler(
       }
     }
 
-    // TODO - Implement latin hypercube sampling for 1D and 2D sampling (assumed 0 for now)
     val sample = Sample(
       imageSamples(samplePos*2), imageSamples(samplePos*2+1),
       lensSamples(samplePos*2), lensSamples(samplePos*2+1),

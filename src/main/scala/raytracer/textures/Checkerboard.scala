@@ -16,7 +16,6 @@ class Checkerboard[T](
 
     if ((texMap.s.toInt + texMap.t.toInt) % 2 == 0) tex1(dg)
     else tex2(dg)
-    // TODO: Use ray differentials to do anti-aliasing
   }
 
 }
