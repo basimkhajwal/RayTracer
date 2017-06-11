@@ -93,7 +93,7 @@ object Main {
 
   def main(args: Array[String]) = {
     //getTestScene().render()
-    renderFile(BALLS_ROOM_SCENE)
+    renderFile(TEST_SCENE)
 
     Reporter.outputReport()
   }

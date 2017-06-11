@@ -3,7 +3,7 @@ LookAt -3 3 -5 -1 1 0 0 1 0
 Camera "perspective" "float fov" 70 "float focaldistance" 6.2 "float lensradius" 0.06
 Film "screen" "integer xresolution" 800 "integer yresolution" 600 "string filename" "progress/33.png"
 Sampler "stratified" "integer xsamples" 1 "integer ysamples" 1
-Integrator "whitted" "integer maxdepth" 5
+Integrator "path"
 Renderer "sampler" "integer taskcount" 1
 PixelFilter "box"
 
