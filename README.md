@@ -76,7 +76,9 @@ A better camera simulation is by using a perspective camera, this camera takes i
 
 Both these camera implementations can be implemented simply as a projection by applying the same transformation for each incoming sample location. The orthographic camera will apply an orthographic projection (as described above) and the perspective camera will apply a perspective projection. This projection must be efficient as it will be applied hundreds of thousands of time for each image rendered, hence I decided to use a matrix multiplication to combine all the steps into one computation. The matrix I have used for each projection is a commonly used matrix, for which one of the first descriptions was by Carlbrom and Paciorek<sup>[[6](#6)]</sup>. Their definition for orthographic and perspective projections was used to create the matrices which then generate rays. Below is a comparison of both camera implementations:
 
-- TODO: Create an image showing a comparison of both orthographic and perspective cameras
+<p align="center">
+  <img src="progress/cameraTypes.png" alt="Camera Implementation Comparison" height="550px" />
+</p>
 
 # Material Definitions
 
