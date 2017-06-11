@@ -151,9 +151,8 @@ Firstly, one issue that is relevant for a functioning ray tracer is it's perform
 
 In terms of realism, the images shown above all exhibit small visual artifacts that our brains can identify and consequently deduce that the image isn't an actual photograph. However, the level of realism required to convince a human that an image is of the real world is beyond the actual aims of this project. The principle reason for this being that authentic renderings require input from artists who design imperfections and position objects and lighting in a convincing, physical manner.
  
- The ray tracer does, however, simulate accurate physical properties of light. This is demonstrated in the image above which contains the infinite reflections that show that the light is travelling in straight lines, reflects correctly of the mirrors and that the images approach a horizon line. In addition, the simulator also correctly calculates the colour of light at various points depending on the angle of incident light and the reflective properties of the illuminated material. This can be visually confirmed by looking at images above and, as mentioned in the testing section earlier, was proven through systematic checking.
+ The ray tracer does, however, simulate accurate physical properties of light. This is demonstrated in the image above which contains the infinite reflections that show that the light is travelling in straight lines, reflects correctly of the mirrors and that the images approach a horizon line. In addition, the simulator also correctly calculates the colour of light at various points depending on the angle of incident light and the reflective properties of the illuminated material. This can be visually confirmed by looking at images above and, as mentioned in the testing section earlier, was proven through systematic checking via evaluation against the PBRT ray tracer.
 
-- Talk about how the project went well overall, referencing the images and how testing has proven success
 - Relate back to the question for realism and then evaluate whether they are really that realistic
 
 ## References
