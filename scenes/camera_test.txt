@@ -1,0 +1,24 @@
+LookAt 5 8 -8 0 0 0 0 1 0
+Camera "orthographic" "float screenwindow" [-10 10 -7.5 7.5]
+Film "image" "integer xresolution" 800 "integer yresolution" 600 "string filename" "progress/ortho.png"
+Renderer "sampler" "integer taskcount" 5
+Integrator "whitted" "integer maxdepth" 2
+Sampler "random" "integer pixelsamples" 1
+
+WorldBegin
+
+    LightSource "spot" "rgb I" [300 300 300]
+            "float coneangle" 50 "float conedeltaangle" 15
+            "point from" [12 12 -12] "point to" [0 0 0]
+
+    LightSource "spot" "rgb I" [400 400 400]
+            "float coneangle" 50 "float conedeltaangle" 15
+            "point from" [18 10 0] "point to" [0 0 0]
+
+    Material "matte" "color kd" [0.9 0.1 0.2]
+    Shape "cuboid" "point p1" [-4 0 -4] "point p2" [4 4 4]
+
+    Material "matte" "color kd" [0.1 0.1 0.2]
+    Shape "cuboid" "point p1" [-40 -1 -40] "point p2" [40 0 40]
+
+WorldEnd
