@@ -40,13 +40,19 @@ class PathIntegrator(val maxDepth: Int) extends Integrator {
         }
 
         // Reflect
-        val (col, wi) = bsdf.sample(-ray.dir, 0, 0, BSDF.ALL_REFLECTION)
-        lightMask *= (col * wi.dot(dg.nn).abs).clamp()
+        val (col, wi, pdf) = bsdf.sample(-ray.dir, math.random(), math.random(), BSDF.ALL | BSDF.REFLECTION | BSDF.TRANSMISSION)
 
-        ray = Ray(dg.p + wi*1e-9, wi, ray.depth+1)
-        if (lightMask.isBlack(0.001)) {
+        if (pdf == 0) {
           done = true
+        } else {
+          lightMask *= (col * wi.dot(dg.nn).abs / pdf).clamp()
+
+          ray = Ray(dg.p + wi*1e-9, wi, ray.depth+1)
+          if (lightMask.isBlack(0.001)) {
+            done = true
+          }
         }
+
       } else {
         done = true
       }
