@@ -4,7 +4,7 @@ import raytracer._
 import raytracer.cameras.{Camera, OrthographicCamera, PerspectiveCamera}
 import raytracer.films.{Film, ImageFilm, ScreenFilm}
 import raytracer.filters._
-import raytracer.integrators.{Integrator, Whitted}
+import raytracer.integrators.{Integrator, PathIntegrator, Whitted}
 import raytracer.lights.{Light, PointLight, SpotLight}
 import raytracer.materials._
 import raytracer.math._
@@ -46,10 +46,8 @@ object SceneFactory {
   def makeIntegrator(integratorType: String, params: ParamSet): Integrator = reportUnused(params) {
     integratorType match {
 
-      case "whitted" => {
-        val maxDepth = params.getOneOr[Int]("maxdepth", 3)
-        new Whitted(maxDepth)
-      }
+      case "whitted" => new Whitted(params.getOneOr[Int]("maxdepth", 3))
+      case "path" => new PathIntegrator(params.getOneOr[Int]("maxdepth", 3))
 
       case _ => throw new IllegalArgumentException(s"Un-implemented integrator type $integratorType")
     }
