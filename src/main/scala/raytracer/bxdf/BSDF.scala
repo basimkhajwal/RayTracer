@@ -48,29 +48,69 @@ final class BSDF (
     total
   }
 
-  def sample(woW: Vec3, u1: Double, u2: Double, flags: Int): (Spectrum, Vec3) = {
-    val wo = worldToLocal(woW).nor
+  def pdf(woW: Vec3, wiW: Vec3, flags: Int): Double = {
+    if (bxdfs.isEmpty) return 0
 
+    val wo = worldToLocal(woW)
+    val wi = worldToLocal(wiW)
+    var totalPdf = 0.0
+    var matchingComps = 0
     var bxdf = bxdfs
-    var wi: Vec3 = null
-    var lum: Spectrum = null
-    var sampledBxdf: BxDF = null
 
-    while (wi == null && bxdf.nonEmpty) {
-      if (bxdf.head matches flags) {
-        val sample = bxdf.head.sample(wo, u1, u2)
-        wi = sample._1
-        lum = sample._2
-        sampledBxdf = bxdf.head
+    while (bxdf.nonEmpty) {
+      if (bxdfs.head matches flags) {
+        matchingComps += 1
+        totalPdf += bxdfs.head.pdf(wo, wi)
       }
       bxdf = bxdf.tail
     }
 
-    if (wi == null || wi.mag2 == 0) return (Spectrum.BLACK, Vec3.ZERO)
+    if (matchingComps > 0) totalPdf / matchingComps else 0
+  }
+
+  def sample(woW: Vec3, u1: Double, u2: Double, flags: Int): (Spectrum, Vec3, Double) = {
+    val wo = worldToLocal(woW).nor
+
+    var numMatching = 0
+    var bxdf = bxdfs
+
+    while (bxdf.nonEmpty) {
+      if (bxdf.head matches flags) numMatching += 1
+      bxdf = bxdf.tail
+    }
+
+    var selectedBxdf = (math.random() * numMatching).toInt
+    var wi: Vec3 = null
+    var lum: Spectrum = null
+    var sampledBxdf: BxDF = null
+    var samplePdf = 0.0
+    bxdf = bxdfs
+
+    while (selectedBxdf >= 0 && bxdf.nonEmpty) {
+      if (bxdf.head matches flags) {
+        if (selectedBxdf == 0) {
+          val sample = bxdf.head.sample(wo, u1, u2)
+          wi = sample._1
+          lum = sample._2
+          samplePdf = sample._3
+          sampledBxdf = bxdf.head
+        }
+        selectedBxdf -= 1
+      }
+      bxdf = bxdf.tail
+    }
+
+    if (numMatching == 0 || wi.mag2 == 0 || samplePdf == 0) {
+      return (Spectrum.BLACK, Vec3.ZERO, 0)
+    }
 
     val wiW = localToWorld(wi).nor
 
-    (if ((flags & BSDF.SPECULAR) == 0) apply(woW, wiW, flags) else lum, wiW)
+    if ((flags & BSDF.SPECULAR) == 0) {
+      (apply(woW, wiW, flags), wiW, pdf(woW, wiW, flags))
+    } else {
+      (lum, wiW, samplePdf)
+    }
   }
 }
 

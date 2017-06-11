@@ -38,16 +38,17 @@ class Microfacet(
     math.min(1, math.min(2 * NdotWh * NdotWo / WOdotWh, 2 * NdotWh * NdotWi / WOdotWh ))
   }
 
-  override def sample(wo: Vec3, u1: Double, u2: Double): (Vec3, Spectrum) = {
-    val wi = distribution.sample(wo, u1, u2)
-    if (!sameHemisphere(wo, wi)) (wi, Spectrum.BLACK)
-    else (wi, apply(wo, wi))
+  override def sample(wo: Vec3, u1: Double, u2: Double): (Vec3, Spectrum, Double) = {
+    val (wi, pdf) = distribution.sample(wo, u1, u2)
+    if (!sameHemisphere(wo, wi)) (wi, Spectrum.BLACK, pdf)
+    else (wi, apply(wo, wi), pdf)
   }
 }
 
 trait MicrofacetDistribution {
   def D(wh: Vec3): Double
-  def sample(wo: Vec3, u1: Double, u2: Double): Vec3
+  def pdf(wo: Vec3, wi: Vec3): Double = 0
+  def sample(wo: Vec3, u1: Double, u2: Double): (Vec3, Double)
 }
 
 class Blinn(
@@ -60,7 +61,7 @@ class Blinn(
     (exponent+2) * (0.5 / math.Pi) * math.pow(costhetah, exponent)
   }
 
-  override def sample(wo: Vec3, u1: Double, u2: Double): Vec3 = {
+  override def sample(wo: Vec3, u1: Double, u2: Double): (Vec3, Double) = {
     val costheta = math.pow(u1, 1 / (exponent+1))
     val sintheta = math.sqrt(math.max(0, 1 - costheta*costheta))
     val phi = u2 * 2 * math.Pi
@@ -68,6 +69,23 @@ class Blinn(
     val whFirst = Vec3.sphericalDirection(sintheta, costheta, phi)
     val wh = if (sameHemisphere(wo, whFirst)) whFirst else -whFirst
 
-    -wo + 2 * (wo dot wh) * wh
+    val wi = -wo + 2 * (wo dot wh) * wh
+    val pdf = innerPDF(wo, wh, costheta)
+
+    (wi, pdf)
+  }
+
+  private def innerPDF(wo: Vec3, wh: Vec3, costheta: Double): Double = {
+    if (wo.dot(wh) > 0)
+      ((exponent + 1) * math.pow(costheta, exponent)) /
+        (2 * Math.PI * 4 * wo.dot(wh))
+    else
+      0
+  }
+
+  override def pdf(wo: Vec3, wi: Vec3): Double = {
+    val wh = (wo + wi).nor
+    val costheta = absCosTheta(wh)
+    innerPDF(wo, wh, costheta)
   }
 }

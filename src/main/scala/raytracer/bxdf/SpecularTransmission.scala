@@ -17,7 +17,9 @@ class SpecularTransmission(
 
   override def apply(wo: Vec3, wi: Vec3): Spectrum = Spectrum.BLACK
 
-  override def sample(wo: Vec3, u1: Double, u2: Double): (Vec3, Spectrum) = {
+  override def pdf(wo: Vec3, wi: Vec3): Double = 0
+
+  override def sample(wo: Vec3, u1: Double, u2: Double): (Vec3, Spectrum, Double) = {
 
     val entering = cosTheta(wo) > 0
     val (ei, et) = if (entering) (etaI, etaT) else (etaT, etaI)
@@ -26,7 +28,7 @@ class SpecularTransmission(
     val eta = ei / et
     val sint2 = eta * eta * sini2
 
-    if (sint2 >= 1) return (Vec3.ZERO, Spectrum.BLACK)
+    if (sint2 >= 1) return (Vec3.ZERO, Spectrum.BLACK, 0)
 
     val cost = (if (entering) -1 else 1) * math.sqrt(1 - sint2)
     val sintOverSini = eta
@@ -35,6 +37,6 @@ class SpecularTransmission(
     val F = fresnel.evaluate(cosTheta(wo))
     val lum = (Spectrum.WHITE-F) * transmittance * ((et*et)/(ei*ei)) / absCosTheta(wi)
 
-    (wi, lum)
+    (wi, lum, 1)
   }
 }
