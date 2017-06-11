@@ -57,7 +57,7 @@ In order to be able to properly compare the output of the ray tracer with existi
 For the code, the design began with the generic parsing algorithm then it modified to suit the structure of the PBRT file format. The diagram below illustrates the simplified pipeline that I have used in my own parsing system from the input file to the final image output.
 
 <p align="center">
-  <img src="progress/process.png" alt="Parsing Process" />
+  <img src="progress/parsingOverview.png" alt="Parsing Process" height="450px"/>
 </p>
 
 The first stage involves reading the stream of characters from the input file given to the program, then a process called _tokenising_ is performed. This heavily simplifies the input by removing comments, whitespace and sectioning groups of characters into entities known as _tokens_. Luckily , tokenising is a very common procedure and there was a builtin class in the Scala libraries called StreamTokeniser which handled most of heavy duty work and all that was needed was to implement was a thin wrapper over it so it would function according to what was required. Now, the input file has been transformed from a stream of characters into a stream of tokens.
