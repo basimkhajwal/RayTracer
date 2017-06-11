@@ -1,6 +1,8 @@
 package raytracer
 
 import raytracer.math.Vec3
+import raytracer.sampling.SamplingTransform
+
 import scala.math._
 
 /**
@@ -37,4 +39,11 @@ package object bxdf {
 
   @inline
   def sameHemisphere(w: Vec3, wp: Vec3): Boolean = w.z * wp.z > 0
+
+  def cosineSampleHemisphere(u1: Double, u2: Double): Vec3 = {
+    val (x, y) = SamplingTransform.concentricSampleDisk(u1, u2)
+    val z = sqrt(max(0, 1 - x*x - y*y))
+
+    Vec3(x, y, z)
+  }
 }
