@@ -141,7 +141,10 @@ The manual testing side was mainly validation that the image output seemed coher
 
 # Results
 
-
+<p align="center"><img src="progress/24.png" height="450px" /></p>
+<p align="center"><img src="progress/30.png" height="450px" /></p>
+<p align="center"><img src="progress/31.png" height="450px" /></p>
+<p align="center"><img src="progress/32.png" height="450px" /></p>
 
 # Evaluation
 
