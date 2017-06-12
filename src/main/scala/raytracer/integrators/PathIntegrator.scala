@@ -33,7 +33,7 @@ class PathIntegrator(val maxDepth: Int) extends Integrator {
 
           val lightCheck = scene.intersect(Ray(p + wi*1e-5, wi, 0)).orNull
           if (lightCheck == null || lightCheck.time >= lightDist) {
-            totalLight += lightValue
+            totalLight += lightMask * lightValue
           }
 
           i += 1
