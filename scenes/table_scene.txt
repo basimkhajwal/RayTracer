@@ -1,0 +1,76 @@
+LookAt 10 14 -10 0 5 0 0 1 0
+Camera "perspective" "float fov" 75.0 "float focaldistance" 13.9 "float lensradius" 0.3
+
+Film "image" "integer xresolution" 1600 "integer yresolution" 1200
+     "string filename" "progress/34.png"
+Renderer "sampler" "integer taskcount" 8
+Sampler "stratified" "integer xsamples" 3 "integer ysamples" 3
+SurfaceIntegrator "whitted"
+PixelFilter "triangle"
+
+WorldBegin
+
+LightSource "spot" "rgb I" [900 900 900]
+            "float coneangle" 70 "float conedeltaangle" 15
+            "point from" [0 30 0] "point to" [0 5 0]
+
+LightSource "spot" "rgb I" [400 400 400]
+            "float coneangle" 50 "float conedeltaangle" 15
+            "point from" [20 2 0] "point to" [0 5 0]
+
+LightSource "spot" "rgb I" [400 400 400]
+            "float coneangle" 50 "float conedeltaangle" 15
+            "point from" [-20 2 0] "point to" [0 5 0]
+
+LightSource "spot" "rgb I" [400 400 400]
+            "float coneangle" 50 "float conedeltaangle" 15
+            "point from" [0 2 -20] "point to" [0 5 0]
+
+Texture "wood" "spectrum" "imagemap" "string filename" "scenes/boards.png" "float uscale" 8 "float vscale" 8
+
+Material "uber" "rgb kr" [0.8 0.7 0.7] "texture kd" "wood"
+Shape "cuboid" "point p1" [-300 -1 -20] "point p2" [20 0 300]
+
+#Material "matte" "rgb kr" [0.8 0.7 0.7] "texture kd" "wood"
+#Shape "cuboid" "point p1" [-31 0 -30] "point p2" [-30 30 30]
+#Shape "cuboid" "point p1" [-30 0 30] "point p2" [30 30 31]
+
+AttributeBegin
+    Scale 1.3 1 1.3
+    Material "plastic" "color kd" [0.1 0.1 0.1] "float roughness" 0.01
+    Shape "cuboid" "point p1" [-5 0 3] "point p2" [-4 5 4]
+    Shape "cuboid" "point p1" [-5 0 -4] "point p2" [-4 5 -3]
+    Shape "cuboid" "point p1" [4 0 3] "point p2" [5 5 4]
+    Shape "cuboid" "point p1" [4 0 -4] "point p2" [5 5 -3]
+
+    Material "glass" "rgb kd" [0.8 0.8 1]
+    Shape "cuboid" "point p1" [-6 5 -5] "point p2" [6 6 5]
+AttributeEnd
+
+AttributeBegin
+    Translate 2 5.0 -2
+
+    LightSource "spot" "rgb I" [100 100 100]
+                "float coneangle" 50 "float conedeltaangle" 15
+                "point from" [3 2 -3] "point to" [0 1.5 0]
+    LightSource "spot" "rgb I" [100 100 100]
+                "float coneangle" 50 "float conedeltaangle" 15
+                "point from" [3 2 3] "point to" [0 1.5 0]
+    LightSource "spot" "rgb I" [100 100 100]
+                "float coneangle" 50 "float conedeltaangle" 15
+                "point from" [-3 2 3] "point to" [0 1.5 0]
+    LightSource "spot" "rgb I" [100 100 100]
+                "float coneangle" 50 "float conedeltaangle" 15
+                "point from" [-3 2 -3] "point to" [0 1.5 0]
+
+    AttributeBegin
+        Material "metal" #"rgb Kd" [ 0.8 0.8 0.85 ]
+        Rotate -45 0 1 0
+        Rotate -90 1 0 0
+        Scale 1.2 1.2 1.2
+        Include "teapotgeom.txt"
+    AttributeEnd
+AttributeEnd
+
+
+WorldEnd

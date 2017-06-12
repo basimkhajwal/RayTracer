@@ -1,9 +1,9 @@
 LookAt 0 10 -10 0 0 0 0 1 0
 Camera "perspective" "float fov" [45.000000 ] "float screenwindow" [-1.000000 1.000000 -1.000000 1.000000] "float lensradius" [0.5] "float focaldistance" [13]
-Film "image" "integer xresolution" 600 "integer yresolution" 600 "integer width" 600 "string filename" "progress/27.png" "integer height" 600
+Film "screen" "integer xresolution" 600 "integer yresolution" 600 "integer width" 600 "string filename" "progress/27.png" "integer height" 600
 
 Integrator "path"
-Sampler "stratified" "integer xsamples" [3] "integer ysamples" [3]
+Sampler "random" "integer pixelsamples" 1 #"integer xsamples" [3] "integer ysamples" [3]
 Renderer "sampler" "integer taskcount" [15]
 Accelerator "grid"
 Filter "triangle"

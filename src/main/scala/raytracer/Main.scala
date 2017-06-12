@@ -91,10 +91,11 @@ object Main {
   val BALLS_ROOM_SCENE = "scenes/balls_room.txt"
   val CORNELL_BOX_SCENE = "scenes/cornell.txt"
   val CAMERA_TEST_SCENE = "scenes/camera_test.txt"
+  val TABLE_SCENE = "scenes/table_scene.txt"
 
   def main(args: Array[String]) = {
     //getTestScene().render()
-    renderFile(CAMERA_TEST_SCENE)
+    renderFile(TABLE_SCENE)
 
     Reporter.outputReport()
   }
